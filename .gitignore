@@ -1,0 +1,3 @@
+build*
+BUILD*
+.dir-locals.el

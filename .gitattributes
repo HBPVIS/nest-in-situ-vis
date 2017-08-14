@@ -1,0 +1,17 @@
+# Set the default behavior, in case people don't have core.autocrlf set.
+* text=auto
+
+# Explicitly declare text files you want to always be normalized and converted
+# to native line endings on checkout.
+*.c text
+.clang-format text
+.dir-locals.el text
+.gitignore text
+CMakeLists.txt text
+CPPLINT.cfg text
+LICENSE text
+README.md text
+*.cmake text
+*.cpp text
+*.h text
+*.hpp text

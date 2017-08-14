@@ -1,0 +1,39 @@
+#-------------------------------------------------------------------------------
+# nest python vis
+#
+# Copyright (c) 2017 RWTH Aachen University, Germany,
+# Virtual Reality & Immersive Visualisation Group.
+#-------------------------------------------------------------------------------
+#                                  License
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+#-------------------------------------------------------------------------------
+
+
+
+# - Config file for the npv package
+# It defines the following variables
+#  NPV_INCLUDE_DIRS - include directories for Project Phoenix
+#  NPV_LIBRARIES    - libraries to link against
+ 
+# Compute paths
+get_filename_component(NPV_CMAKE_DIR "${CMAKE_CURRENT_LIST_FILE}" PATH)
+set(NPV_INCLUDE_DIRS "@CONF_INCLUDE_DIRS@")
+ 
+# Our library dependencies (contains definitions for IMPORTED targets)
+if(NOT TARGET npv)
+  include("${NPV_CMAKE_DIR}/npv-targets.cmake")
+endif()
+ 
+# These are IMPORTED targets created by npv-targets.cmake
+set(NPV_LIBRARIES npv)
