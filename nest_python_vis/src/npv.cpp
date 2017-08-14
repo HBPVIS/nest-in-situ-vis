@@ -25,6 +25,5 @@
 
 namespace npv {
 
-std::string Greet() { return "G'day!"; }
-
+std::string NestPythonVis::Greet() const { return "G'day!"; }
 }  // namespace npv

@@ -26,7 +26,10 @@
 
 namespace npv {
 
-std::string Greet();
+class NestPythonVis {
+ public:
+  std::string Greet() const;
+};
 
 }  // namespace npv
 

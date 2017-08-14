@@ -23,4 +23,12 @@
 
 #include "npv/npv.hpp"
 
-TEST_CASE("NPV shall greet.", "[npv]") { CHECK(npv::Greet() == "G'day!"); }
+SCENARIO("An npv object shall greet", "[npv][npv::NestPythonVis]") {
+  GIVEN("A NestPythonVis object") {
+    npv::NestPythonVis vis;
+    WHEN("i call its greet function") {
+      auto ret_val = vis.Greet();
+      THEN("it yields 'G'day!'") { CHECK(ret_val == "G'day!"); }
+    }
+  }
+}
