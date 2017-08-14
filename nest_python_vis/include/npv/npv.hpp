@@ -32,6 +32,8 @@ class NestPythonVis {
 
   std::string ValueString() const;
 
+  void Run();
+
  private:
   std::string FormatValue() const;
   double* value_{nullptr};

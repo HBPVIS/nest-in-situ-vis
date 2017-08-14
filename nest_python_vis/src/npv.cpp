@@ -21,6 +21,7 @@
 
 #include "npv/npv.hpp"
 
+#include <iostream>
 #include <sstream>
 #include <string>
 
@@ -35,5 +36,7 @@ std::string NestPythonVis::FormatValue() const {
   sstr << *value_;
   return sstr.str();
 }
+
+void NestPythonVis::Run() { std::cout << ValueString() << std::endl; }
 
 }  // namespace npv

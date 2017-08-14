@@ -23,6 +23,8 @@
 
 #include "npv/npv.hpp"
 
+#include "test_utilities/cout_capture.hpp"
+
 SCENARIO("An npv object shall visualize the double it is bound to",
          "[npv][npv::NestPythonVis") {
   GIVEN("A double and A NestPythonVis object") {
@@ -38,6 +40,14 @@ SCENARIO("An npv object shall visualize the double it is bound to",
       value = 42.0;
       THEN("its string representation shall be updated accordingly.") {
         REQUIRE(vis.ValueString() == "42");
+      }
+    }
+
+    WHEN("I run the visualization") {
+      test_utilities::CoutCapture cout_capture;
+      vis.Run();
+      THEN("I will find the string representation of value on cout") {
+        REQUIRE(cout_capture == "0\n");
       }
     }
   }
