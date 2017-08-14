@@ -28,7 +28,13 @@ namespace npv {
 
 class NestPythonVis {
  public:
-  std::string Greet() const;
+  explicit NestPythonVis(double* value) : value_(value) {}
+
+  std::string ValueString() const;
+
+ private:
+  std::string FormatValue() const;
+  double* value_{nullptr};
 };
 
 }  // namespace npv

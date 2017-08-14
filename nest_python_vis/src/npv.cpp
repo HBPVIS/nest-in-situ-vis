@@ -21,9 +21,19 @@
 
 #include "npv/npv.hpp"
 
+#include <sstream>
 #include <string>
 
 namespace npv {
 
-std::string NestPythonVis::Greet() const { return "G'day!"; }
+std::string NestPythonVis::ValueString() const {
+  return value_ == nullptr ? "nullptr" : FormatValue();
+}
+
+std::string NestPythonVis::FormatValue() const {
+  std::ostringstream sstr;
+  sstr << *value_;
+  return sstr.str();
+}
+
 }  // namespace npv

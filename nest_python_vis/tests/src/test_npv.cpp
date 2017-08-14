@@ -23,12 +23,30 @@
 
 #include "npv/npv.hpp"
 
-SCENARIO("An npv object shall greet", "[npv][npv::NestPythonVis]") {
-  GIVEN("A NestPythonVis object") {
-    npv::NestPythonVis vis;
-    WHEN("i call its greet function") {
-      auto ret_val = vis.Greet();
-      THEN("it yields 'G'day!'") { CHECK(ret_val == "G'day!"); }
+SCENARIO("An npv object shall visualize the double it is bound to",
+         "[npv][npv::NestPythonVis") {
+  GIVEN("A double and A NestPythonVis object") {
+    double value = 0.0;
+    npv::NestPythonVis vis(&value);
+
+    WHEN("I ask for a string representing the value") {
+      auto ret_val = vis.ValueString();
+      THEN("it shall represent the bound value.") { REQUIRE(ret_val == "0"); }
+    }
+
+    WHEN("the bound value is changed by some external code") {
+      value = 42.0;
+      THEN("its string representation shall be updated accordingly.") {
+        REQUIRE(vis.ValueString() == "42");
+      }
+    }
+  }
+
+  GIVEN("A NestPythonVis object bound to nullptr") {
+    npv::NestPythonVis vis(nullptr);
+    WHEN("I ask for a string representing tha value") {
+      auto ret_val = vis.ValueString();
+      THEN("it shall read 'nullptr'.") { REQUIRE(ret_val == "nullptr"); }
     }
   }
 }
