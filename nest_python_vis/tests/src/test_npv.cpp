@@ -19,11 +19,18 @@
 // limitations under the License.
 //------------------------------------------------------------------------------
 
+#include <algorithm>
+#include <chrono>
+#include <string>
+#include <thread>
+
 #include "catch/catch.hpp"
 
 #include "npv/npv.hpp"
 
 #include "test_utilities/cout_capture.hpp"
+
+using std::chrono_literals::operator""ms;
 
 SCENARIO("An npv object shall visualize the double it is bound to",
          "[npv][npv::NestPythonVis") {
@@ -43,11 +50,18 @@ SCENARIO("An npv object shall visualize the double it is bound to",
       }
     }
 
-    WHEN("I run the visualization") {
+    WHEN("I run the visualization for 30 ms") {
       test_utilities::CoutCapture cout_capture;
-      vis.Run();
-      THEN("I will find the string representation of value on cout") {
-        REQUIRE(cout_capture == "0\n");
+      vis.Start();
+      std::this_thread::sleep_for(30ms);
+      vis.Stop();
+      THEN(
+          "I will find more than one linebreak in printed the string "
+          "representation") {
+        const std::string cout_string = cout_capture.ToString();
+        auto num_linebreaks =
+            std::count(cout_string.begin(), cout_string.end(), '\n');
+        REQUIRE(num_linebreaks > 1);
       }
     }
   }

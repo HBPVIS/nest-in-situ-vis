@@ -22,21 +22,43 @@
 #ifndef NEST_PYTHON_VIS_INCLUDE_NPV_NPV_HPP_
 #define NEST_PYTHON_VIS_INCLUDE_NPV_NPV_HPP_
 
+#include <chrono>
+#include <memory>
 #include <string>
+#include <thread>
+
+using std::chrono_literals::operator""ms;
 
 namespace npv {
 
 class NestPythonVis {
  public:
   explicit NestPythonVis(double* value) : value_(value) {}
+  ~NestPythonVis() {
+    if (thread_ != nullptr) {
+      thread_->join();
+    }
+  }
+
+  void Start() {
+    sleep_in_use_ = configured_sleep_;
+    thread_ = std::make_unique<std::thread>(&NestPythonVis::Run, this);
+  }
+  void Stop() { sleep_in_use_ = 0ms; }
 
   std::string ValueString() const;
 
-  void Run();
-
  private:
+  void PrintValue() const;
   std::string FormatValue() const;
+  bool IsRunning() const { return sleep_in_use_ != 0ms; }
+  void Run();
+  void Sleep() { std::this_thread::sleep_for(sleep_in_use_); }
+
   double* value_{nullptr};
+  std::unique_ptr<std::thread> thread_{nullptr};
+  std::chrono::duration<int, std::milli> sleep_in_use_{0ms};
+  std::chrono::duration<int, std::milli> configured_sleep_{10ms};
 };
 
 }  // namespace npv
