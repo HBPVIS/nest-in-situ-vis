@@ -39,4 +39,4 @@ include(GenerateExportHeader)
 
 include(WarningLevels)
 
-add_subdirectory(nest_python_vis)
+add_subdirectory(npv)

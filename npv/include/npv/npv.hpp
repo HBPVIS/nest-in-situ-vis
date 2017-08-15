@@ -19,44 +19,48 @@
 // limitations under the License.
 //------------------------------------------------------------------------------
 
-#ifndef NEST_PYTHON_VIS_TESTS_TEST_UTILITIES_COUT_CAPTURE_HPP_
-#define NEST_PYTHON_VIS_TESTS_TEST_UTILITIES_COUT_CAPTURE_HPP_
+#ifndef NPV_INCLUDE_NPV_NPV_HPP_
+#define NPV_INCLUDE_NPV_NPV_HPP_
 
-#include <iostream>
-#include <sstream>
+#include <chrono>
+#include <memory>
 #include <string>
+#include <thread>
 
-#include "catch/catch.hpp"
+using std::chrono_literals::operator""ms;
 
-namespace test_utilities {
+namespace npv {
 
-class CoutCapture {
+class NestPythonVis {
  public:
-  CoutCapture() { original_rdbuf_ = std::cout.rdbuf(cout_stream_.rdbuf()); }
-  ~CoutCapture() { std::cout.rdbuf(original_rdbuf_); }
-
-  bool operator==(const std::string& other) const {
-    return cout_stream_.str() == other;
+  explicit NestPythonVis(double* value) : value_(value) {}
+  ~NestPythonVis() {
+    if (thread_ != nullptr) {
+      thread_->join();
+    }
   }
 
-  std::string ToString() const { return "\"" + cout_stream_.str() + "\""; }
+  void Start() {
+    sleep_in_use_ = configured_sleep_;
+    thread_ = std::make_unique<std::thread>(&NestPythonVis::Run, this);
+  }
+  void Stop() { sleep_in_use_ = 0ms; }
+
+  std::string ValueString() const;
 
  private:
-  std::streambuf* original_rdbuf_;
-  std::stringstream cout_stream_;
+  void PrintValue() const;
+  std::string FormatValue() const;
+  bool IsRunning() const { return sleep_in_use_ != 0ms; }
+  void Run();
+  void Sleep() { std::this_thread::sleep_for(sleep_in_use_); }
+
+  double* value_{nullptr};
+  std::unique_ptr<std::thread> thread_{nullptr};
+  std::chrono::duration<int, std::milli> sleep_in_use_{0ms};
+  std::chrono::duration<int, std::milli> configured_sleep_{10ms};
 };
 
-}  // namespace test_utilities
+}  // namespace npv
 
-namespace Catch {
-
-template <>
-struct StringMaker<test_utilities::CoutCapture> {
-  static std::string convert(const test_utilities::CoutCapture& cout_capture) {
-    return cout_capture.ToString();
-  }
-};
-
-}  // namespace Catch
-
-#endif  // NEST_PYTHON_VIS_TESTS_TEST_UTILITIES_COUT_CAPTURE_HPP_
+#endif  // NPV_INCLUDE_NPV_NPV_HPP_
