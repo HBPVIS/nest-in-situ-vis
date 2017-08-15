@@ -19,27 +19,4 @@
 # limitations under the License.
 #-------------------------------------------------------------------------------
 
-cmake_minimum_required(VERSION 3.5)
-
-project(nest_python_vis)
-
-set(CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
-set(CMAKE_CXX_STANDARD 17)
-
-include(catch)
-
-include(ConfigureFiles)
-
-include(cpplint)
-
-include(CTest)
-enable_testing()
-
-include(GenerateExportHeader)
-
-include(py.test)
-
-include(WarningLevels)
-
-add_subdirectory(npv)
-add_subdirectory(pynpv)
+add_subdirectory(tests)
