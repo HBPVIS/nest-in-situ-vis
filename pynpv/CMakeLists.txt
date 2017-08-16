@@ -19,4 +19,21 @@
 # limitations under the License.
 #-------------------------------------------------------------------------------
 
+file(GLOB PYNPV_SOURCES src/*.cpp)
+
+find_package(Boost REQUIRED COMPONENTS python)
+find_package(PythonInterp)
+find_package(PythonLibs)
+
+python_add_module(pynpv
+  ${PYNPV_SOURCES}
+)
+target_link_libraries(pynpv npv)
+
+target_include_directories(pynpv PRIVATE ${Boost_INCLUDE_DIRS})
+target_link_libraries(pynpv ${Boost_LIBRARIES})
+
+target_include_directories(pynpv PRIVATE ${PYTHON_INCLUDE_DIRS})
+target_link_libraries(pynpv ${PYTHON_LIBRARIES})
+
 add_subdirectory(tests)

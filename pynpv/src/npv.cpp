@@ -19,35 +19,11 @@
 // limitations under the License.
 //------------------------------------------------------------------------------
 
+#include "boost/python.hpp"
+
 #include "npv/npv.hpp"
 
-#include <iostream>
-#include <sstream>
-#include <string>
-
-namespace npv {
-
-void NestPythonVis::Run() {
-  while (IsRunning()) {
-    PrintValue();
-    Sleep();
-  }
+BOOST_PYTHON_MODULE(pynpv) {
+  using namespace boost::python;
+  def("Greet", npv::Greet);
 }
-
-void NestPythonVis::PrintValue() const {
-  std::cout << ValueString() << std::endl;
-}
-
-std::string NestPythonVis::ValueString() const {
-  return value_ == nullptr ? "nullptr" : FormatValue();
-}
-
-std::string NestPythonVis::FormatValue() const {
-  std::ostringstream sstr;
-  sstr << *value_;
-  return sstr.str();
-}
-
-char const* Greet() { return "G'day!"; }
-
-}  // namespace npv

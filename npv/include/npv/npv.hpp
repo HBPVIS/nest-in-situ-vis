@@ -61,6 +61,8 @@ class NestPythonVis {
   std::chrono::duration<int, std::milli> configured_sleep_{10ms};
 };
 
+char const* Greet();
+
 }  // namespace npv
 
 #endif  // NPV_INCLUDE_NPV_NPV_HPP_

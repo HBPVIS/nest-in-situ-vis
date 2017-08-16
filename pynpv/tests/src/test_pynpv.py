@@ -21,6 +21,8 @@
 
 import sys
 
+import pynpv
+
 def test_pypvt():
     assert True
 
@@ -33,3 +35,6 @@ def test_cout_capture(capsys):
     print ("next")
     out, err = capsys.readouterr()
     assert out == "next\n"
+
+def test_pynpv_greet():
+    assert pynpv.Greet() == "G'day!"
