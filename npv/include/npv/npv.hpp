@@ -34,11 +34,14 @@ namespace npv {
 class NestPythonVis {
  public:
   explicit NestPythonVis(double* value) : value_(value) {}
+  explicit NestPythonVis(std::size_t ptr_to_value)
+      : NestPythonVis(reinterpret_cast<double*>(ptr_to_value)) {}
   ~NestPythonVis() {
     if (thread_ != nullptr) {
       thread_->join();
     }
   }
+  NestPythonVis(const NestPythonVis&) = delete;
 
   void Start() {
     sleep_in_use_ = configured_sleep_;

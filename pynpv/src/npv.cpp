@@ -30,7 +30,17 @@ SUPPRESS_WARNINGS_END
 #pragma clang diagnostic ignored "-Wmissing-prototypes"
 #endif
 
-BOOST_PYTHON_MODULE(pynpv) { boost::python::def("Greet", npv::Greet); }
+BOOST_PYTHON_MODULE(pynpv) {
+  using boost::python::class_;
+  using boost::python::def;
+  using boost::python::init;
+
+  def("Greet", npv::Greet);
+
+  class_<npv::NestPythonVis, boost::noncopyable>("NestPythonVis",
+                                                 init<std::size_t>())
+      .def("ValueString", &npv::NestPythonVis::ValueString);
+}
 
 #if defined __clang__
 #pragma clang diagnostic pop

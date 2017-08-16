@@ -19,6 +19,7 @@
 # limitations under the License.
 #-------------------------------------------------------------------------------
 
+import ctypes
 import sys
 
 import pynpv
@@ -38,3 +39,9 @@ def test_cout_capture(capsys):
 
 def test_pynpv_greet():
     assert pynpv.Greet() == "G'day!"
+
+def test_pynpv_npv_ValueString():
+    d = ctypes.c_double(42.0);
+    ptr = ctypes.c_void_p.from_buffer(ctypes.pointer(d)).value
+    v = pynpv.NestPythonVis(ptr);
+    assert v.ValueString() == "42"
