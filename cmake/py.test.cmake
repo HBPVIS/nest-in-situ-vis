@@ -42,7 +42,7 @@ endif()
 
 function(ADD_TEST_PY_TEST)
   set(options )
-  set(oneValueArgs NAME)
+  set(oneValueArgs NAME PYTHONPATH)
   set(multiValueArgs )
   cmake_parse_arguments(ADD_TEST_PY_TEST
     "${options}" "${oneValueArgs}" "${multiValueArgs}" ${ARGN} )
@@ -50,5 +50,9 @@ function(ADD_TEST_PY_TEST)
   add_test(NAME "${ADD_TEST_PY_TEST_NAME}"
     COMMAND ${PYTHON_EXECUTABLE} -B ${PY_TEST_COMMAND} -p no:cacheprovider
     ${ADD_TEST_PY_TEST_UNPARSED_ARGUMENTS}
+    
   )
+  set_property(TEST ${ADD_TEST_PY_TEST_NAME} PROPERTY ENVIRONMENT
+    "PYTHONPATH=${ADD_TEST_PY_TEST_PYTHONPATH}:$PYTHONPATH"
+    )
 endfunction()
