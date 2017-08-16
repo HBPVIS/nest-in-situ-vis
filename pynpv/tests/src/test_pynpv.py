@@ -21,8 +21,11 @@
 
 import ctypes
 import sys
+import time
 
 import pynpv
+
+import pytest_utilities
 
 def test_pypvt():
     assert True
@@ -45,3 +48,16 @@ def test_pynpv_npv_ValueString():
     ptr = ctypes.c_void_p.from_buffer(ctypes.pointer(d)).value
     v = pynpv.NestPythonVis(ptr);
     assert v.ValueString() == "42"
+
+def test_pynpv_npv_StartStop():
+    d = ctypes.c_double(42.0);
+    ptr = ctypes.c_void_p.from_buffer(ctypes.pointer(d)).value
+    v = pynpv.NestPythonVis(ptr);
+
+    c = pytest_utilities.CoutCapture()
+
+    v.Start()
+    time.sleep(0.03)
+    v.Stop()
+
+    assert len(c.ToString().split('\n')) > 2

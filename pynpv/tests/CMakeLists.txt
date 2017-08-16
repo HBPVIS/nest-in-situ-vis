@@ -23,5 +23,5 @@ file(GLOB PYNPV_TEST_SOURCES src/*.py)
 
 add_test_py_test(NAME test_pynpv
   ${CMAKE_CURRENT_SOURCE_DIR}
-  PYTHONPATH $<TARGET_FILE_DIR:pynpv>
+  PYTHONPATH "$<TARGET_FILE_DIR:pynpv>:$<TARGET_FILE_DIR:pytest_utilities>"
 )
