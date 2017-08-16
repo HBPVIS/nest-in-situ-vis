@@ -19,11 +19,19 @@
 // limitations under the License.
 //------------------------------------------------------------------------------
 
+SUPPRESS_WARNINGS_BEGIN
 #include "boost/python.hpp"
+SUPPRESS_WARNINGS_END
 
 #include "npv/npv.hpp"
 
-BOOST_PYTHON_MODULE(pynpv) {
-  using namespace boost::python;
-  def("Greet", npv::Greet);
-}
+#if defined __clang__
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wmissing-prototypes"
+#endif
+
+BOOST_PYTHON_MODULE(pynpv) { boost::python::def("Greet", npv::Greet); }
+
+#if defined __clang__
+#pragma clang diagnostic pop
+#endif

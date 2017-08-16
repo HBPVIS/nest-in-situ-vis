@@ -23,10 +23,11 @@
 #define PROJECT_PHOENIX_SUPPRESS_WARNINGS_
 
 #if defined __clang__
-#define SUPPRESS_WARNINGS_BEGIN                     \
-  _Pragma("clang diagnostic push")                  \
-      _Pragma("clang diagnostic ignored \"-Wall\"") \
-          _Pragma("clang diagnostic ignored \"-Wextra\"")
+#define SUPPRESS_WARNINGS_BEGIN                           \
+  _Pragma("clang diagnostic push")                        \
+      _Pragma("clang diagnostic ignored \"-Wall\"")       \
+          _Pragma("clang diagnostic ignored \"-Wextra\"") \
+              _Pragma("clang diagnostic ignored \"-Wc++98-compat-pedantic\"")
 #define SUPPRESS_WARNINGS_END _Pragma("clang diagnostic pop")
 
 #elif defined _MSC_VER

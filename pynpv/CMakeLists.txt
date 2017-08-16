@@ -36,4 +36,12 @@ target_link_libraries(pynpv ${Boost_LIBRARIES})
 target_include_directories(pynpv PRIVATE ${PYTHON_INCLUDE_DIRS})
 target_link_libraries(pynpv ${PYTHON_LIBRARIES})
 
+set_warning_levels_RWTH(pynpv
+  SUPPRESS_WARNINGS_HEADER ${CMAKE_CURRENT_BINARY_DIR}/include/pynpv/suppress_warnings.hpp
+)
+
+add_test_cpplint(NAME "pynpv--cpplint"
+  ${PYNPV_SOURCES}
+)
+
 add_subdirectory(tests)
