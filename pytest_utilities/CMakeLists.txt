@@ -19,28 +19,26 @@
 # limitations under the License.
 #-------------------------------------------------------------------------------
 
-cmake_minimum_required(VERSION 3.5)
+file(GLOB PYTEST_UTILITIES_SOURCES src/*.cpp)
 
-project(nest_python_vis)
+find_package(Boost REQUIRED COMPONENTS python)
+find_package(PythonInterp)
+find_package(PythonLibs)
 
-set(CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
-set(CMAKE_CXX_STANDARD 17)
+python_add_module(pytest_utilities
+  ${PYTEST_UTILITIES_SOURCES}
+)
 
-include(catch)
+target_include_directories(pytest_utilities PRIVATE ${Boost_INCLUDE_DIRS})
+target_link_libraries(pytest_utilities ${Boost_LIBRARIES})
 
-include(ConfigureFiles)
+target_include_directories(pytest_utilities PRIVATE ${PYTHON_INCLUDE_DIRS})
+target_link_libraries(pytest_utilities ${PYTHON_LIBRARIES})
 
-include(cpplint)
+set_warning_levels_RWTH(pytest_utilities
+  SUPPRESS_WARNINGS_HEADER ${CMAKE_CURRENT_BINARY_DIR}/include/pytest_utilities/suppress_warnings.hpp
+)
 
-include(CTest)
-enable_testing()
-
-include(GenerateExportHeader)
-
-include(py.test)
-
-include(WarningLevels)
-
-add_subdirectory(npv)
-add_subdirectory(pynpv)
-add_subdirectory(pytest_utilities)
+add_test_cpplint(NAME "pytest_utilities--cpplint"
+  ${PYTEST_UTILITIES_SOURCES}
+)
