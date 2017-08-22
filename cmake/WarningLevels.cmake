@@ -40,7 +40,6 @@ set(WARNING_LEVELS_RWTH_GCC
   -Wmissing-braces
   -pedantic
   -pedantic-errors
-  -Wno-c++98-compat
 )
 
 set(WARNING_LEVELS_RWTH_MSVC

@@ -27,7 +27,8 @@
 #include <string>
 #include <thread>
 
-using std::chrono_literals::operator""ms;
+// gcc-5 does not accept using std::chrono_literals::operator""ms;
+using namespace std::literals::chrono_literals;  // NOLINT
 
 namespace npv {
 

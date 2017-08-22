@@ -23,6 +23,7 @@
 #include <string>
 
 SUPPRESS_WARNINGS_BEGIN
+#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
 #include "boost/python.hpp"
 SUPPRESS_WARNINGS_END
 
