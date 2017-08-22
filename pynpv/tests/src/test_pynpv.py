@@ -46,13 +46,13 @@ def test_pynpv_greet():
 def test_pynpv_npv_ValueString():
     d = ctypes.c_double(42.0);
     ptr = ctypes.c_void_p.from_buffer(ctypes.pointer(d)).value
-    v = pynpv.NestPythonVis(ptr);
+    v = pynpv.NestPythonVis(ptr, 0);
     assert v.ValueString() == "42"
 
 def test_pynpv_npv_StartStop():
     d = ctypes.c_double(42.0);
     ptr = ctypes.c_void_p.from_buffer(ctypes.pointer(d)).value
-    v = pynpv.NestPythonVis(ptr);
+    v = pynpv.NestPythonVis(ptr, 0);
 
     c = pytest_utilities.CoutCapture()
 

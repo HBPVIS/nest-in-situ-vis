@@ -26,27 +26,40 @@
 
 #include "catch/catch.hpp"
 
+#include "conduit/conduit.hpp"
+
 #include "npv/npv.hpp"
 
 #include "test_utilities/cout_capture.hpp"
 
-using std::chrono_literals::operator""ms;
+// gcc-5 does not accept using std::chrono_literals::operator""ms;
+using namespace std::literals::chrono_literals;  // NOLINT
 
 SCENARIO("An npv object shall visualize the double it is bound to",
          "[npv][npv::NestPythonVis") {
-  GIVEN("A double and A NestPythonVis object") {
+  GIVEN(
+      "A double, a membrane potenial in a conduit node and A NestPythonVis "
+      "object") {
     double value = 0.0;
-    npv::NestPythonVis vis(&value);
+    conduit::Node node;
+    node["V_m"] = 0.0;
+    npv::NestPythonVis vis(&value, &node);
 
     WHEN("I ask for a string representing the value") {
       auto ret_val = vis.ValueString();
-      THEN("it shall represent the bound value.") { REQUIRE(ret_val == "0"); }
+      auto ret_node = vis.NodeString();
+      THEN("it shall represent the bound value.") {
+        REQUIRE(ret_val == "0");
+        REQUIRE(ret_node == "0");
+      }
     }
 
     WHEN("the bound value is changed by some external code") {
       value = 42.0;
+      node["V_m"] = 42.0;
       THEN("its string representation shall be updated accordingly.") {
         REQUIRE(vis.ValueString() == "42");
+        REQUIRE(vis.NodeString() == "42");
       }
     }
 

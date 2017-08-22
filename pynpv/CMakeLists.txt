@@ -30,11 +30,14 @@ python_add_module(pynpv
 )
 target_link_libraries(pynpv npv)
 
-target_include_directories(pynpv PRIVATE ${Boost_INCLUDE_DIRS})
-target_link_libraries(pynpv ${Boost_LIBRARIES})
-
-target_include_directories(pynpv PRIVATE ${PYTHON_INCLUDE_DIRS})
-target_link_libraries(pynpv ${PYTHON_LIBRARIES})
+target_include_directories(pynpv
+  PRIVATE ${Boost_INCLUDE_DIRS}
+  PRIVATE ${PYTHON_INCLUDE_DIRS}
+  )
+target_link_libraries(pynpv
+  ${Boost_LIBRARIES}
+  ${PYTHON_LIBRARIES}
+  )
 
 set_warning_levels_RWTH(pynpv
   SUPPRESS_WARNINGS_HEADER ${CMAKE_CURRENT_BINARY_DIR}/include/pynpv/suppress_warnings.hpp
