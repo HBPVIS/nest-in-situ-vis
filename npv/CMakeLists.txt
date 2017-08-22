@@ -31,7 +31,10 @@ add_library(npv
 target_include_directories(npv
   PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include
   PUBLIC ${CMAKE_CURRENT_BINARY_DIR}
-)
+  )
+target_link_libraries(npv
+  conduit
+  )
 
 generate_export_header(npv
   EXPORT_FILE_NAME ${CMAKE_CURRENT_BINARY_DIR}/include/npv/export.hpp

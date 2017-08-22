@@ -41,6 +41,10 @@ include(py.test)
 
 include(WarningLevels)
 
+find_package(conduit)
+set_target_properties(conduit
+  PROPERTIES INTERFACE_INCLUDE_DIRECTORIES "${CONDUIT_INCLUDE_DIRS}/..")
+
 add_subdirectory(npv)
 add_subdirectory(pynpv)
 add_subdirectory(pytest_utilities)
