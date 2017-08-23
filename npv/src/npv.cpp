@@ -29,27 +29,17 @@ namespace npv {
 
 void NestPythonVis::Run() {
   while (IsRunning()) {
-    PrintValue();
+    PrintNode();
     Sleep();
   }
 }
 
-void NestPythonVis::PrintValue() const {
-  std::cout << ValueString() << " " << NodeString() << std::endl;
-}
-
-std::string NestPythonVis::ValueString() const {
-  return value_ == nullptr ? "nullptr" : FormatValue();
+void NestPythonVis::PrintNode() const {
+  std::cout << NodeString() << std::endl;
 }
 
 std::string NestPythonVis::NodeString() const {
   return node_ == nullptr ? "nullptr" : FormatNode();
-}
-
-std::string NestPythonVis::FormatValue() const {
-  std::ostringstream sstr;
-  sstr << *value_;
-  return sstr.str();
 }
 
 std::string NestPythonVis::FormatNode() const {

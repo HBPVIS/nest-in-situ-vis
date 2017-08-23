@@ -38,9 +38,9 @@ BOOST_PYTHON_MODULE(pynpv) {
 
   def("Greet", npv::Greet);
 
-  class_<npv::NestPythonVis, boost::noncopyable>(
-      "NestPythonVis", init<std::size_t, std::size_t>())
-      .def("ValueString", &npv::NestPythonVis::ValueString)
+  class_<npv::NestPythonVis, boost::noncopyable>("NestPythonVis",
+                                                 init<std::size_t>())
+      .def("NodeString", &npv::NestPythonVis::NodeString)
       .def("Start", &npv::NestPythonVis::Start)
       .def("Stop", &npv::NestPythonVis::Stop);
 }

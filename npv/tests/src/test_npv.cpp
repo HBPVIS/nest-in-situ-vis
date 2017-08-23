@@ -1,3 +1,4 @@
+
 //------------------------------------------------------------------------------
 // nest python vis
 //
@@ -38,27 +39,20 @@ using namespace std::literals::chrono_literals;  // NOLINT
 SCENARIO("An npv object shall visualize the double it is bound to",
          "[npv][npv::NestPythonVis") {
   GIVEN(
-      "A double, a membrane potenial in a conduit node and A NestPythonVis "
+      "A membrane potenial in a conduit node and A NestPythonVis "
       "object") {
-    double value = 0.0;
     conduit::Node node;
     node["V_m"] = 0.0;
-    npv::NestPythonVis vis(&value, &node);
+    npv::NestPythonVis vis(&node);
 
     WHEN("I ask for a string representing the value") {
-      auto ret_val = vis.ValueString();
       auto ret_node = vis.NodeString();
-      THEN("it shall represent the bound value.") {
-        REQUIRE(ret_val == "0");
-        REQUIRE(ret_node == "0");
-      }
+      THEN("it shall represent the bound value.") { REQUIRE(ret_node == "0"); }
     }
 
     WHEN("the bound value is changed by some external code") {
-      value = 42.0;
       node["V_m"] = 42.0;
       THEN("its string representation shall be updated accordingly.") {
-        REQUIRE(vis.ValueString() == "42");
         REQUIRE(vis.NodeString() == "42");
       }
     }
@@ -82,7 +76,7 @@ SCENARIO("An npv object shall visualize the double it is bound to",
   GIVEN("A NestPythonVis object bound to nullptr") {
     npv::NestPythonVis vis(nullptr);
     WHEN("I ask for a string representing tha value") {
-      auto ret_val = vis.ValueString();
+      auto ret_val = vis.NodeString();
       THEN("it shall read 'nullptr'.") { REQUIRE(ret_val == "nullptr"); }
     }
   }
