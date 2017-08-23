@@ -19,24 +19,37 @@
 // limitations under the License.
 //------------------------------------------------------------------------------
 
-#include "pynpv.hpp"
+#ifndef PYNPV_SRC_CONDUIT_DATA_HPP_
+#define PYNPV_SRC_CONDUIT_DATA_HPP_
 
-SUPPRESS_WARNINGS_BEGIN
-#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
-#include "boost/python.hpp"
-SUPPRESS_WARNINGS_END
+#include "conduit/conduit.hpp"
 
-#include "npv/npv.hpp"
+namespace pynpv {
 
-#include "conduit_data.hpp"
-#include "nest_python_vis.hpp"
+class ConduitData {
+ public:
+  ConduitData() {
+    node_["V_m"] = 0.0;
+    std::cout << "Ptr. to conduit node: " << Pointer() << std::endl;
+  }
+  ~ConduitData() = default;
+  ConduitData(const ConduitData&) = default;
+  ConduitData(ConduitData&&) = default;
 
-BOOST_PYTHON_MODULE(pynpv) {
-  def("Greet", npv::Greet);
-  pynpv::expose<pynpv::ConduitData>();
-  pynpv::expose<npv::NestPythonVis>();
+  void Set(const char* attribute, double value) { node_[attribute] = value; }
+  std::size_t Pointer() const { return reinterpret_cast<std::size_t>(&node_); }
+
+ private:
+  conduit::Node node_;
+};
+
+template <>
+void expose<ConduitData>() {
+  class_<ConduitData>("ConduitData")
+      .def("Set", &ConduitData::Set)
+      .def("Pointer", &ConduitData::Pointer);
 }
 
-#if defined __clang__
-#pragma clang diagnostic pop
-#endif
+}  // namespace pynpv
+
+#endif  // PYNPV_SRC_CONDUIT_DATA_HPP_
