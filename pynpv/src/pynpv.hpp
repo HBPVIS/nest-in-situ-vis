@@ -19,22 +19,28 @@
 // limitations under the License.
 //------------------------------------------------------------------------------
 
-#include "pynpv.hpp"
+#ifndef PYNPV_SRC_PYNPV_HPP_
+#define PYNPV_SRC_PYNPV_HPP_
 
 SUPPRESS_WARNINGS_BEGIN
 #pragma GCC diagnostic ignored "-Wdeprecated-declarations"
 #include "boost/python.hpp"
 SUPPRESS_WARNINGS_END
 
-#include "npv/npv.hpp"
-
-#include "nest_python_vis.hpp"
-
-BOOST_PYTHON_MODULE(pynpv) {
-  def("Greet", npv::Greet);
-  pynpv::expose<npv::NestPythonVis>();
-}
-
 #if defined __clang__
-#pragma clang diagnostic pop
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wmissing-prototypes"
 #endif
+
+using boost::python::class_;
+using boost::python::def;
+using boost::python::init;
+
+namespace pynpv {
+
+template <typename T>
+void expose();
+
+}  // namespace pynpv
+
+#endif  // PYNPV_SRC_PYNPV_HPP_
