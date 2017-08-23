@@ -43,17 +43,22 @@ def test_cout_capture(capsys):
 def test_pynpv_greet():
     assert pynpv.Greet() == "G'day!"
 
-def test_pynpv_npv_ValueString():
-    d = ctypes.c_double(42.0);
-    ptr = ctypes.c_void_p.from_buffer(ctypes.pointer(d)).value
-    v = pynpv.NestPythonVis(ptr, 0);
-    assert v.ValueString() == "42"
+def test_pynpv_npv_NodeString_zero_on_creation():
+    d = pynpv.ConduitData();
+    v = pynpv.NestPythonVis(d.Pointer());
+    assert v.NodeString() == "0"
+
+def test_pynpv_npv_NodeString_correct_after_set():
+    d = pynpv.ConduitData();
+    v = pynpv.NestPythonVis(d.Pointer());
+    d.Set("V_m", 42.0)
+    assert v.NodeString() == "42"
 
 def test_pynpv_npv_StartStop():
-    d = ctypes.c_double(42.0);
-    ptr = ctypes.c_void_p.from_buffer(ctypes.pointer(d)).value
-    v = pynpv.NestPythonVis(ptr, 0);
-
+    d = pynpv.ConduitData();
+    v = pynpv.NestPythonVis(d.Pointer());
+    d.Set("V_m", 42.0)
+    
     c = pytest_utilities.CoutCapture()
 
     v.Start()
