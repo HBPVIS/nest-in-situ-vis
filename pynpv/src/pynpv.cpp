@@ -24,6 +24,7 @@ SUPPRESS_WARNINGS_BEGIN
 #include "boost/python.hpp"
 SUPPRESS_WARNINGS_END
 
+#include "npv/nest_python_vis.hpp"
 #include "npv/npv.hpp"
 
 #if defined __clang__

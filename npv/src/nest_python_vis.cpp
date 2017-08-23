@@ -19,10 +19,33 @@
 // limitations under the License.
 //------------------------------------------------------------------------------
 
-#include "npv/npv.hpp"
+#include "npv/nest_python_vis.hpp"
+
+#include <iostream>
+#include <sstream>
+#include <string>
 
 namespace npv {
 
-char const* Greet() { return "G'day!"; }
+void NestPythonVis::Run() {
+  while (IsRunning()) {
+    PrintNode();
+    Sleep();
+  }
+}
+
+void NestPythonVis::PrintNode() const {
+  std::cout << NodeString() << std::endl;
+}
+
+std::string NestPythonVis::NodeString() const {
+  return node_ == nullptr ? "nullptr" : FormatNode();
+}
+
+std::string NestPythonVis::FormatNode() const {
+  std::ostringstream sstr;
+  sstr << (*node_)["V_m"].as_double();
+  return sstr.str();
+}
 
 }  // namespace npv

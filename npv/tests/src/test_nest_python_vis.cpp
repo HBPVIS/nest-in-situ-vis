@@ -29,7 +29,7 @@
 
 #include "conduit/conduit.hpp"
 
-#include "npv/npv.hpp"
+#include "npv/nest_python_vis.hpp"
 
 #include "test_utilities/cout_capture.hpp"
 
