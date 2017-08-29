@@ -28,16 +28,13 @@ namespace pyniv {
 
 class ConduitData {
  public:
-  ConduitData() {
-    node_["V_m"] = 0.0;
-    std::cout << "Ptr. to conduit node: " << Pointer() << std::endl;
-  }
+  ConduitData();
   ~ConduitData() = default;
   ConduitData(const ConduitData&) = default;
   ConduitData(ConduitData&&) = default;
 
-  void Set(const char* attribute, double value) { node_[attribute] = value; }
-  std::size_t Pointer() const { return reinterpret_cast<std::size_t>(&node_); }
+  void Set(const char* attribute, double value);
+  std::size_t Pointer() const;
 
  private:
   conduit::Node node_;

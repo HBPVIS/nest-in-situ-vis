@@ -20,9 +20,25 @@
 //------------------------------------------------------------------------------
 
 #include "conduit_data.hpp"
+
+#include <iostream>
+
 #include "pyniv.hpp"
 
 namespace pyniv {
+
+ConduitData::ConduitData() {
+  node_["V_m"] = 0.0;
+  std::cout << "Ptr. to conduit node: " << Pointer() << std::endl;
+}
+
+void ConduitData::Set(const char* attribute, double value) {
+  node_[attribute] = value;
+}
+
+std::size_t ConduitData::Pointer() const {
+  return reinterpret_cast<std::size_t>(&node_);
+}
 
 template <>
 void expose<ConduitData>() {
