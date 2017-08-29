@@ -34,6 +34,8 @@ target_include_directories(npv
   )
 target_link_libraries(npv
   conduit
+  Qt5::Core
+  Qt5::Widgets
   )
 
 generate_export_header(npv

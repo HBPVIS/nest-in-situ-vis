@@ -45,6 +45,10 @@ find_package(conduit)
 set_target_properties(conduit
   PROPERTIES INTERFACE_INCLUDE_DIRECTORIES "${CONDUIT_INCLUDE_DIRS}/..")
 
+set(CMAKE_AUTOMOC ON)
+find_package(Qt5  COMPONENTS Core Widgets REQUIRED)
+
+
 add_subdirectory(npv)
 add_subdirectory(pynpv)
 add_subdirectory(pytest_utilities)
