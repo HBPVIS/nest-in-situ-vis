@@ -103,26 +103,32 @@ macro(SET_WARNING_LEVELS_RWTH TARGET)
   if(IS_CLANG)
     target_compile_options(${TARGET} PRIVATE ${WARNING_LEVELS_RWTH_CLANG})
     if (CMAKE_AUTOMOC)
+      if(EXISTS ${CMAKE_CURRENT_BINARY_DIR}/${TARGET}_autogen/moc_compilation.cpp)
       set_source_files_properties(
         ${CMAKE_CURRENT_BINARY_DIR}/${TARGET}_autogen/moc_compilation.cpp
         PROPERTIES COMPILE_FLAGS ${WARNING_LEVELS_RWTH_CLANG_QT_MOC_OVERRIDE})
     endif ()
+    endif()
     target_compile_options(${TARGET} PRIVATE "-include${SUPPRESS_WARNING_HEADER_FILE}")
   elseif(IS_GCC)
     target_compile_options(${TARGET} PRIVATE ${WARNING_LEVELS_RWTH_GCC})
     if (CMAKE_AUTOMOC)
+      if(EXISTS ${CMAKE_CURRENT_BINARY_DIR}/${TARGET}_autogen/moc_compilation.cpp)
       set_source_files_properties(
         ${CMAKE_CURRENT_BINARY_DIR}/${TARGET}_autogen/moc_compilation.cpp
         PROPERTIES COMPILE_FLAGS ${WARNING_LEVELS_RWTH_GCC_QT_MOC_OVERRIDE})
     endif ()
+    endif()
     target_compile_options(${TARGET} PRIVATE "-include${SUPPRESS_WARNING_HEADER_FILE}")
   elseif(IS_MSVC)
     target_compile_options(${TARGET} PRIVATE ${WARNING_LEVELS_RWTH_MSVC})
     if (CMAKE_AUTOMOC)
+      if(EXISTS ${CMAKE_CURRENT_BINARY_DIR}/${TARGET}_autogen/moc_compilation.cpp)
       set_source_files_properties(
         ${CMAKE_CURRENT_BINARY_DIR}/${target}_autogen/moc_compilation.cpp
         PROPERTIES COMPILE_FLAGS ${WARNING_LEVELS_RWTH_MSVC_QT_MOC_OVERRIDE})
     endif ()
+    endif()
     target_compile_options(${TARGET} PRIVATE "/FI ${SUPPRESS_WARNING_HEADER_FILE}")
   else()
     message(WARNING "SET_WARNING_LEVELS_RWTH not implemented for your compiler. "
