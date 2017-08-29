@@ -21,22 +21,13 @@
 
 #include "pynpv.hpp"
 
-SUPPRESS_WARNINGS_BEGIN
-#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
-#include "boost/python.hpp"
-SUPPRESS_WARNINGS_END
-
+#include "npv/nest_python_vis.hpp"
 #include "npv/npv.hpp"
 
 #include "conduit_data.hpp"
-#include "nest_python_vis.hpp"
 
 BOOST_PYTHON_MODULE(pynpv) {
   def("Greet", npv::Greet);
   pynpv::expose<pynpv::ConduitData>();
   pynpv::expose<npv::NestPythonVis>();
 }
-
-#if defined __clang__
-#pragma clang diagnostic pop
-#endif

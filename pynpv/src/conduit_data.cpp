@@ -19,24 +19,16 @@
 // limitations under the License.
 //------------------------------------------------------------------------------
 
-#ifndef PYNPV_SRC_NEST_PYTHON_VIS_HPP_
-#define PYNPV_SRC_NEST_PYTHON_VIS_HPP_
-
-#include "npv/nest_python_vis.hpp"
-
+#include "conduit_data.hpp"
 #include "pynpv.hpp"
 
 namespace pynpv {
 
 template <>
-void expose<npv::NestPythonVis>() {
-  class_<npv::NestPythonVis, boost::noncopyable>("NestPythonVis",
-                                                 init<std::size_t>())
-      .def("NodeString", &npv::NestPythonVis::NodeString)
-      .def("Start", &npv::NestPythonVis::Start)
-      .def("Stop", &npv::NestPythonVis::Stop);
+void expose<ConduitData>() {
+  class_<ConduitData>("ConduitData")
+      .def("Set", &ConduitData::Set)
+      .def("Pointer", &ConduitData::Pointer);
 }
 
 }  // namespace pynpv
-
-#endif  // PYNPV_SRC_NEST_PYTHON_VIS_HPP_

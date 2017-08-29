@@ -24,14 +24,8 @@
 
 SUPPRESS_WARNINGS_BEGIN
 #pragma GCC diagnostic ignored "-Wdeprecated-declarations"
-#pragma GCC diagnostic ignored "-fpermissive"
 #include "boost/python.hpp"
 SUPPRESS_WARNINGS_END
-
-#if defined __clang__
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wmissing-prototypes"
-#endif
 
 using boost::python::class_;
 using boost::python::def;

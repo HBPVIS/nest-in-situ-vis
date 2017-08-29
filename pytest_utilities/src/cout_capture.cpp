@@ -27,11 +27,6 @@ SUPPRESS_WARNINGS_BEGIN
 #include "boost/python.hpp"
 SUPPRESS_WARNINGS_END
 
-#if defined __clang__
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wmissing-prototypes"
-#endif
-
 namespace test_utilities {
 
 class CoutCapture {
@@ -60,7 +55,3 @@ BOOST_PYTHON_MODULE(pytest_utilities) {
   class_<test_utilities::CoutCapture, boost::noncopyable>("CoutCapture")
       .def("ToString", &test_utilities::CoutCapture::ToString);
 }
-
-#if defined __clang__
-#pragma clang diagnostic pop
-#endif

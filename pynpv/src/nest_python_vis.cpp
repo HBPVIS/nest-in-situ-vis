@@ -19,30 +19,19 @@
 // limitations under the License.
 //------------------------------------------------------------------------------
 
-#ifndef PYNPV_SRC_CONDUIT_DATA_HPP_
-#define PYNPV_SRC_CONDUIT_DATA_HPP_
+#include "npv/nest_python_vis.hpp"
 
-#include "conduit/conduit.hpp"
+#include "pynpv.hpp"
 
 namespace pynpv {
 
-class ConduitData {
- public:
-  ConduitData() {
-    node_["V_m"] = 0.0;
-    std::cout << "Ptr. to conduit node: " << Pointer() << std::endl;
-  }
-  ~ConduitData() = default;
-  ConduitData(const ConduitData&) = default;
-  ConduitData(ConduitData&&) = default;
-
-  void Set(const char* attribute, double value) { node_[attribute] = value; }
-  std::size_t Pointer() const { return reinterpret_cast<std::size_t>(&node_); }
-
- private:
-  conduit::Node node_;
-};
+template <>
+void expose<npv::NestPythonVis>() {
+  class_<npv::NestPythonVis, boost::noncopyable>("NestPythonVis",
+                                                 init<std::size_t>())
+      .def("NodeString", &npv::NestPythonVis::NodeString)
+      .def("Start", &npv::NestPythonVis::Start)
+      .def("Stop", &npv::NestPythonVis::Stop);
+}
 
 }  // namespace pynpv
-
-#endif  // PYNPV_SRC_CONDUIT_DATA_HPP_
