@@ -27,11 +27,40 @@
 
 namespace npv {
 
+constexpr std::chrono::duration<int, std::milli> NestPythonVis::disabled_sleep_;
+
+NestPythonVis::NestPythonVis(std::size_t ptr_to_node)
+    : NestPythonVis(reinterpret_cast<conduit::Node*>(ptr_to_node)) {}
+
+NestPythonVis::~NestPythonVis() { JoinAndDeleteThread(); }
+
+void NestPythonVis::Start() {
+  EnableIsRunning();
+  SpawnThread();
+}
+
+void NestPythonVis::EnableIsRunning() { sleep_in_use_ = configured_sleep_; }
+
+void NestPythonVis::DisableIsRunning() { sleep_in_use_ = disabled_sleep_; }
+
+bool NestPythonVis::IsRunning() const {
+  return sleep_in_use_ != disabled_sleep_;
+}
+
+void NestPythonVis::Stop() {
+  DisableIsRunning();
+  JoinAndDeleteThread();
+}
+
 void NestPythonVis::Run() {
   while (IsRunning()) {
-    PrintNode();
-    Sleep();
+    Step();
   }
+}
+
+void NestPythonVis::Step() {
+  PrintNode();
+  Sleep();
 }
 
 void NestPythonVis::PrintNode() const {

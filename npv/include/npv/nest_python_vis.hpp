@@ -37,27 +37,23 @@ namespace npv {
 class NestPythonVis {
  public:
   explicit NestPythonVis(conduit::Node* node = nullptr) : node_(node) {}
-  explicit NestPythonVis(std::size_t ptr_to_node)
-      : NestPythonVis(reinterpret_cast<conduit::Node*>(ptr_to_node)) {}
-  ~NestPythonVis() { JoinAndDeleteThread(); }
+  explicit NestPythonVis(std::size_t ptr_to_node);
+  ~NestPythonVis();
   NestPythonVis(const NestPythonVis&) = delete;
 
-  void Start() {
-    sleep_in_use_ = configured_sleep_;
-    SpawnThread();
-  }
-  void Stop() {
-    sleep_in_use_ = 0ms;
-    JoinAndDeleteThread();
-  }
+  void Start();
+  void Stop();
 
   std::string NodeString() const;
 
  private:
   void PrintNode() const;
   std::string FormatNode() const;
-  bool IsRunning() const { return sleep_in_use_ != 0ms; }
+  void EnableIsRunning();
+  void DisableIsRunning();
+  bool IsRunning() const;
   void Run();
+  void Step();
   void Sleep() { std::this_thread::sleep_for(sleep_in_use_); }
   void SpawnThread() {
     thread_ = std::make_unique<std::thread>(&NestPythonVis::Run, this);
@@ -71,8 +67,9 @@ class NestPythonVis {
 
   conduit::Node* node_{nullptr};
   std::unique_ptr<std::thread> thread_{nullptr};
-  std::chrono::duration<int, std::milli> sleep_in_use_{0ms};
+  static constexpr std::chrono::duration<int, std::milli> disabled_sleep_{0ms};
   std::chrono::duration<int, std::milli> configured_sleep_{10ms};
+  std::chrono::duration<int, std::milli> sleep_in_use_{disabled_sleep_};
 };
 
 }  // namespace npv
