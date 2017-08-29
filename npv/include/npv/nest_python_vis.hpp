@@ -29,9 +29,6 @@
 
 #include "conduit/conduit.hpp"
 
-#include "QApplication"
-#include "QLabel"
-
 // gcc-5 does not accept using std::chrono_literals::operator""ms;
 using namespace std::literals::chrono_literals;  // NOLINT
 
@@ -39,7 +36,7 @@ namespace npv {
 
 class NestPythonVis {
  public:
-  explicit NestPythonVis(conduit::Node* node = nullptr);
+  explicit NestPythonVis(conduit::Node* node = nullptr) : node_(node) {}
   explicit NestPythonVis(std::size_t ptr_to_node);
   ~NestPythonVis();
   NestPythonVis(const NestPythonVis&) = delete;
@@ -73,11 +70,6 @@ class NestPythonVis {
   static constexpr std::chrono::duration<int, std::milli> disabled_sleep_{0ms};
   std::chrono::duration<int, std::milli> configured_sleep_{10ms};
   std::chrono::duration<int, std::milli> sleep_in_use_{disabled_sleep_};
-
-  int argc_{0};
-  QApplication qt_app_;
-  QWidget* qt_window_{nullptr};
-  QLabel* qt_label_{nullptr};
 };
 
 }  // namespace npv

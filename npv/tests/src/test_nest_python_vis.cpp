@@ -81,17 +81,3 @@ SCENARIO("An npv object shall visualize the double it is bound to",
     }
   }
 }
-
-SCENARIO("We have a visualization application with a window") {
-  GIVEN("A VisApplication") {
-    npv::NestPythonVis app{nullptr};
-    app.Start();
-    WHEN("we call run") {
-      THEN("we see one window") {
-        auto all_windows{QApplication::topLevelWindows()};
-        REQUIRE(all_windows.size() == 1);
-      }
-    }
-    app.Stop();
-  }
-}

@@ -25,22 +25,9 @@
 #include <sstream>
 #include <string>
 
-#include "QString"
-#include "QVBoxLayout"
-
 namespace npv {
 
 constexpr std::chrono::duration<int, std::milli> NestPythonVis::disabled_sleep_;
-
-NestPythonVis::NestPythonVis(conduit::Node* node)
-    : node_(node),
-      qt_app_{argc_, nullptr},
-      qt_window_{new QWidget},
-      qt_label_{new QLabel} {
-  auto layout = new QVBoxLayout;
-  layout->addWidget(qt_label_);
-  qt_window_->setLayout(layout);
-}
 
 NestPythonVis::NestPythonVis(std::size_t ptr_to_node)
     : NestPythonVis(reinterpret_cast<conduit::Node*>(ptr_to_node)) {}
@@ -49,8 +36,6 @@ NestPythonVis::~NestPythonVis() { JoinAndDeleteThread(); }
 
 void NestPythonVis::Start() {
   EnableIsRunning();
-  qt_window_->show();
-  QApplication::processEvents();
   SpawnThread();
 }
 
@@ -74,12 +59,8 @@ void NestPythonVis::Run() {
 }
 
 void NestPythonVis::Step() {
-  static int i = 0;
   PrintNode();
-  qt_label_->setText(QString(i));
-  QApplication::processEvents();
   Sleep();
-  ++i;
 }
 
 void NestPythonVis::PrintNode() const {
