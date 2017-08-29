@@ -29,6 +29,8 @@ namespace npv {
 
 constexpr std::chrono::duration<int, std::milli> NestPythonVis::disabled_sleep_;
 
+NestPythonVis::NestPythonVis(conduit::Node* node) : node_(node) {}
+
 NestPythonVis::NestPythonVis(std::size_t ptr_to_node)
     : NestPythonVis(reinterpret_cast<conduit::Node*>(ptr_to_node)) {}
 

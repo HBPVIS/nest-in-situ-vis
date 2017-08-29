@@ -36,7 +36,7 @@ namespace npv {
 
 class NestPythonVis {
  public:
-  explicit NestPythonVis(conduit::Node* node = nullptr) : node_(node) {}
+  explicit NestPythonVis(conduit::Node* node = nullptr);
   explicit NestPythonVis(std::size_t ptr_to_node);
   ~NestPythonVis();
   NestPythonVis(const NestPythonVis&) = delete;
