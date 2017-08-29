@@ -19,39 +19,16 @@
 // limitations under the License.
 //------------------------------------------------------------------------------
 
-#include <iostream>
-#include <string>
+#include "conduit_data.hpp"
+#include "pyniv.hpp"
 
-SUPPRESS_WARNINGS_BEGIN
-#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
-#include "boost/python.hpp"
-SUPPRESS_WARNINGS_END
+namespace pyniv {
 
-namespace test_utilities {
-
-class CoutCapture {
- public:
-  CoutCapture() { original_rdbuf_ = std::cout.rdbuf(cout_stream_.rdbuf()); }
-  ~CoutCapture() { std::cout.rdbuf(original_rdbuf_); }
-
-  bool operator==(const std::string& other) const {
-    return cout_stream_.str() == other;
-  }
-
-  std::string ToString() const { return "\"" + cout_stream_.str() + "\""; }
-
- private:
-  std::streambuf* original_rdbuf_;
-  std::stringstream cout_stream_;
-};
-
-}  // namespace test_utilities
-
-BOOST_PYTHON_MODULE(pytest_utilities) {
-  using boost::python::class_;
-  using boost::python::def;
-  using boost::python::init;
-
-  class_<test_utilities::CoutCapture, boost::noncopyable>("CoutCapture")
-      .def("ToString", &test_utilities::CoutCapture::ToString);
+template <>
+void expose<ConduitData>() {
+  class_<ConduitData>("ConduitData")
+      .def("Set", &ConduitData::Set)
+      .def("Pointer", &ConduitData::Pointer);
 }
+
+}  // namespace pyniv

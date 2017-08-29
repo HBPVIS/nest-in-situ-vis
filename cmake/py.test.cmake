@@ -1,5 +1,5 @@
 #-------------------------------------------------------------------------------
-# nest python vis
+# nest in situ vis
 #
 # Copyright (c) 2017 RWTH Aachen University, Germany,
 # Virtual Reality & Immersive Visualisation Group.
@@ -18,8 +18,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #-------------------------------------------------------------------------------
-
-
 
 include(FindPythonInterp)
 if(NOT PYTHON_EXECUTABLE)

@@ -19,15 +19,11 @@
 # limitations under the License.
 #-------------------------------------------------------------------------------
 
-function(GENERATE_CONFIGURE_FILES TARGET)
-  # config for the build tree
-  set(CONF_INCLUDE_DIRS
-    ${CMAKE_CURRENT_SOURCE_DIR}
-    ${CMAKE_CURRENT_BINARY_DIR}
-  )
-  configure_file(
-    ${PROJECT_SOURCE_DIR}/cmake/${TARGET}-config.cmake.in
-    "${PROJECT_BINARY_DIR}/${TARGET}-config.cmake" @ONLY)
-  export(TARGETS ${TARGET}
-    FILE "${PROJECT_BINARY_DIR}/${TARGET}-targets.cmake")
-endfunction()
+
+
+file(GLOB PYNIV_TEST_SOURCES src/*.py)
+
+add_test_py_test(NAME test_pyniv
+  ${CMAKE_CURRENT_SOURCE_DIR}
+  PYTHONPATH "$<TARGET_FILE_DIR:pyniv>:$<TARGET_FILE_DIR:pytest_utilities>"
+)

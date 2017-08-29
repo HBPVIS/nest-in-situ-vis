@@ -19,13 +19,14 @@
 // limitations under the License.
 //------------------------------------------------------------------------------
 
+#ifndef NIV_TESTS_TEST_UTILITIES_COUT_CAPTURE_HPP_
+#define NIV_TESTS_TEST_UTILITIES_COUT_CAPTURE_HPP_
+
 #include <iostream>
+#include <sstream>
 #include <string>
 
-SUPPRESS_WARNINGS_BEGIN
-#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
-#include "boost/python.hpp"
-SUPPRESS_WARNINGS_END
+#include "catch/catch.hpp"
 
 namespace test_utilities {
 
@@ -47,11 +48,15 @@ class CoutCapture {
 
 }  // namespace test_utilities
 
-BOOST_PYTHON_MODULE(pytest_utilities) {
-  using boost::python::class_;
-  using boost::python::def;
-  using boost::python::init;
+namespace Catch {
 
-  class_<test_utilities::CoutCapture, boost::noncopyable>("CoutCapture")
-      .def("ToString", &test_utilities::CoutCapture::ToString);
-}
+template <>
+struct StringMaker<test_utilities::CoutCapture> {
+  static std::string convert(const test_utilities::CoutCapture& cout_capture) {
+    return cout_capture.ToString();
+  }
+};
+
+}  // namespace Catch
+
+#endif  // NIV_TESTS_TEST_UTILITIES_COUT_CAPTURE_HPP_

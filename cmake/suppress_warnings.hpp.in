@@ -1,5 +1,5 @@
 //------------------------------------------------------------------------------
-// Project Phoenix
+// nest in situ vis
 //
 // Copyright (c) 2017 RWTH Aachen University, Germany,
 // Virtual Reality & Immersive Visualisation Group.
@@ -19,8 +19,8 @@
 // limitations under the License.
 //------------------------------------------------------------------------------
 
-#ifndef PROJECT_PHOENIX_SUPPRESS_WARNINGS_
-#define PROJECT_PHOENIX_SUPPRESS_WARNINGS_
+#ifndef NEST_IN_SITU_VIS_SUPPRESS_WARNINGS_
+#define NEST_IN_SITU_VIS_SUPPRESS_WARNINGS_
 
 #if defined __clang__
 #define SUPPRESS_WARNINGS_BEGIN                           \
@@ -43,4 +43,4 @@
 
 #endif
 
-#endif  // PROJECT_PHOENIX_SUPPRESS_WARNINGS_
+#endif  // NEST_IN_SITU_VIS_SUPPRESS_WARNINGS_

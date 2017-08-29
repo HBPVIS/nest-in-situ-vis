@@ -19,39 +19,19 @@
 // limitations under the License.
 //------------------------------------------------------------------------------
 
-#include <iostream>
-#include <string>
+#include "niv/nest_in_situ_vis.hpp"
 
-SUPPRESS_WARNINGS_BEGIN
-#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
-#include "boost/python.hpp"
-SUPPRESS_WARNINGS_END
+#include "pyniv.hpp"
 
-namespace test_utilities {
+namespace pyniv {
 
-class CoutCapture {
- public:
-  CoutCapture() { original_rdbuf_ = std::cout.rdbuf(cout_stream_.rdbuf()); }
-  ~CoutCapture() { std::cout.rdbuf(original_rdbuf_); }
-
-  bool operator==(const std::string& other) const {
-    return cout_stream_.str() == other;
-  }
-
-  std::string ToString() const { return "\"" + cout_stream_.str() + "\""; }
-
- private:
-  std::streambuf* original_rdbuf_;
-  std::stringstream cout_stream_;
-};
-
-}  // namespace test_utilities
-
-BOOST_PYTHON_MODULE(pytest_utilities) {
-  using boost::python::class_;
-  using boost::python::def;
-  using boost::python::init;
-
-  class_<test_utilities::CoutCapture, boost::noncopyable>("CoutCapture")
-      .def("ToString", &test_utilities::CoutCapture::ToString);
+template <>
+void expose<niv::NestInSituVis>() {
+  class_<niv::NestInSituVis, boost::noncopyable>("NestInSituVis",
+                                                 init<std::size_t>())
+      .def("NodeString", &niv::NestInSituVis::NodeString)
+      .def("Start", &niv::NestInSituVis::Start)
+      .def("Stop", &niv::NestInSituVis::Stop);
 }
+
+}  // namespace pyniv

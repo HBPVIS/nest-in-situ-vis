@@ -19,15 +19,34 @@
 # limitations under the License.
 #-------------------------------------------------------------------------------
 
-function(GENERATE_CONFIGURE_FILES TARGET)
-  # config for the build tree
-  set(CONF_INCLUDE_DIRS
-    ${CMAKE_CURRENT_SOURCE_DIR}
-    ${CMAKE_CURRENT_BINARY_DIR}
+
+
+file(GLOB PYNIV_SOURCES src/*.cpp)
+
+find_package(Boost REQUIRED COMPONENTS python)
+find_package(PythonInterp)
+find_package(PythonLibs)
+
+python_add_module(pyniv
+  ${PYNIV_SOURCES}
+)
+target_link_libraries(pyniv niv)
+
+target_include_directories(pyniv
+  PRIVATE ${Boost_INCLUDE_DIRS}
+  PRIVATE ${PYTHON_INCLUDE_DIRS}
   )
-  configure_file(
-    ${PROJECT_SOURCE_DIR}/cmake/${TARGET}-config.cmake.in
-    "${PROJECT_BINARY_DIR}/${TARGET}-config.cmake" @ONLY)
-  export(TARGETS ${TARGET}
-    FILE "${PROJECT_BINARY_DIR}/${TARGET}-targets.cmake")
-endfunction()
+target_link_libraries(pyniv
+  ${Boost_LIBRARIES}
+  ${PYTHON_LIBRARIES}
+  )
+
+set_warning_levels_RWTH(pyniv
+  SUPPRESS_WARNINGS_HEADER ${CMAKE_CURRENT_BINARY_DIR}/include/pyniv/suppress_warnings.hpp
+)
+
+add_test_cpplint(NAME "pyniv--cpplint"
+  ${PYNIV_SOURCES}
+)
+
+add_subdirectory(tests)

@@ -19,15 +19,37 @@
 # limitations under the License.
 #-------------------------------------------------------------------------------
 
-function(GENERATE_CONFIGURE_FILES TARGET)
-  # config for the build tree
-  set(CONF_INCLUDE_DIRS
-    ${CMAKE_CURRENT_SOURCE_DIR}
-    ${CMAKE_CURRENT_BINARY_DIR}
+file(GLOB NIV_SOURCES src/*.cpp)
+file(GLOB NIV_HEADERS src/*.hpp)
+file(GLOB NIV_API_HEADERS include/niv/*.hpp)
+
+add_library(niv
+  ${NIV_SOURCES}
+  ${NIV_HEADERS}
+  ${NIV_API_HEADERS}
   )
-  configure_file(
-    ${PROJECT_SOURCE_DIR}/cmake/${TARGET}-config.cmake.in
-    "${PROJECT_BINARY_DIR}/${TARGET}-config.cmake" @ONLY)
-  export(TARGETS ${TARGET}
-    FILE "${PROJECT_BINARY_DIR}/${TARGET}-targets.cmake")
-endfunction()
+target_include_directories(niv
+  PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include
+  PUBLIC ${CMAKE_CURRENT_BINARY_DIR}
+  )
+target_link_libraries(niv
+  conduit
+  )
+
+generate_export_header(niv
+  EXPORT_FILE_NAME ${CMAKE_CURRENT_BINARY_DIR}/include/niv/export.hpp
+)
+
+set_warning_levels_RWTH(niv
+  SUPPRESS_WARNINGS_HEADER ${CMAKE_CURRENT_BINARY_DIR}/include/niv/suppress_warnings.hpp
+)
+
+add_test_cpplint(NAME "niv--cpplint"
+  ${NIV_SOURCES}
+  ${NIV_HEADERS}
+  ${NIV_API_HEADERS}
+)
+
+generate_configure_files(niv)
+
+add_subdirectory(tests)

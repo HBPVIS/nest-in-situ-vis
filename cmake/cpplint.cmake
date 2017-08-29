@@ -1,5 +1,5 @@
 #-------------------------------------------------------------------------------
-# nest python vis
+# nest in situ vis
 #
 # Copyright (c) 2017 RWTH Aachen University, Germany,
 # Virtual Reality & Immersive Visualisation Group.

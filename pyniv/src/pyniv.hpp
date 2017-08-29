@@ -19,39 +19,23 @@
 // limitations under the License.
 //------------------------------------------------------------------------------
 
-#include <iostream>
-#include <string>
+#ifndef PYNIV_SRC_PYNIV_HPP_
+#define PYNIV_SRC_PYNIV_HPP_
 
 SUPPRESS_WARNINGS_BEGIN
 #pragma GCC diagnostic ignored "-Wdeprecated-declarations"
 #include "boost/python.hpp"
 SUPPRESS_WARNINGS_END
 
-namespace test_utilities {
+using boost::python::class_;
+using boost::python::def;
+using boost::python::init;
 
-class CoutCapture {
- public:
-  CoutCapture() { original_rdbuf_ = std::cout.rdbuf(cout_stream_.rdbuf()); }
-  ~CoutCapture() { std::cout.rdbuf(original_rdbuf_); }
+namespace pyniv {
 
-  bool operator==(const std::string& other) const {
-    return cout_stream_.str() == other;
-  }
+template <typename T>
+void expose();
 
-  std::string ToString() const { return "\"" + cout_stream_.str() + "\""; }
+}  // namespace pyniv
 
- private:
-  std::streambuf* original_rdbuf_;
-  std::stringstream cout_stream_;
-};
-
-}  // namespace test_utilities
-
-BOOST_PYTHON_MODULE(pytest_utilities) {
-  using boost::python::class_;
-  using boost::python::def;
-  using boost::python::init;
-
-  class_<test_utilities::CoutCapture, boost::noncopyable>("CoutCapture")
-      .def("ToString", &test_utilities::CoutCapture::ToString);
-}
+#endif  // PYNIV_SRC_PYNIV_HPP_

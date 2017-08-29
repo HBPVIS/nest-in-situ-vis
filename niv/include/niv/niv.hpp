@@ -19,39 +19,13 @@
 // limitations under the License.
 //------------------------------------------------------------------------------
 
-#include <iostream>
-#include <string>
+#ifndef NIV_INCLUDE_NIV_NIV_HPP_
+#define NIV_INCLUDE_NIV_NIV_HPP_
 
-SUPPRESS_WARNINGS_BEGIN
-#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
-#include "boost/python.hpp"
-SUPPRESS_WARNINGS_END
+namespace niv {
 
-namespace test_utilities {
+char const* Greet();
 
-class CoutCapture {
- public:
-  CoutCapture() { original_rdbuf_ = std::cout.rdbuf(cout_stream_.rdbuf()); }
-  ~CoutCapture() { std::cout.rdbuf(original_rdbuf_); }
+}  // namespace niv
 
-  bool operator==(const std::string& other) const {
-    return cout_stream_.str() == other;
-  }
-
-  std::string ToString() const { return "\"" + cout_stream_.str() + "\""; }
-
- private:
-  std::streambuf* original_rdbuf_;
-  std::stringstream cout_stream_;
-};
-
-}  // namespace test_utilities
-
-BOOST_PYTHON_MODULE(pytest_utilities) {
-  using boost::python::class_;
-  using boost::python::def;
-  using boost::python::init;
-
-  class_<test_utilities::CoutCapture, boost::noncopyable>("CoutCapture")
-      .def("ToString", &test_utilities::CoutCapture::ToString);
-}
+#endif  // NIV_INCLUDE_NIV_NIV_HPP_

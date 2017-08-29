@@ -19,39 +19,15 @@
 // limitations under the License.
 //------------------------------------------------------------------------------
 
-#include <iostream>
-#include <string>
+#include "pyniv.hpp"
 
-SUPPRESS_WARNINGS_BEGIN
-#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
-#include "boost/python.hpp"
-SUPPRESS_WARNINGS_END
+#include "niv/nest_in_situ_vis.hpp"
+#include "niv/niv.hpp"
 
-namespace test_utilities {
+#include "conduit_data.hpp"
 
-class CoutCapture {
- public:
-  CoutCapture() { original_rdbuf_ = std::cout.rdbuf(cout_stream_.rdbuf()); }
-  ~CoutCapture() { std::cout.rdbuf(original_rdbuf_); }
-
-  bool operator==(const std::string& other) const {
-    return cout_stream_.str() == other;
-  }
-
-  std::string ToString() const { return "\"" + cout_stream_.str() + "\""; }
-
- private:
-  std::streambuf* original_rdbuf_;
-  std::stringstream cout_stream_;
-};
-
-}  // namespace test_utilities
-
-BOOST_PYTHON_MODULE(pytest_utilities) {
-  using boost::python::class_;
-  using boost::python::def;
-  using boost::python::init;
-
-  class_<test_utilities::CoutCapture, boost::noncopyable>("CoutCapture")
-      .def("ToString", &test_utilities::CoutCapture::ToString);
+BOOST_PYTHON_MODULE(pyniv) {
+  def("Greet", niv::Greet);
+  pyniv::expose<pyniv::ConduitData>();
+  pyniv::expose<niv::NestInSituVis>();
 }
