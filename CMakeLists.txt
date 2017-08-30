@@ -26,6 +26,11 @@ project(nest_in_situ_vis)
 set(CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
 set(CMAKE_CXX_STANDARD 17)
 
+find_package(Boost REQUIRED COMPONENTS python)
+
+find_package(PythonInterp)
+find_package(PythonLibs)
+
 include(catch)
 
 include(ConfigureFiles)

@@ -23,10 +23,6 @@
 
 file(GLOB PYNIV_SOURCES src/*.cpp)
 
-find_package(Boost REQUIRED COMPONENTS python)
-find_package(PythonInterp)
-find_package(PythonLibs)
-
 python_add_module(pyniv
   ${PYNIV_SOURCES}
 )
