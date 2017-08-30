@@ -26,6 +26,7 @@
 #include <memory>
 #include <string>
 #include <thread>
+#include <vector>
 
 #include "conduit/conduit.hpp"
 
@@ -45,6 +46,7 @@ class NestInSituVis {
   void Stop();
 
   std::string NodeString() const;
+  void Read(const conduit::Schema& schema, std::vector<conduit::uint8>* data);
 
  private:
   void PrintNode() const;

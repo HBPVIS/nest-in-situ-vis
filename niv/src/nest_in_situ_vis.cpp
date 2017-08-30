@@ -24,6 +24,7 @@
 #include <iostream>
 #include <sstream>
 #include <string>
+#include <vector>
 
 namespace niv {
 
@@ -77,6 +78,11 @@ std::string NestInSituVis::FormatNode() const {
   std::ostringstream sstr;
   sstr << (*node_)["V_m"].as_double();
   return sstr.str();
+}
+
+void NestInSituVis::Read(const conduit::Schema& schema,
+                         std::vector<conduit::uint8>* data) {
+  node_->set_external(schema, data->data());
 }
 
 }  // namespace niv

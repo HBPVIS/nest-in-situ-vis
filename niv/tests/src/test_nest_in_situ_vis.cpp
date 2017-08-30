@@ -19,10 +19,13 @@
 // limitations under the License.
 //------------------------------------------------------------------------------
 
+#include <sys/types.h>
+
 #include <algorithm>
 #include <chrono>
 #include <string>
 #include <thread>
+#include <vector>
 
 #include "catch/catch.hpp"
 
@@ -68,6 +71,33 @@ SCENARIO("An niv object shall visualize the double it is bound to",
         auto num_linebreaks =
             std::count(cout_string.begin(), cout_string.end(), '\n');
         REQUIRE(num_linebreaks > 1);
+      }
+    }
+
+    GIVEN("A vector for buffering data") {
+      std::vector<conduit::uint8> data;
+      THEN("the buffer is empty") { REQUIRE(data.size() == 0); }
+      WHEN("When I ask the node to serialize into the buffer") {
+        node.serialize(data);
+        THEN("there is data in it") { REQUIRE(data.size() > 0); }
+      }
+    }
+
+    GIVEN("Another node and a buffer") {
+      conduit::Node another_node;
+      another_node["V_m"] = 3.1415926;
+      std::vector<conduit::uint8> data;
+      WHEN(
+          "I serialize another node into the buffer and read the buffer into "
+          "the visualization") {
+        another_node.serialize(data);
+        conduit::Schema schema;
+        another_node.schema().compact_to(schema);
+
+        vis.Read(schema, &data);
+        THEN("the first node will have acquired the data") {
+          REQUIRE(node["V_m"].as_double() == Approx(3.1415926));
+        }
       }
     }
   }
