@@ -40,6 +40,7 @@ class SharedMemory {
   using Allocator =
       boost::interprocess::allocator<T, ManagedSharedMemory::segment_manager>;
   using DataVector = std::vector<conduit::uint8, Allocator<conduit::uint8>>;
+  using SchemaString = std::vector<char, Allocator<char>>;
 
   static constexpr std::size_t kInitialSize{65536u};
 
@@ -48,10 +49,12 @@ class SharedMemory {
 
   std::size_t GetFreeSize() const { return segment_.get_free_memory(); }
   DataVector& GetDataVector();
+  SchemaString& GetSchemaString();
 
  private:
   ManagedSharedMemory segment_;
   DataVector* data_vector_;
+  SchemaString* schema_string_;
 };
 
 }  // namespace niv

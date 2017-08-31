@@ -19,6 +19,8 @@
 // limitations under the License.
 //------------------------------------------------------------------------------
 
+#include <string>
+
 #include "catch/catch.hpp"
 
 #include "niv/shared_memory.hpp"
@@ -32,18 +34,35 @@ SCENARIO("Shared memory", "[niv][niv::SharedMemory]") {
     }
 
     WHEN("I request a data vector in that shared memory segment") {
-      auto data_vector = segment.GetDataVector();
-      THEN("it is empty") { REQUIRE(data_vector.size() == 0); }
+      auto data = segment.GetDataVector();
+      THEN("it is empty") { REQUIRE(data.size() == 0); }
 
       WHEN("I add one data entry into the vector") {
         auto free_size_before_push = segment.GetFreeSize();
-        data_vector.push_back(conduit::uint8{9u});
+        data.push_back(conduit::uint8{9u});
         auto free_size_after_push = segment.GetFreeSize();
-        THEN("I can retrieve it") {
-          REQUIRE(data_vector[0] == conduit::uint8{9u});
-        }
+        THEN("I can retrieve it") { REQUIRE(data[0] == conduit::uint8{9u}); }
         THEN("we have less free space in the segment") {
           REQUIRE(free_size_after_push < free_size_before_push);
+        }
+      }
+    }
+
+    WHEN("I request a schema string in that shared memory segment") {
+      auto schema = segment.GetSchemaString();
+      THEN("it is empty") { REQUIRE(schema.size() == 0); }
+
+      WHEN("I assign a string to the schema") {
+        const std::string any_string{"foo_bar"};
+        auto free_size_before_assign = segment.GetFreeSize();
+        schema.assign(any_string.begin(), any_string.end());
+        auto free_size_after_assign = segment.GetFreeSize();
+        THEN("schema holds the string") {
+          const std::string schema_as_string{schema.begin(), schema.end()};
+          REQUIRE(schema_as_string == any_string);
+        }
+        THEN("we have less free space in the segment") {
+          REQUIRE(free_size_after_assign < free_size_before_assign);
         }
       }
     }

@@ -30,16 +30,23 @@ constexpr std::size_t SharedMemory::kInitialSize;
 SharedMemory::SharedMemory()
     : segment_{boost::interprocess::create_only, "niv-shared-memory",
                kInitialSize},
-      data_vector_(segment_.construct<DataVector>("DataVector")(
-          DataVector::allocator_type(segment_.get_segment_manager()))) {}
+      data_vector_{segment_.construct<DataVector>("DataVector")(
+          DataVector::allocator_type(segment_.get_segment_manager()))},
+      schema_string_{segment_.construct<SchemaString>("SchemaString")(
+          SchemaString::allocator_type(segment_.get_segment_manager()))} {}
 
 SharedMemory::~SharedMemory() {
   segment_.destroy<DataVector>("DataVector");
+  segment_.destroy<SchemaString>("SchemaString");
   boost::interprocess::shared_memory_object::remove("niv-shared-memory");
 }
 
 SharedMemory::DataVector& SharedMemory::GetDataVector() {
   return *data_vector_;
+}
+
+SharedMemory::SchemaString& SharedMemory::GetSchemaString() {
+  return *schema_string_;
 }
 
 }  // namespace niv
