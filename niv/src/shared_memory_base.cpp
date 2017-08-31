@@ -23,4 +23,19 @@
 
 #include <utility>
 
-namespace niv {}  // namespace niv
+namespace niv {
+
+SharedMemoryBase::SharedMemoryBase(ManagedSharedMemory&& segment)
+    : segment_{std::move(segment)} {}
+
+std::size_t SharedMemoryBase::GetFreeSize() const {
+  return segment_.get_free_memory();
+}
+SharedMemoryBase::DataVector& SharedMemoryBase::GetDataVector() {
+  return *data_vector_;
+}
+SharedMemoryBase::SchemaString& SharedMemoryBase::GetSchemaString() {
+  return *schema_string_;
+}
+
+}  // namespace niv

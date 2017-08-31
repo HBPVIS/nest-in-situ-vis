@@ -24,9 +24,9 @@
 namespace niv {
 
 SharedMemoryAccess::SharedMemoryAccess()
-    : SharedMemoryBase{{boost::interprocess::open_only, "niv-shared-memory"}} {
-  data_vector_ = segment_.find<DataVector>("DataVector").first;
-  schema_string_ = segment_.find<SchemaString>("SchemaString").first;
+    : SharedMemoryBase{{boost::interprocess::open_only, SegmentName()}} {
+  data_vector_ = segment_.find<DataVector>(DataVectorName()).first;
+  schema_string_ = segment_.find<SchemaString>(SchemaStringName()).first;
 }
 
 }  // namespace niv
