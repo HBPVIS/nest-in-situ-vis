@@ -36,9 +36,10 @@ namespace niv {
 class SharedMemory {
  public:
   using ManagedSharedMemory = boost::interprocess::managed_shared_memory;
+  template <typename T>
   using Allocator =
-      boost::interprocess::allocator<int, ManagedSharedMemory::segment_manager>;
-  using DataVector = std::vector<conduit::uint8, Allocator>;
+      boost::interprocess::allocator<T, ManagedSharedMemory::segment_manager>;
+  using DataVector = std::vector<conduit::uint8, Allocator<conduit::uint8>>;
 
   static constexpr std::size_t kInitialSize{65536u};
 
@@ -50,7 +51,6 @@ class SharedMemory {
 
  private:
   ManagedSharedMemory segment_;
-  const Allocator allocator_;
   DataVector* data_vector_;
 };
 

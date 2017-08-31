@@ -30,8 +30,8 @@ constexpr std::size_t SharedMemory::kInitialSize;
 SharedMemory::SharedMemory()
     : segment_{boost::interprocess::create_only, "niv-shared-memory",
                kInitialSize},
-      allocator_{segment_.get_segment_manager()},
-      data_vector_(segment_.construct<DataVector>("DataVector")(allocator_)) {}
+      data_vector_(segment_.construct<DataVector>("DataVector")(
+          DataVector::allocator_type(segment_.get_segment_manager()))) {}
 
 SharedMemory::~SharedMemory() {
   segment_.destroy<DataVector>("DataVector");
