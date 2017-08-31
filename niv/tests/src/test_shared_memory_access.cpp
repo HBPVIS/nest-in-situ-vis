@@ -19,31 +19,26 @@
 // limitations under the License.
 //------------------------------------------------------------------------------
 
-#ifndef NIV_INCLUDE_NIV_SHARED_MEMORY_HPP_
-#define NIV_INCLUDE_NIV_SHARED_MEMORY_HPP_
+#include <string>
 
-#include <cstddef>
+#include "catch/catch.hpp"
 
-#include <vector>
+#include "niv/shared_memory.hpp"
+#include "niv/shared_memory_access.hpp"
 
-#include "boost/interprocess/allocators/allocator.hpp"
-#include "boost/interprocess/managed_shared_memory.hpp"
+SCENARIO("Shared memory access", "[niv][niv::SharedMemoryAccess]") {
+  GIVEN("A shared memory segment with some data in it") {
+    niv::SharedMemory segment;
+    auto data = segment.GetDataVector();
+    data.push_back(conduit::uint8{9u});
+    auto schema = segment.GetSchemaString();
+    const std::string any_string{"foo_bar"};
+    schema.assign(any_string.begin(), any_string.end());
 
-#include "conduit/conduit_core.hpp"
-
-#include "niv/shared_memory_base.hpp"
-
-namespace niv {
-
-class SharedMemory : public SharedMemoryBase {
- public:
-  SharedMemory();
-  ~SharedMemory();
-
- private:
-  static constexpr std::size_t InitialSize() { return 65536u; }
-};
-
-}  // namespace niv
-
-#endif  // NIV_INCLUDE_NIV_SHARED_MEMORY_HPP_
+    WHEN("I request a second shared memory segment for accessing the first") {
+      THEN("It does not throw an exception") {
+        REQUIRE_NOTHROW([]() { niv::SharedMemoryAccess segment2; }());
+      }
+    }
+  }
+}

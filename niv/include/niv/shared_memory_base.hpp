@@ -19,11 +19,10 @@
 // limitations under the License.
 //------------------------------------------------------------------------------
 
-#ifndef NIV_INCLUDE_NIV_SHARED_MEMORY_HPP_
-#define NIV_INCLUDE_NIV_SHARED_MEMORY_HPP_
+#ifndef NIV_INCLUDE_NIV_SHARED_MEMORY_BASE_HPP_
+#define NIV_INCLUDE_NIV_SHARED_MEMORY_BASE_HPP_
 
-#include <cstddef>
-
+#include <utility>
 #include <vector>
 
 #include "boost/interprocess/allocators/allocator.hpp"
@@ -31,19 +30,31 @@
 
 #include "conduit/conduit_core.hpp"
 
-#include "niv/shared_memory_base.hpp"
-
 namespace niv {
 
-class SharedMemory : public SharedMemoryBase {
+class SharedMemoryBase {
  public:
-  SharedMemory();
-  ~SharedMemory();
+  using ManagedSharedMemory = boost::interprocess::managed_shared_memory;
+  template <typename T>
+  using Allocator =
+      boost::interprocess::allocator<T, ManagedSharedMemory::segment_manager>;
+  using DataVector = std::vector<conduit::uint8, Allocator<conduit::uint8>>;
+  using SchemaString = std::vector<char, Allocator<char>>;
 
- private:
-  static constexpr std::size_t InitialSize() { return 65536u; }
+  explicit SharedMemoryBase(ManagedSharedMemory&& segment)
+      : segment_{std::move(segment)} {}
+  virtual ~SharedMemoryBase() = default;
+
+  std::size_t GetFreeSize() const { return segment_.get_free_memory(); }
+  DataVector& GetDataVector() { return *data_vector_; }
+  SchemaString& GetSchemaString() { return *schema_string_; }
+
+ protected:
+  ManagedSharedMemory segment_;
+  DataVector* data_vector_{nullptr};
+  SchemaString* schema_string_{nullptr};
 };
 
 }  // namespace niv
 
-#endif  // NIV_INCLUDE_NIV_SHARED_MEMORY_HPP_
+#endif  // NIV_INCLUDE_NIV_SHARED_MEMORY_BASE_HPP_

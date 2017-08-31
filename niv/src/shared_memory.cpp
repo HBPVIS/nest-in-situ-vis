@@ -25,29 +25,19 @@
 
 namespace niv {
 
-template <>
-SharedMemory<SharedMemoryCreate>::SharedMemory()
-    : segment_{boost::interprocess::create_only, "niv-shared-memory",
-               InitialSize()},
-      data_vector_{segment_.construct<DataVector>("DataVector")(
-          DataVector::allocator_type(segment_.get_segment_manager()))},
-      schema_string_{segment_.construct<SchemaString>("SchemaString")(
-          SchemaString::allocator_type(segment_.get_segment_manager()))} {}
+SharedMemory::SharedMemory()
+    : SharedMemoryBase({boost::interprocess::create_only, "niv-shared-memory",
+                        InitialSize()}) {
+  data_vector_ = segment_.construct<DataVector>("DataVector")(
+      DataVector::allocator_type(segment_.get_segment_manager()));
+  schema_string_ = segment_.construct<SchemaString>("SchemaString")(
+      SchemaString::allocator_type(segment_.get_segment_manager()));
+}
 
-template <>
-SharedMemory<SharedMemoryAccess>::SharedMemory()
-    : segment_{boost::interprocess::open_only, "niv-shared-memory"},
-      data_vector_{segment_.find<DataVector>("DataVector").first},
-      schema_string_{segment_.find<SchemaString>("SchemaString").first} {}
-
-template <>
-SharedMemory<SharedMemoryCreate>::~SharedMemory() {
+SharedMemory::~SharedMemory() {
   segment_.destroy<DataVector>("DataVector");
   segment_.destroy<SchemaString>("SchemaString");
   boost::interprocess::shared_memory_object::remove("niv-shared-memory");
 }
-
-template <>
-SharedMemory<SharedMemoryAccess>::~SharedMemory() = default;
 
 }  // namespace niv

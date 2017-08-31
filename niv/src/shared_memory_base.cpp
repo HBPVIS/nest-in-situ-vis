@@ -19,31 +19,8 @@
 // limitations under the License.
 //------------------------------------------------------------------------------
 
-#ifndef NIV_INCLUDE_NIV_SHARED_MEMORY_HPP_
-#define NIV_INCLUDE_NIV_SHARED_MEMORY_HPP_
-
-#include <cstddef>
-
-#include <vector>
-
-#include "boost/interprocess/allocators/allocator.hpp"
-#include "boost/interprocess/managed_shared_memory.hpp"
-
-#include "conduit/conduit_core.hpp"
-
 #include "niv/shared_memory_base.hpp"
 
-namespace niv {
+#include <utility>
 
-class SharedMemory : public SharedMemoryBase {
- public:
-  SharedMemory();
-  ~SharedMemory();
-
- private:
-  static constexpr std::size_t InitialSize() { return 65536u; }
-};
-
-}  // namespace niv
-
-#endif  // NIV_INCLUDE_NIV_SHARED_MEMORY_HPP_
+namespace niv {}  // namespace niv
