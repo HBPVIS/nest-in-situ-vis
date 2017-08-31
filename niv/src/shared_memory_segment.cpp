@@ -25,19 +25,8 @@
 
 namespace niv {
 
-SharedMemorySegment::SharedMemorySegment()
-    : SharedMemory(
-          {boost::interprocess::create_only, SegmentName(), InitialSize()}) {
-  data_vector_ = segment_.construct<DataVector>(DataVectorName())(
-      DataVector::allocator_type(segment_.get_segment_manager()));
-  schema_string_ = segment_.construct<SchemaString>(SchemaStringName())(
-      SchemaString::allocator_type(segment_.get_segment_manager()));
-}
+SharedMemorySegment::SharedMemorySegment() : SharedMemory{Create()} {}
 
-SharedMemorySegment::~SharedMemorySegment() {
-  segment_.destroy<DataVector>(DataVectorName());
-  segment_.destroy<SchemaString>(SchemaStringName());
-  boost::interprocess::shared_memory_object::remove(SegmentName());
-}
+SharedMemorySegment::~SharedMemorySegment() { Destroy(); }
 
 }  // namespace niv

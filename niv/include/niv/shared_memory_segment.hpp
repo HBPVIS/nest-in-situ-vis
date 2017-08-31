@@ -41,7 +41,6 @@ class SharedMemorySegment : public SharedMemory {
   ~SharedMemorySegment();
 
  private:
-  static constexpr std::size_t InitialSize() { return 65536u; }
 };
 
 }  // namespace niv

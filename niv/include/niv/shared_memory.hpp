@@ -34,6 +34,9 @@ namespace niv {
 
 class SharedMemory {
  public:
+  class Create {};
+  class Access {};
+
   using ManagedSharedMemory = boost::interprocess::managed_shared_memory;
   using SegmentManager = ManagedSharedMemory::segment_manager;
   template <typename T>
@@ -41,8 +44,11 @@ class SharedMemory {
   using DataVector = std::vector<conduit::uint8, Allocator<conduit::uint8>>;
   using SchemaString = std::vector<char, Allocator<char>>;
 
-  explicit SharedMemory(ManagedSharedMemory&& segment);
+  explicit SharedMemory(const Create&);
+  explicit SharedMemory(const Access&);
   virtual ~SharedMemory() = default;
+
+  void Destroy();
 
   std::size_t GetFreeSize() const;
   DataVector& GetDataVector();
@@ -51,6 +57,7 @@ class SharedMemory {
   static constexpr const char* SegmentName() { return "niv-shared-memory"; }
   static constexpr const char* DataVectorName() { return "DataVector"; }
   static constexpr const char* SchemaStringName() { return "SchemaString"; }
+  static constexpr std::size_t InitialSize() { return 65536u; }
 
  protected:
   ManagedSharedMemory segment_;

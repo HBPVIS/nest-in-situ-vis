@@ -25,8 +25,22 @@
 
 namespace niv {
 
-SharedMemory::SharedMemory(ManagedSharedMemory&& segment)
-    : segment_{std::move(segment)} {}
+SharedMemory::SharedMemory(const Create&)
+    : segment_{boost::interprocess::create_only, SegmentName(), InitialSize()},
+      data_vector_{segment_.construct<DataVector>(DataVectorName())(
+          SchemaString::allocator_type(segment_.get_segment_manager()))},
+      schema_string_{segment_.construct<SchemaString>(SchemaStringName())(
+          SchemaString::allocator_type(segment_.get_segment_manager()))} {}
+SharedMemory::SharedMemory(const Access&)
+    : segment_{boost::interprocess::open_only, SegmentName()},
+      data_vector_{segment_.find<DataVector>(DataVectorName()).first},
+      schema_string_{segment_.find<SchemaString>(SchemaStringName()).first} {}
+
+void SharedMemory::Destroy() {
+  segment_.destroy<DataVector>(DataVectorName());
+  segment_.destroy<SchemaString>(SchemaStringName());
+  boost::interprocess::shared_memory_object::remove(SegmentName());
+}
 
 std::size_t SharedMemory::GetFreeSize() const {
   return segment_.get_free_memory();
