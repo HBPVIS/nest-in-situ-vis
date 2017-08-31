@@ -33,6 +33,10 @@
 
 namespace niv {
 
+struct SharedMemoryCreate;
+struct SharedMemoryAccess;
+
+template <typename CreateOrAccess = SharedMemoryCreate>
 class SharedMemory {
  public:
   using ManagedSharedMemory = boost::interprocess::managed_shared_memory;
@@ -42,16 +46,17 @@ class SharedMemory {
   using DataVector = std::vector<conduit::uint8, Allocator<conduit::uint8>>;
   using SchemaString = std::vector<char, Allocator<char>>;
 
-  static constexpr std::size_t kInitialSize{65536u};
-
   SharedMemory();
   ~SharedMemory();
 
   std::size_t GetFreeSize() const { return segment_.get_free_memory(); }
-  DataVector& GetDataVector();
-  SchemaString& GetSchemaString();
+  DataVector& GetDataVector() { return *data_vector_; }
+
+  SchemaString& GetSchemaString() { return *schema_string_; }
 
  private:
+  static constexpr std::size_t InitialSize() { return 65536u; }
+
   ManagedSharedMemory segment_;
   DataVector* data_vector_;
   SchemaString* schema_string_;

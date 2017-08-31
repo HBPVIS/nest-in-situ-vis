@@ -25,9 +25,9 @@
 
 #include "niv/shared_memory.hpp"
 
-SCENARIO("Shared memory", "[niv][niv::SharedMemory]") {
+SCENARIO("Shared memory creation", "[niv][niv::SharedMemory]") {
   GIVEN("A shared memory segment") {
-    niv::SharedMemory segment;
+    niv::SharedMemory<> segment;
     WHEN("I ask it for its free size") {
       auto free_size_after_creation = segment.GetFreeSize();
       THEN("it is > 0") { REQUIRE(free_size_after_creation > 0); }
@@ -64,6 +64,31 @@ SCENARIO("Shared memory", "[niv][niv::SharedMemory]") {
         THEN("we have less free space in the segment") {
           REQUIRE(free_size_after_assign < free_size_before_assign);
         }
+      }
+    }
+
+    WHEN("I request a second shared memory segment") {
+      THEN("It throws an exception") {
+        REQUIRE_THROWS_WITH([]() { niv::SharedMemory<> segment2; }(),
+                            "File exists");
+      }
+    }
+  }
+}
+
+SCENARIO("Shared memory access", "[niv][niv::SharedMemory]") {
+  GIVEN("A shared memory segment with some data in it") {
+    niv::SharedMemory<> segment;
+    auto data = segment.GetDataVector();
+    data.push_back(conduit::uint8{9u});
+    auto schema = segment.GetSchemaString();
+    const std::string any_string{"foo_bar"};
+    schema.assign(any_string.begin(), any_string.end());
+
+    WHEN("I request a second shared memory segment for accessing the first") {
+      THEN("It does not throw an exception") {
+        REQUIRE_NOTHROW(
+            []() { niv::SharedMemory<niv::SharedMemoryAccess> segment2; }());
       }
     }
   }
