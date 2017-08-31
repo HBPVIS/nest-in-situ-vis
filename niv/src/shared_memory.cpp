@@ -34,6 +34,7 @@ SharedMemory::SharedMemory()
       data_vector_(segment_.construct<DataVector>("DataVector")(allocator_)) {}
 
 SharedMemory::~SharedMemory() {
+  segment_.destroy<DataVector>("DataVector");
   boost::interprocess::shared_memory_object::remove("niv-shared-memory");
 }
 
