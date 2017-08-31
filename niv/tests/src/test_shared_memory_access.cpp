@@ -24,8 +24,8 @@
 
 #include "catch/catch.hpp"
 
-#include "niv/shared_memory.hpp"
 #include "niv/shared_memory_access.hpp"
+#include "niv/shared_memory_segment.hpp"
 
 SCENARIO("Shared memory access", "[niv][niv::SharedMemoryAccess]") {
   GIVEN("No shared memory segment") {
@@ -36,7 +36,7 @@ SCENARIO("Shared memory access", "[niv][niv::SharedMemoryAccess]") {
   }
 
   GIVEN("A shared memory segment with some data in it") {
-    niv::SharedMemory segment;
+    niv::SharedMemorySegment segment;
 
     auto data = segment.GetDataVector();
     std::vector<conduit::uint8> any_data{'a', 'b', 'c'};

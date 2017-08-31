@@ -23,11 +23,11 @@
 
 #include "catch/catch.hpp"
 
-#include "niv/shared_memory.hpp"
+#include "niv/shared_memory_segment.hpp"
 
-SCENARIO("Shared memory creation", "[niv][niv::SharedMemory]") {
+SCENARIO("Shared memory creation", "[niv][niv::SharedMemorySegment]") {
   GIVEN("A shared memory segment") {
-    niv::SharedMemory segment;
+    niv::SharedMemorySegment segment;
     WHEN("I ask it for its free size") {
       auto free_size_after_creation = segment.GetFreeSize();
       THEN("it is > 0") { REQUIRE(free_size_after_creation > 0); }
@@ -69,7 +69,7 @@ SCENARIO("Shared memory creation", "[niv][niv::SharedMemory]") {
 
     WHEN("I request a second shared memory segment") {
       THEN("It throws an exception") {
-        REQUIRE_THROWS_WITH([]() { niv::SharedMemory segment2; }(),
+        REQUIRE_THROWS_WITH([]() { niv::SharedMemorySegment segment2; }(),
                             "File exists");
       }
     }

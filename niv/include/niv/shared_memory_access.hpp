@@ -22,11 +22,11 @@
 #ifndef NIV_INCLUDE_NIV_SHARED_MEMORY_ACCESS_HPP_
 #define NIV_INCLUDE_NIV_SHARED_MEMORY_ACCESS_HPP_
 
-#include "niv/shared_memory_base.hpp"
+#include "niv/shared_memory.hpp"
 
 namespace niv {
 
-class SharedMemoryAccess : public SharedMemoryBase {
+class SharedMemoryAccess : public SharedMemory {
  public:
   SharedMemoryAccess();
   ~SharedMemoryAccess() = default;

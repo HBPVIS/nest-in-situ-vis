@@ -19,23 +19,25 @@
 // limitations under the License.
 //------------------------------------------------------------------------------
 
-#include "niv/shared_memory_base.hpp"
+#include "niv/shared_memory_segment.hpp"
 
-#include <utility>
+#include <vector>
 
 namespace niv {
 
-SharedMemoryBase::SharedMemoryBase(ManagedSharedMemory&& segment)
-    : segment_{std::move(segment)} {}
+SharedMemorySegment::SharedMemorySegment()
+    : SharedMemory(
+          {boost::interprocess::create_only, SegmentName(), InitialSize()}) {
+  data_vector_ = segment_.construct<DataVector>(DataVectorName())(
+      DataVector::allocator_type(segment_.get_segment_manager()));
+  schema_string_ = segment_.construct<SchemaString>(SchemaStringName())(
+      SchemaString::allocator_type(segment_.get_segment_manager()));
+}
 
-std::size_t SharedMemoryBase::GetFreeSize() const {
-  return segment_.get_free_memory();
-}
-SharedMemoryBase::DataVector& SharedMemoryBase::GetDataVector() {
-  return *data_vector_;
-}
-SharedMemoryBase::SchemaString& SharedMemoryBase::GetSchemaString() {
-  return *schema_string_;
+SharedMemorySegment::~SharedMemorySegment() {
+  segment_.destroy<DataVector>(DataVectorName());
+  segment_.destroy<SchemaString>(SchemaStringName());
+  boost::interprocess::shared_memory_object::remove(SegmentName());
 }
 
 }  // namespace niv

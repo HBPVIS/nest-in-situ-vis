@@ -21,23 +21,21 @@
 
 #include "niv/shared_memory.hpp"
 
-#include <vector>
+#include <utility>
 
 namespace niv {
 
-SharedMemory::SharedMemory()
-    : SharedMemoryBase(
-          {boost::interprocess::create_only, SegmentName(), InitialSize()}) {
-  data_vector_ = segment_.construct<DataVector>(DataVectorName())(
-      DataVector::allocator_type(segment_.get_segment_manager()));
-  schema_string_ = segment_.construct<SchemaString>(SchemaStringName())(
-      SchemaString::allocator_type(segment_.get_segment_manager()));
-}
+SharedMemory::SharedMemory(ManagedSharedMemory&& segment)
+    : segment_{std::move(segment)} {}
 
-SharedMemory::~SharedMemory() {
-  segment_.destroy<DataVector>(DataVectorName());
-  segment_.destroy<SchemaString>(SchemaStringName());
-  boost::interprocess::shared_memory_object::remove(SegmentName());
+std::size_t SharedMemory::GetFreeSize() const {
+  return segment_.get_free_memory();
+}
+SharedMemory::DataVector& SharedMemory::GetDataVector() {
+  return *data_vector_;
+}
+SharedMemory::SchemaString& SharedMemory::GetSchemaString() {
+  return *schema_string_;
 }
 
 }  // namespace niv
