@@ -20,6 +20,7 @@
 //------------------------------------------------------------------------------
 
 #include <string>
+#include <vector>
 
 #include "catch/catch.hpp"
 
@@ -27,17 +28,44 @@
 #include "niv/shared_memory_access.hpp"
 
 SCENARIO("Shared memory access", "[niv][niv::SharedMemoryAccess]") {
+  GIVEN("No shared memory segment") {
+    THEN("Creating a shared memory access throws an exception.") {
+      REQUIRE_THROWS_WITH([]() { niv::SharedMemoryAccess segment_access; }(),
+                          "No such file or directory");
+    }
+  }
+
   GIVEN("A shared memory segment with some data in it") {
     niv::SharedMemory segment;
-    auto data = segment.GetDataVector();
-    data.push_back(conduit::uint8{9u});
-    auto schema = segment.GetSchemaString();
-    const std::string any_string{"foo_bar"};
-    schema.assign(any_string.begin(), any_string.end());
 
-    WHEN("I request a second shared memory segment for accessing the first") {
+    auto data = segment.GetDataVector();
+    std::vector<conduit::uint8> any_data{'a', 'b', 'c'};
+    data.assign(any_data.begin(), any_data.end());
+
+    auto schema = segment.GetSchemaString();
+    const std::string any_schema{"foo_bar_baz"};
+    schema.assign(any_schema.begin(), any_schema.end());
+
+    WHEN("I create shared memory access") {
       THEN("It does not throw an exception") {
-        REQUIRE_NOTHROW([]() { niv::SharedMemoryAccess segment2; }());
+        REQUIRE_NOTHROW([]() { niv::SharedMemoryAccess segment_access; }());
+      }
+      niv::SharedMemoryAccess segment_access;
+
+      WHEN("I read the data") {
+        auto data = segment_access.GetDataVector();
+        THEN("I get the original data") {
+          std::vector<conduit::uint8> data_as_vector{data.begin(), data.end()};
+          REQUIRE(data_as_vector == any_data);
+        }
+      }
+
+      WHEN("I read the schema") {
+        auto schema = segment_access.GetSchemaString();
+        THEN("I get the original schema") {
+          const std::string schema_as_string{schema.begin(), schema.end()};
+          REQUIRE(schema_as_string == any_schema);
+        }
       }
     }
   }
