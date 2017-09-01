@@ -1,7 +1,7 @@
-# nest python vis
+# nest in situ vis
 
 
-*Project Phoenix* is Copyright (c) 2017 RWTH Aachen University, Germany,
+*nest in situ vis* is Copyright (c) 2017 RWTH Aachen University, Germany,
 Virtual Reality & Immersive Visualization Group.
 
 
