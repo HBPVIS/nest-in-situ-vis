@@ -32,11 +32,11 @@ add_test_catch(NAME "niv-tests"
   INCLUDE_DIRECTORIES ${CMAKE_CURRENT_SOURCE_DIR}
   LINK_LIBRARIES niv
   PATH_TO_ADD ${PROJECT_BINARY_DIR}/niv
-)
+  )
 add_test_cpplint(NAME "niv-tests--cpplint"
   ${NIV_TEST_SOURCES}
   ${NIV_TEST_HEADERS}
   ${NIV_TEST_UTILITIES_TEST_SOURCES}
   ${NIV_TEST_UTILITIES_HEADERS}
-)
+  )
 

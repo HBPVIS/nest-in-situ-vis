@@ -28,7 +28,7 @@ namespace niv {
 SharedMemory::SharedMemory(const Create&)
     : segment_{boost::interprocess::create_only, SegmentName(), InitialSize()},
       data_vector_{segment_.construct<DataVector>(DataVectorName())(
-          SchemaString::allocator_type(segment_.get_segment_manager()))},
+          DataVector::allocator_type(segment_.get_segment_manager()))},
       schema_string_{segment_.construct<SchemaString>(SchemaStringName())(
           SchemaString::allocator_type(segment_.get_segment_manager()))} {}
 SharedMemory::SharedMemory(const Access&)

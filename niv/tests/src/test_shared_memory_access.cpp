@@ -38,11 +38,11 @@ SCENARIO("Shared memory access", "[niv][niv::SharedMemoryAccess]") {
   GIVEN("A shared memory segment with some data in it") {
     niv::SharedMemorySegment segment;
 
-    auto data = segment.GetDataVector();
+    auto& data = segment.GetDataVector();
     std::vector<conduit::uint8> any_data{'a', 'b', 'c'};
     data.assign(any_data.begin(), any_data.end());
 
-    auto schema = segment.GetSchemaString();
+    auto& schema = segment.GetSchemaString();
     const std::string any_schema{"foo_bar_baz"};
     schema.assign(any_schema.begin(), any_schema.end());
 
@@ -52,10 +52,8 @@ SCENARIO("Shared memory access", "[niv][niv::SharedMemoryAccess]") {
       }
       niv::SharedMemoryAccess segment_access;
 
-      // TODO(@tvierjahn) currently broken, reactivate when fixed
-      /*
       WHEN("I read the data") {
-        auto data = segment_access.GetDataVector();
+        auto& data = segment_access.GetDataVector();
         THEN("I get the original data") {
           std::vector<conduit::uint8> data_as_vector{data.begin(), data.end()};
           REQUIRE(data_as_vector == any_data);
@@ -63,13 +61,12 @@ SCENARIO("Shared memory access", "[niv][niv::SharedMemoryAccess]") {
       }
 
       WHEN("I read the schema") {
-        auto schema = segment_access.GetSchemaString();
+        auto& schema = segment_access.GetSchemaString();
         THEN("I get the original schema") {
           const std::string schema_as_string{schema.begin(), schema.end()};
           REQUIRE(schema_as_string == any_schema);
         }
       }
-      */
     }
   }
 }
