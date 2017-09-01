@@ -20,6 +20,7 @@
 //------------------------------------------------------------------------------
 
 #include <string>
+#include <vector>
 
 #include "catch/catch.hpp"
 
@@ -45,6 +46,20 @@ SCENARIO("Shared memory creation", "[niv][niv::SharedMemorySegment]") {
         THEN("we have less free space in the segment") {
           REQUIRE(free_size_after_push < free_size_before_push);
         }
+      }
+    }
+
+    WHEN("I store data in the segment") {
+      std::vector<conduit::uint8> some_data{1u, 2u, 3u};
+      auto free_size_before = segment.GetFreeSize();
+      segment.Store(some_data);
+      auto free_size_after = segment.GetFreeSize();
+      THEN("I can retrieve it") {
+        auto retrieved_data = segment.GetData();
+        REQUIRE(retrieved_data == some_data);
+      }
+      THEN("we have less free space in the segment") {
+        REQUIRE(free_size_after < free_size_before);
       }
     }
 

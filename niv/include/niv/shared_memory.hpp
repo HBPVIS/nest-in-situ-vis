@@ -54,6 +54,9 @@ class SharedMemory {
   DataVector& GetDataVector();
   SchemaString& GetSchemaString();
 
+  void Store(const std::vector<conduit::uint8>& data);
+  std::vector<conduit::uint8> GetData() const;
+
   static constexpr const char* SegmentName() { return "niv-shared-memory"; }
   static constexpr const char* DataVectorName() { return "DataVector"; }
   static constexpr const char* SchemaStringName() { return "SchemaString"; }
