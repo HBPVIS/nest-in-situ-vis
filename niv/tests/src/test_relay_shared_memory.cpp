@@ -42,10 +42,10 @@ conduit::Node AnyNode() {
   return node;
 }
 
-void REQUIRE_EQ(const conduit::Node left, const conduit::Node right) {
+void REQUIRE_EQ(const conduit::Node& left, const conduit::Node& right) {
   REQUIRE(left["A"]["B"]["E"].as_double() == right["A"]["B"]["E"].as_double());
   REQUIRE(left["A"]["C"]["F"].as_double() == right["A"]["C"]["F"].as_double());
-  REQUIRE(left["A"]["C"]["G"].as_double() == left["A"]["C"]["G"].as_double());
+  REQUIRE(left["A"]["C"]["G"].as_double() == right["A"]["C"]["G"].as_double());
   REQUIRE(left["A"]["D"]["H"].as_double() == right["A"]["D"]["H"].as_double());
   REQUIRE(left["A"]["D"]["I"].as_double() == right["A"]["D"]["I"].as_double());
   REQUIRE(left["A"]["D"]["J"].as_double() == right["A"]["D"]["J"].as_double());
@@ -59,24 +59,36 @@ constexpr double kAnyOtherValue{42.0f};
 
 SCENARIO("Communicate a conduit node", "[niv][nvi::RelaySharedMemory]") {
   GIVEN(
-      "A conduit node with some data, a sending shared memory relay, and a "
-      "reveiving node") {
+      "A conduit node with some data, a sending shared memory relay, a "
+      "receiving shared memory relay, and a receiving node") {
     conduit::Node any_node{::AnyNode()};
-
     niv::SendingRelaySharedMemory sending_relay{
         std::make_unique<niv::SharedMemorySegment>()};
-
+    niv::ReceivingRelaySharedMemory receiving_relay{
+        std::make_unique<niv::SharedMemoryAccess>()};
     conduit::Node receiving_node;
 
-    GIVEN("a receiving shared memory relay") {
-      niv::ReceivingRelaySharedMemory receiving_relay{
-          std::make_unique<niv::SharedMemoryAccess>()};
+    WHEN("I send the data via the sending relay") {
+      sending_relay.Send(any_node);
 
-      WHEN("I send the data via the sending relay") {
+      THEN("I receive the data on the receiving relay") {
+        receiving_relay.Receive(&receiving_node);
+        REQUIRE_EQ(receiving_node, any_node);
+      }
+
+      WHEN("I change one value and send again") {
+        ::AnyLeaf(&any_node) = ::kAnyOtherValue;
         sending_relay.Send(any_node);
 
         THEN("I receive the data on the receiving relay") {
           receiving_relay.Receive(&receiving_node);
+          REQUIRE_EQ(receiving_node, any_node);
+        }
+      }
+
+      WHEN("I listen to the data on the receiving relay") {
+        receiving_relay.Listen(&receiving_node);
+        THEN("I receive the data on the receiving relay") {
           REQUIRE_EQ(receiving_node, any_node);
         }
 
@@ -85,7 +97,6 @@ SCENARIO("Communicate a conduit node", "[niv][nvi::RelaySharedMemory]") {
           sending_relay.Send(any_node);
 
           THEN("I receive the data on the receiving relay") {
-            receiving_relay.Receive(&receiving_node);
             REQUIRE_EQ(receiving_node, any_node);
           }
         }

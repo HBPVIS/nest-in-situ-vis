@@ -61,6 +61,10 @@ std::vector<conduit::uint8> SharedMemory::GetData() const {
                                      data_vector_->end()};
 }
 
+conduit::uint8* SharedMemory::GetRawData() const {
+  return data_vector_->data();
+}
+
 std::string SharedMemory::GetSchema() const {
   return std::string{schema_string_->begin(), schema_string_->end()};
 }

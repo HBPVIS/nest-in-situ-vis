@@ -56,6 +56,7 @@ class SharedMemory {
   void Store(const std::vector<conduit::uint8>& data);
   void Store(const std::string& schema);
   std::vector<conduit::uint8> GetData() const;
+  conduit::uint8* GetRawData() const;
   std::string GetSchema() const;
 
   static constexpr const char* SegmentName() { return "niv-shared-memory"; }

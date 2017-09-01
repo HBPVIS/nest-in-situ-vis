@@ -38,6 +38,7 @@ class ReceivingRelaySharedMemory : public RelaySharedMemory {
   virtual ~ReceivingRelaySharedMemory() = default;
 
   void Receive(conduit::Node* node);
+  void Listen(conduit::Node* node);
 };
 
 }  // namespace niv

@@ -39,4 +39,10 @@ void ReceivingRelaySharedMemory::Receive(conduit::Node* node) {
   node->set_data_using_schema(conduit::Schema(schema), data.data());
 }
 
+void ReceivingRelaySharedMemory::Listen(conduit::Node* node) {
+  auto schema = shared_memory_->GetSchema();
+  auto raw_data = shared_memory_->GetRawData();
+  node->set_external_data_using_schema(conduit::Schema(schema), raw_data);
+}
+
 }  // namespace niv
