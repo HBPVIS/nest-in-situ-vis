@@ -22,6 +22,7 @@
 #ifndef NIV_INCLUDE_NIV_SHARED_MEMORY_HPP_
 #define NIV_INCLUDE_NIV_SHARED_MEMORY_HPP_
 
+#include <string>
 #include <utility>
 #include <vector>
 
@@ -55,7 +56,9 @@ class SharedMemory {
   SchemaString& GetSchemaString();
 
   void Store(const std::vector<conduit::uint8>& data);
+  void Store(const std::string& schema);
   std::vector<conduit::uint8> GetData() const;
+  std::string GetSchema() const;
 
   static constexpr const char* SegmentName() { return "niv-shared-memory"; }
   static constexpr const char* DataVectorName() { return "DataVector"; }

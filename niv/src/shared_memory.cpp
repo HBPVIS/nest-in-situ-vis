@@ -21,6 +21,7 @@
 
 #include "niv/shared_memory.hpp"
 
+#include <string>
 #include <utility>
 #include <vector>
 
@@ -57,9 +58,17 @@ void SharedMemory::Store(const std::vector<conduit::uint8>& data) {
   data_vector_->assign(data.begin(), data.end());
 }
 
+void SharedMemory::Store(const std::string& schema) {
+  schema_string_->assign(schema.begin(), schema.end());
+}
+
 std::vector<conduit::uint8> SharedMemory::GetData() const {
   return std::vector<conduit::uint8>{data_vector_->begin(),
                                      data_vector_->end()};
+}
+
+std::string SharedMemory::GetSchema() const {
+  return std::string{schema_string_->begin(), schema_string_->end()};
 }
 
 }  // namespace niv
