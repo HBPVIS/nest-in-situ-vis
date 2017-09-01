@@ -33,7 +33,6 @@ add_test_catch(NAME "niv-tests"
   LINK_LIBRARIES niv
   PATH_TO_ADD ${PROJECT_BINARY_DIR}/niv
   )
-add_dependencies(test_shared_memory_access nvi-shared-memory)
 add_test_cpplint(NAME "niv-tests--cpplint"
   ${NIV_TEST_SOURCES}
   ${NIV_TEST_HEADERS}

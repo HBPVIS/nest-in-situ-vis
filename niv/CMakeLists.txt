@@ -53,4 +53,3 @@ add_test_cpplint(NAME "niv--cpplint"
 generate_configure_files(niv)
 
 add_subdirectory(tests)
-add_subdirectory(helper_apps)

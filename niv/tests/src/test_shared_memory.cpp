@@ -34,7 +34,7 @@ SCENARIO("Shared memory creation", "[niv][niv::SharedMemorySegment]") {
     }
 
     WHEN("I request a data vector in that shared memory segment") {
-      auto& data = segment.GetDataVector();
+      auto data = segment.GetDataVector();
       THEN("it is empty") { REQUIRE(data.size() == 0); }
 
       WHEN("I add one data entry into the vector") {
@@ -49,7 +49,7 @@ SCENARIO("Shared memory creation", "[niv][niv::SharedMemorySegment]") {
     }
 
     WHEN("I request a schema string in that shared memory segment") {
-      auto& schema = segment.GetSchemaString();
+      auto schema = segment.GetSchemaString();
       THEN("it is empty") { REQUIRE(schema.size() == 0); }
 
       WHEN("I assign a string to the schema") {
