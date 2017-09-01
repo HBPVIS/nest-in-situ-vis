@@ -37,14 +37,10 @@ SCENARIO("Shared memory access", "[niv][niv::SharedMemoryAccess]") {
 
   GIVEN("A shared memory segment with some data in it") {
     niv::SharedMemorySegment segment;
-
-    auto& data = segment.GetDataVector();
-    std::vector<conduit::uint8> any_data{'a', 'b', 'c'};
-    data.assign(any_data.begin(), any_data.end());
-
-    auto& schema = segment.GetSchemaString();
-    const std::string any_schema{"foo_bar_baz"};
-    schema.assign(any_schema.begin(), any_schema.end());
+    std::vector<conduit::uint8> some_data{1u, 2u, 3u};
+    segment.Store(some_data);
+    std::string some_schema{"foo bar"};
+    segment.Store(some_schema);
 
     WHEN("I create shared memory access") {
       THEN("It does not throw an exception") {
@@ -52,19 +48,15 @@ SCENARIO("Shared memory access", "[niv][niv::SharedMemoryAccess]") {
       }
       niv::SharedMemoryAccess segment_access;
 
-      WHEN("I read the data") {
-        auto& data = segment_access.GetDataVector();
-        THEN("I get the original data") {
-          std::vector<conduit::uint8> data_as_vector{data.begin(), data.end()};
-          REQUIRE(data_as_vector == any_data);
-        }
+      WHEN("I read the data from shared memory access") {
+        auto read_data = segment_access.GetData();
+        THEN("I get the original data") { REQUIRE(read_data == some_data); }
       }
 
-      WHEN("I read the schema") {
-        auto& schema = segment_access.GetSchemaString();
+      WHEN("I read the schema from shared memory access") {
+        auto read_schema = segment_access.GetSchema();
         THEN("I get the original schema") {
-          const std::string schema_as_string{schema.begin(), schema.end()};
-          REQUIRE(schema_as_string == any_schema);
+          REQUIRE(read_schema == some_schema);
         }
       }
     }

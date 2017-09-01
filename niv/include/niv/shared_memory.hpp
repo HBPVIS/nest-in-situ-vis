@@ -52,8 +52,6 @@ class SharedMemory {
   void Destroy();
 
   std::size_t GetFreeSize() const;
-  DataVector& GetDataVector();
-  SchemaString& GetSchemaString();
 
   void Store(const std::vector<conduit::uint8>& data);
   void Store(const std::string& schema);

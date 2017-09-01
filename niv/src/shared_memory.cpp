@@ -47,12 +47,6 @@ void SharedMemory::Destroy() {
 std::size_t SharedMemory::GetFreeSize() const {
   return segment_.get_free_memory();
 }
-SharedMemory::DataVector& SharedMemory::GetDataVector() {
-  return *data_vector_;
-}
-SharedMemory::SchemaString& SharedMemory::GetSchemaString() {
-  return *schema_string_;
-}
 
 void SharedMemory::Store(const std::vector<conduit::uint8>& data) {
   data_vector_->assign(data.begin(), data.end());
