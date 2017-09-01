@@ -29,7 +29,7 @@ namespace niv {
 class SharedMemoryAccess : public SharedMemory {
  public:
   SharedMemoryAccess();
-  ~SharedMemoryAccess() = default;
+  virtual ~SharedMemoryAccess() = default;
 };
 
 }  // namespace niv
