@@ -19,25 +19,9 @@
 # limitations under the License.
 #-------------------------------------------------------------------------------
 
-file(GLOB NIV_TEST_SOURCES src/*.cpp)
-file(GLOB NIV_TEST_HEADERS src/*.hpp)
-file(GLOB NIV_TEST_UTILITIES_TEST_SOURCES test_utilities/tests/src/*.cpp)
-file(GLOB NIV_TEST_UTILITIES_HEADERS test_utilities/*.hpp)
-
-
-add_test_catch(NAME "niv-tests"
-  SOURCES ${NIV_TEST_SOURCES} ${NIV_TEST_UTILITIES_TEST_SOURCES}
-  HEADERS ${NIV_TEST_HEADERS} ${NIV_TEST_UTILITIES_HEADERS}
-  CATCH_MAIN src/tests.cpp
-  INCLUDE_DIRECTORIES ${CMAKE_CURRENT_SOURCE_DIR}
-  LINK_LIBRARIES niv
-  PATH_TO_ADD ${PROJECT_BINARY_DIR}/niv
+add_executable(nvi-shared-memory
+  src/shared_memory.cpp
   )
-add_dependencies(test_shared_memory_access nvi-shared-memory)
-add_test_cpplint(NAME "niv-tests--cpplint"
-  ${NIV_TEST_SOURCES}
-  ${NIV_TEST_HEADERS}
-  ${NIV_TEST_UTILITIES_TEST_SOURCES}
-  ${NIV_TEST_UTILITIES_HEADERS}
+target_link_libraries(nvi-shared-memory
+  niv
   )
-
