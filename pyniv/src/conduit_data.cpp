@@ -28,7 +28,7 @@
 namespace pyniv {
 
 ConduitData::ConduitData() {
-  node_["V_m"] = 0.0;
+  node_["V_m"] = 1.2;
   std::cout << "Ptr. to conduit node: " << Pointer() << std::endl;
 }
 

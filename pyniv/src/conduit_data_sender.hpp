@@ -19,29 +19,26 @@
 // limitations under the License.
 //------------------------------------------------------------------------------
 
-#ifndef PYNIV_SRC_CONDUIT_DATA_HPP_
-#define PYNIV_SRC_CONDUIT_DATA_HPP_
+#ifndef PYNIV_SRC_CONDUIT_DATA_SENDER_HPP_
+#define PYNIV_SRC_CONDUIT_DATA_SENDER_HPP_
 
-#include "conduit/conduit.hpp"
+#include "niv/sending_relay_shared_memory.hpp"
+#include "niv/shared_memory_access.hpp"
+
+#include "conduit_data.hpp"
 
 namespace pyniv {
 
-class ConduitData {
+class ConduitDataSender {
  public:
-  ConduitData();
-  ~ConduitData() = default;
-  ConduitData(const ConduitData&) = default;
-  ConduitData(ConduitData&&) = default;
-
-  void Set(const char* attribute, double value);
-  std::size_t Pointer() const;
-
-  const conduit::Node& GetNode() const { return node_; }
+  void Send(const ConduitData& data);
 
  private:
+  niv::SendingRelaySharedMemory relay_{
+      std::make_unique<niv::SharedMemoryAccess>()};
   conduit::Node node_;
 };
 
 }  // namespace pyniv
 
-#endif  // PYNIV_SRC_CONDUIT_DATA_HPP_
+#endif  // PYNIV_SRC_CONDUIT_DATA_SENDER_HPP_

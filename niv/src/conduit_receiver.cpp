@@ -19,29 +19,16 @@
 // limitations under the License.
 //------------------------------------------------------------------------------
 
-#ifndef PYNIV_SRC_CONDUIT_DATA_HPP_
-#define PYNIV_SRC_CONDUIT_DATA_HPP_
+#include "niv/conduit_receiver.hpp"
 
-#include "conduit/conduit.hpp"
+#include <string>
 
-namespace pyniv {
+namespace niv {
 
-class ConduitData {
- public:
-  ConduitData();
-  ~ConduitData() = default;
-  ConduitData(const ConduitData&) = default;
-  ConduitData(ConduitData&&) = default;
+void ConduitReceiver::Start() { relay_.Listen(&node_); }
 
-  void Set(const char* attribute, double value);
-  std::size_t Pointer() const;
+double ConduitReceiver::Get(const std::string& path) const {
+  return node_.fetch(path).as_double();
+}
 
-  const conduit::Node& GetNode() const { return node_; }
-
- private:
-  conduit::Node node_;
-};
-
-}  // namespace pyniv
-
-#endif  // PYNIV_SRC_CONDUIT_DATA_HPP_
+}  // namespace niv

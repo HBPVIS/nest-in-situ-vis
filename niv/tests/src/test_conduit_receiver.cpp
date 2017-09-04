@@ -19,29 +19,35 @@
 // limitations under the License.
 //------------------------------------------------------------------------------
 
-#ifndef PYNIV_SRC_CONDUIT_DATA_HPP_
-#define PYNIV_SRC_CONDUIT_DATA_HPP_
+#include <memory>
 
-#include "conduit/conduit.hpp"
+#include "catch/catch.hpp"
 
-namespace pyniv {
+#include "conduit/conduit_node.hpp"
 
-class ConduitData {
- public:
-  ConduitData();
-  ~ConduitData() = default;
-  ConduitData(const ConduitData&) = default;
-  ConduitData(ConduitData&&) = default;
+#include "niv/conduit_receiver.hpp"
+#include "niv/sending_relay_shared_memory.hpp"
+#include "niv/shared_memory_access.hpp"
 
-  void Set(const char* attribute, double value);
-  std::size_t Pointer() const;
+SCENARIO("Conduit data is received by a conduit receiver",
+         "[niv][niv::ConduitReceiver]") {
+  GIVEN("A ConduitReceiver") {
+    niv::ConduitReceiver receiver;
 
-  const conduit::Node& GetNode() const { return node_; }
+    WHEN("I send some data") {
+      conduit::Node data;
+      data["A"]["B"] = 17.0;
+      data["A"]["C"] = 42.0;
 
- private:
-  conduit::Node node_;
-};
+      niv::SendingRelaySharedMemory relay(
+          std::make_unique<niv::SharedMemoryAccess>());
+      relay.Send(data);
 
-}  // namespace pyniv
-
-#endif  // PYNIV_SRC_CONDUIT_DATA_HPP_
+      THEN("I receive the data") {
+        receiver.Start();
+        REQUIRE(receiver.Get("A/B") == 17.0);
+        REQUIRE(receiver.Get("A/C") == 42.0);
+      }
+    }
+  }
+}

@@ -27,6 +27,7 @@ SUPPRESS_WARNINGS_BEGIN
 #include "boost/python.hpp"
 SUPPRESS_WARNINGS_END
 
+using boost::python::args;
 using boost::python::class_;
 using boost::python::def;
 using boost::python::init;

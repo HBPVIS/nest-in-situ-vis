@@ -46,7 +46,7 @@ def test_pyniv_greet():
 def test_pyniv_niv_NodeString_zero_on_creation():
     d = pyniv.ConduitData();
     v = pyniv.NestInSituVis(d.Pointer());
-    assert v.NodeString() == "0"
+    assert v.NodeString() == "1.2"
 
 def test_pyniv_niv_NodeString_correct_after_set():
     d = pyniv.ConduitData();
@@ -66,3 +66,19 @@ def test_pyniv_niv_StartStop():
     v.Stop()
 
     assert len(c.ToString().split('\n')) > 2
+
+def test_pyniv_receive_via_shared_mem_segment_relay():
+    r = pyniv.ConduitReceiver()
+
+    d = pyniv.ConduitData()
+    s = pyniv.ConduitDataSender()
+    s.Send(d)
+
+    r.Start()
+
+    assert r.Get("V_m") == 1.2
+
+    d.Set("V_m", 42.0)
+    s.Send(d)
+
+    assert r.Get("V_m") == 42.0

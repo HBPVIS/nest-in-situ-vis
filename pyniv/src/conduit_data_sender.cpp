@@ -19,29 +19,21 @@
 // limitations under the License.
 //------------------------------------------------------------------------------
 
-#ifndef PYNIV_SRC_CONDUIT_DATA_HPP_
-#define PYNIV_SRC_CONDUIT_DATA_HPP_
+#include "conduit_data_sender.hpp"
 
-#include "conduit/conduit.hpp"
+#include "conduit_data.hpp"
+#include "pyniv.hpp"
 
 namespace pyniv {
 
-class ConduitData {
- public:
-  ConduitData();
-  ~ConduitData() = default;
-  ConduitData(const ConduitData&) = default;
-  ConduitData(ConduitData&&) = default;
+void ConduitDataSender::Send(const ConduitData& data) {
+  relay_.Send(data.GetNode());
+}
 
-  void Set(const char* attribute, double value);
-  std::size_t Pointer() const;
-
-  const conduit::Node& GetNode() const { return node_; }
-
- private:
-  conduit::Node node_;
-};
+template <>
+void expose<ConduitDataSender>() {
+  class_<ConduitDataSender, boost::noncopyable>("ConduitDataSender")
+      .def("Send", &ConduitDataSender::Send, args("data"));
+}
 
 }  // namespace pyniv
-
-#endif  // PYNIV_SRC_CONDUIT_DATA_HPP_
