@@ -57,16 +57,66 @@ constexpr double kAnyOtherValue{42.0f};
 
 }  // namespace
 
-SCENARIO("Communicate a conduit node", "[niv][nvi::RelaySharedMemory]") {
+SCENARIO("Communicate a conduit node from shared mem segment to access",
+         "[niv][nvi::RelaySharedMemory]") {
   GIVEN(
-      "A conduit node with some data, a sending shared memory relay, a "
-      "receiving shared memory relay, and a receiving node") {
+      "A conduit node with some data, a sending shared memory segment relay, a "
+      "receiving shared memory access relay, and a receiving node") {
     conduit::Node any_node{::AnyNode()};
     niv::SendingRelaySharedMemory sending_relay{
         std::make_unique<niv::SharedMemorySegment>()};
     niv::ReceivingRelaySharedMemory receiving_relay{
         std::make_unique<niv::SharedMemoryAccess>()};
     conduit::Node receiving_node;
+
+    WHEN("I send the data via the sending relay") {
+      sending_relay.Send(any_node);
+
+      THEN("I receive the data on the receiving relay") {
+        receiving_relay.Receive(&receiving_node);
+        REQUIRE_EQ(receiving_node, any_node);
+      }
+
+      WHEN("I change one value and send again") {
+        ::AnyLeaf(&any_node) = ::kAnyOtherValue;
+        sending_relay.Send(any_node);
+
+        THEN("I receive the data on the receiving relay") {
+          receiving_relay.Receive(&receiving_node);
+          REQUIRE_EQ(receiving_node, any_node);
+        }
+      }
+
+      WHEN("I listen to the data on the receiving relay") {
+        receiving_relay.Listen(&receiving_node);
+        THEN("I receive the data on the receiving relay") {
+          REQUIRE_EQ(receiving_node, any_node);
+        }
+
+        WHEN("I change one value and send again") {
+          ::AnyLeaf(&any_node) = ::kAnyOtherValue;
+          sending_relay.Send(any_node);
+
+          THEN("I receive the data on the receiving relay") {
+            REQUIRE_EQ(receiving_node, any_node);
+          }
+        }
+      }
+    }
+  }
+}
+
+SCENARIO("Communicate a conduit node from shared mem access to segment",
+         "[niv][nvi::RelaySharedMemory]") {
+  GIVEN(
+      "A conduit node with some data, a sending shared memory access relay, a "
+      "receiving shared memory segment relay, and a receiving node") {
+    niv::ReceivingRelaySharedMemory receiving_relay{
+        std::make_unique<niv::SharedMemorySegment>()};
+    conduit::Node receiving_node;
+    conduit::Node any_node{::AnyNode()};
+    niv::SendingRelaySharedMemory sending_relay{
+        std::make_unique<niv::SharedMemoryAccess>()};
 
     WHEN("I send the data via the sending relay") {
       sending_relay.Send(any_node);
