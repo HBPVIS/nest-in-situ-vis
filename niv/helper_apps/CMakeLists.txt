@@ -19,38 +19,9 @@
 # limitations under the License.
 #-------------------------------------------------------------------------------
 
-file(GLOB NIV_SOURCES src/*.cpp)
-file(GLOB NIV_HEADERS src/*.hpp)
-file(GLOB NIV_API_HEADERS include/niv/*.hpp)
-
-add_library(niv
-  ${NIV_SOURCES}
-  ${NIV_HEADERS}
-  ${NIV_API_HEADERS}
+add_executable(niv-shared-memory
+  src/shared_memory.cpp
   )
-target_include_directories(niv
-  PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include
-  PUBLIC ${CMAKE_CURRENT_BINARY_DIR}
+target_link_libraries(niv-shared-memory
+  niv
   )
-target_link_libraries(niv
-  conduit
-  )
-
-generate_export_header(niv
-  EXPORT_FILE_NAME ${CMAKE_CURRENT_BINARY_DIR}/include/niv/export.hpp
-)
-
-set_warning_levels_RWTH(niv
-  SUPPRESS_WARNINGS_HEADER ${CMAKE_CURRENT_BINARY_DIR}/include/niv/suppress_warnings.hpp
-)
-
-add_test_cpplint(NAME "niv--cpplint"
-  ${NIV_SOURCES}
-  ${NIV_HEADERS}
-  ${NIV_API_HEADERS}
-)
-
-generate_configure_files(niv)
-
-add_subdirectory(tests)
-add_subdirectory(helper_apps)
