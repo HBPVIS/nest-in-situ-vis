@@ -19,38 +19,4 @@
 # limitations under the License.
 #-------------------------------------------------------------------------------
 
-cmake_minimum_required(VERSION 3.8.2)
-
-project(nest_in_situ_vis)
-
-set(CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
-set(CMAKE_CXX_STANDARD 17)
-
-find_package(Boost REQUIRED COMPONENTS python)
-
-find_package(PythonInterp)
-find_package(PythonLibs)
-
-include(catch)
-
-include(ConfigureFiles)
-
-include(cpplint)
-
-include(CTest)
-enable_testing()
-
-include(GenerateExportHeader)
-
-include(py.test)
-
-include(WarningLevels)
-
-find_package(conduit)
-set_target_properties(conduit
-  PROPERTIES INTERFACE_INCLUDE_DIRECTORIES "${CONDUIT_INCLUDE_DIRS}/..")
-
-add_subdirectory(niv)
-add_subdirectory(pyniv)
-add_subdirectory(pytest_utilities)
-add_subdirectory(demo)
+add_subdirectory(nest_python_vis)

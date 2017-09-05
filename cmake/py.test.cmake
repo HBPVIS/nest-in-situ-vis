@@ -19,7 +19,7 @@
 # limitations under the License.
 #-------------------------------------------------------------------------------
 
-include(FindPythonInterp)
+find_package(PythonInterp)
 if(NOT PYTHON_EXECUTABLE)
   message(SEND_ERROR
     " ERROR: Could not find any python interpreter.

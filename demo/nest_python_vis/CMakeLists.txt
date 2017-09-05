@@ -19,38 +19,9 @@
 # limitations under the License.
 #-------------------------------------------------------------------------------
 
-cmake_minimum_required(VERSION 3.8.2)
+set(NEST_PYTHON_VIS_SOURCE nest_python_vis.py)
 
-project(nest_in_situ_vis)
+file(GENERATE OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/run.sh
+  CONTENT "PYTHONPATH=$<TARGET_FILE_DIR:pyniv>:$<TARGET_FILE_DIR:pytest_utilities> ${PYTHON_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/${NEST_PYTHON_VIS_SOURCE}"
+  )
 
-set(CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
-set(CMAKE_CXX_STANDARD 17)
-
-find_package(Boost REQUIRED COMPONENTS python)
-
-find_package(PythonInterp)
-find_package(PythonLibs)
-
-include(catch)
-
-include(ConfigureFiles)
-
-include(cpplint)
-
-include(CTest)
-enable_testing()
-
-include(GenerateExportHeader)
-
-include(py.test)
-
-include(WarningLevels)
-
-find_package(conduit)
-set_target_properties(conduit
-  PROPERTIES INTERFACE_INCLUDE_DIRECTORIES "${CONDUIT_INCLUDE_DIRS}/..")
-
-add_subdirectory(niv)
-add_subdirectory(pyniv)
-add_subdirectory(pytest_utilities)
-add_subdirectory(demo)
