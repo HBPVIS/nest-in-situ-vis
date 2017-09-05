@@ -43,30 +43,6 @@ def test_cout_capture(capsys):
 def test_pyniv_greet():
     assert pyniv.Greet() == "G'day!"
 
-def test_pyniv_niv_NodeString_zero_on_creation():
-    d = pyniv.ConduitData();
-    v = pyniv.NestInSituVis(d.Pointer());
-    assert v.NodeString() == "1.2"
-
-def test_pyniv_niv_NodeString_correct_after_set():
-    d = pyniv.ConduitData();
-    v = pyniv.NestInSituVis(d.Pointer());
-    d.Set("V_m", 42.0)
-    assert v.NodeString() == "42"
-
-def test_pyniv_niv_StartStop():
-    d = pyniv.ConduitData();
-    v = pyniv.NestInSituVis(d.Pointer());
-    d.Set("V_m", 42.0)
-    
-    c = pytest_utilities.CoutCapture()
-
-    v.Start()
-    time.sleep(0.03)
-    v.Stop()
-
-    assert len(c.ToString().split('\n')) > 2
-
 def test_pyniv_receive_via_shared_mem_segment_relay():
     r = pyniv.ConduitReceiver()
 

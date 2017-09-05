@@ -22,7 +22,6 @@
 #include "pyniv.hpp"
 
 #include "niv/conduit_receiver.hpp"
-#include "niv/nest_in_situ_vis.hpp"
 #include "niv/niv.hpp"
 
 #include "conduit_data.hpp"
@@ -33,5 +32,4 @@ BOOST_PYTHON_MODULE(pyniv) {
   pyniv::expose<pyniv::ConduitData>();
   pyniv::expose<pyniv::ConduitDataSender>();
   pyniv::expose<niv::ConduitReceiver>();
-  pyniv::expose<niv::NestInSituVis>();
 }
