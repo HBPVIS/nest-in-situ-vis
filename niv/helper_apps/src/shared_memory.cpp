@@ -62,6 +62,11 @@ void Create() {
   FillWithData(&shared_memory);
 }
 
+void Fill() {
+  niv::SharedMemory shared_memory{niv::SharedMemory::Access()};
+  FillWithData(&shared_memory);
+}
+
 void Destroy() {
   niv::SharedMemory s{niv::SharedMemory::Access()};
   s.Destroy();
@@ -71,6 +76,8 @@ int Command(char* command) {
   if (std::string(command) == std::string("create")) {
     Create();
     return EXIT_SUCCESS;
+  } else if (std::string(command) == "fill") {
+    Fill();
   } else if (std::string(command) == std::string("destroy")) {
     Destroy();
     return EXIT_SUCCESS;
