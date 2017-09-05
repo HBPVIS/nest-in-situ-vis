@@ -35,11 +35,8 @@ class MainWindow:
         self.window.show()
 
     def UpdateValue(self):
-        print("{}".format(self.receiver.Get("V_m")))
+        pass
 
-def StartButtonClicked():
-    print("FOO")
-    
 def main(argv):
     app = QApplication(argv)
 
