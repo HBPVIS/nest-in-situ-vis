@@ -13,17 +13,27 @@ class MainWindow:
         
 
     def SetupWindow(self):
-        self.label = QLabel("V_m:")
-        self.value = QLabel("{:0.3f} mV".format(0.0))
+        self.label_V_m = QLabel("V_m:")
+        self.value_V_m = QLabel("{:0.3f} mV".format(0.0))
+
+        self.label_g_ex = QLabel("g_ex:")
+        self.value_g_ex = QLabel("{:0.3f}".format(0.0))
+
+        self.label_g_in = QLabel("g_ex:")
+        self.value_g_in = QLabel("{:0.3f}".format(0.0))
 
         self.start_button = QPushButton("Start")
         self.start_button.clicked.connect(self.StartButtonClicked)
 
         self.layout = QGridLayout()
-        self.layout.addWidget(self.label, 0, 0)
-        self.layout.addWidget(self.value, 0, 1)
+        self.layout.addWidget(self.label_V_m, 0, 0)
+        self.layout.addWidget(self.value_V_m, 0, 1)
+        self.layout.addWidget(self.label_g_ex, 1, 0)
+        self.layout.addWidget(self.value_g_ex, 1, 1)
+        self.layout.addWidget(self.label_g_in, 2, 0)
+        self.layout.addWidget(self.value_g_in, 2, 1)
  
-        self.layout.addWidget(self.start_button, 1, 0, 1, 2)
+        self.layout.addWidget(self.start_button, 3, 0, 1, 2)
 
         self.window = QWidget()
         self.window.setLayout(self.layout)
@@ -44,8 +54,11 @@ class MainWindow:
         self.window.show()
 
     def UpdateValue(self):
-        self.value.setText("{:0.3f} mV".format(self.receiver.Get("V_m")))
-        self.value.update()
+        self.value_V_m.setText("{:0.3f} mV".format(self.receiver.Get("V_m")))
+        self.value_g_ex.setText("{:0.3f}".format(self.receiver.Get("g_ex")))
+        self.value_g_in.setText("{:0.3f}".format(self.receiver.Get("g_in")))
+
+        self.value_V_m.update()
         self.window.update()
 
 def main(argv):
