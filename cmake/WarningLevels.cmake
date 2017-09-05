@@ -1,17 +1,16 @@
 #-------------------------------------------------------------------------------
-# Project Phoenix
+# nest in situ vis
 #
 # Copyright (c) 2017 RWTH Aachen University, Germany,
 # Virtual Reality & Immersive Visualisation Group.
 #-------------------------------------------------------------------------------
-#                                 License
-#                            only for this file
+#                                  License
 #
-# Licensed under the 3-Clause BSD License (the "License");
+# Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
 # You may obtain a copy of the License at
 #
-#     https://opensource.org/licenses/BSD-3-Clause
+#     http://www.apache.org/licenses/LICENSE-2.0
 #
 # Unless required by applicable law or agreed to in writing, software
 # distributed under the License is distributed on an "AS IS" BASIS,
@@ -40,7 +39,6 @@ set(WARNING_LEVELS_RWTH_GCC
   -Wmissing-braces
   -pedantic
   -pedantic-errors
-  -Wno-c++98-compat
 )
 
 set(WARNING_LEVELS_RWTH_MSVC
@@ -104,26 +102,32 @@ macro(SET_WARNING_LEVELS_RWTH TARGET)
   if(IS_CLANG)
     target_compile_options(${TARGET} PRIVATE ${WARNING_LEVELS_RWTH_CLANG})
     if (CMAKE_AUTOMOC)
+      if(EXISTS ${CMAKE_CURRENT_BINARY_DIR}/${TARGET}_autogen/moc_compilation.cpp)
       set_source_files_properties(
         ${CMAKE_CURRENT_BINARY_DIR}/${TARGET}_autogen/moc_compilation.cpp
         PROPERTIES COMPILE_FLAGS ${WARNING_LEVELS_RWTH_CLANG_QT_MOC_OVERRIDE})
     endif ()
+    endif()
     target_compile_options(${TARGET} PRIVATE "-include${SUPPRESS_WARNING_HEADER_FILE}")
   elseif(IS_GCC)
     target_compile_options(${TARGET} PRIVATE ${WARNING_LEVELS_RWTH_GCC})
     if (CMAKE_AUTOMOC)
+      if(EXISTS ${CMAKE_CURRENT_BINARY_DIR}/${TARGET}_autogen/moc_compilation.cpp)
       set_source_files_properties(
         ${CMAKE_CURRENT_BINARY_DIR}/${TARGET}_autogen/moc_compilation.cpp
         PROPERTIES COMPILE_FLAGS ${WARNING_LEVELS_RWTH_GCC_QT_MOC_OVERRIDE})
     endif ()
+    endif()
     target_compile_options(${TARGET} PRIVATE "-include${SUPPRESS_WARNING_HEADER_FILE}")
   elseif(IS_MSVC)
     target_compile_options(${TARGET} PRIVATE ${WARNING_LEVELS_RWTH_MSVC})
     if (CMAKE_AUTOMOC)
+      if(EXISTS ${CMAKE_CURRENT_BINARY_DIR}/${TARGET}_autogen/moc_compilation.cpp)
       set_source_files_properties(
         ${CMAKE_CURRENT_BINARY_DIR}/${target}_autogen/moc_compilation.cpp
         PROPERTIES COMPILE_FLAGS ${WARNING_LEVELS_RWTH_MSVC_QT_MOC_OVERRIDE})
     endif ()
+    endif()
     target_compile_options(${TARGET} PRIVATE "/FI ${SUPPRESS_WARNING_HEADER_FILE}")
   else()
     message(WARNING "SET_WARNING_LEVELS_RWTH not implemented for your compiler. "

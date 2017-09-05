@@ -1,17 +1,16 @@
 #-------------------------------------------------------------------------------
-# Project Phoenix
+# nest in situ vis
 #
 # Copyright (c) 2017 RWTH Aachen University, Germany,
 # Virtual Reality & Immersive Visualisation Group.
 #-------------------------------------------------------------------------------
-#                                 License
-#                            only for this file
+#                                  License
 #
-# Licensed under the 3-Clause BSD License (the "License");
+# Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
 # You may obtain a copy of the License at
 #
-#     https://opensource.org/licenses/BSD-3-Clause
+#     http://www.apache.org/licenses/LICENSE-2.0
 #
 # Unless required by applicable law or agreed to in writing, software
 # distributed under the License is distributed on an "AS IS" BASIS,
@@ -21,6 +20,7 @@
 #-------------------------------------------------------------------------------
 
 include(WarningLevels)
+
 
 set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 
@@ -80,15 +80,6 @@ function(ADD_TEST_CATCH)
   # remove catch_main file from sources
   file(GLOB ADD_TEST_CATCH_CATCH_MAIN_ABSOLUTE ${ADD_TEST_CATCH_CATCH_MAIN})
   list(REMOVE_ITEM ADD_TEST_CATCH_SOURCES ${ADD_TEST_CATCH_CATCH_MAIN_ABSOLUTE})
-
-  # add aggregate test target
-  ADD_TEST_CATCH_INTERNAL_("${ADD_TEST_CATCH_NAME}"
-    "${ADD_TEST_CATCH_SOURCES}"
-    "${ADD_TEST_CATCH_HEADERS}"
-    "${ADD_TEST_CATCH_INCLUDE_DIRECTORIES}"
-    "${ADD_TEST_CATCH_LINK_LIBRARIES};${ADD_TEST_CATCH_NAME}_catch_main"
-    "${ADD_TEST_CATCH_PATH_TO_ADD}"
-  )
 
   # add test for each test source file
   foreach(TEST_SOURCE_FILE ${ADD_TEST_CATCH_SOURCES})

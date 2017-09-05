@@ -19,15 +19,24 @@
 # limitations under the License.
 #-------------------------------------------------------------------------------
 
-function(GENERATE_CONFIGURE_FILES TARGET)
-  # config for the build tree
-  set(CONF_INCLUDE_DIRS
-    ${CMAKE_CURRENT_SOURCE_DIR}
-    ${CMAKE_CURRENT_BINARY_DIR}
+file(GLOB NIV_TEST_SOURCES src/*.cpp)
+file(GLOB NIV_TEST_HEADERS src/*.hpp)
+file(GLOB NIV_TEST_UTILITIES_TEST_SOURCES test_utilities/tests/src/*.cpp)
+file(GLOB NIV_TEST_UTILITIES_HEADERS test_utilities/*.hpp)
+
+
+add_test_catch(NAME "niv-tests"
+  SOURCES ${NIV_TEST_SOURCES} ${NIV_TEST_UTILITIES_TEST_SOURCES}
+  HEADERS ${NIV_TEST_HEADERS} ${NIV_TEST_UTILITIES_HEADERS}
+  CATCH_MAIN src/tests.cpp
+  INCLUDE_DIRECTORIES ${CMAKE_CURRENT_SOURCE_DIR}
+  LINK_LIBRARIES niv
+  PATH_TO_ADD ${PROJECT_BINARY_DIR}/niv
   )
-  configure_file(
-    ${PROJECT_SOURCE_DIR}/cmake/${TARGET}-config.cmake.in
-    "${PROJECT_BINARY_DIR}/${TARGET}-config.cmake" @ONLY)
-  export(TARGETS ${TARGET}
-    FILE "${PROJECT_BINARY_DIR}/${TARGET}-targets.cmake")
-endfunction()
+add_test_cpplint(NAME "niv-tests--cpplint"
+  ${NIV_TEST_SOURCES}
+  ${NIV_TEST_HEADERS}
+  ${NIV_TEST_UTILITIES_TEST_SOURCES}
+  ${NIV_TEST_UTILITIES_HEADERS}
+  )
+

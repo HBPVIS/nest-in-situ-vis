@@ -1,5 +1,5 @@
 //------------------------------------------------------------------------------
-// nest python vis
+// nest in situ vis
 //
 // Copyright (c) 2017 RWTH Aachen University, Germany,
 // Virtual Reality & Immersive Visualisation Group.
@@ -19,8 +19,24 @@
 // limitations under the License.
 //------------------------------------------------------------------------------
 
-#include "catch/catch.hpp"
+#ifndef PYNIV_SRC_PYNIV_HPP_
+#define PYNIV_SRC_PYNIV_HPP_
 
-#include "npv/npv.hpp"
+SUPPRESS_WARNINGS_BEGIN
+#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
+#include "boost/python.hpp"
+SUPPRESS_WARNINGS_END
 
-TEST_CASE("NPV shall greet.", "[npv]") { CHECK(npv::Greet() == "G'day!"); }
+using boost::python::args;
+using boost::python::class_;
+using boost::python::def;
+using boost::python::init;
+
+namespace pyniv {
+
+template <typename T>
+void expose();
+
+}  // namespace pyniv
+
+#endif  // PYNIV_SRC_PYNIV_HPP_

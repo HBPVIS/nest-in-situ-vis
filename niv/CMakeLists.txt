@@ -1,5 +1,5 @@
 #-------------------------------------------------------------------------------
-# nest python vis
+# nest in situ vis
 #
 # Copyright (c) 2017 RWTH Aachen University, Germany,
 # Virtual Reality & Immersive Visualisation Group.
@@ -19,34 +19,38 @@
 # limitations under the License.
 #-------------------------------------------------------------------------------
 
-file(GLOB NPV_SOURCES src/*.cpp)
-file(GLOB NPV_HEADERS src/*.hpp)
-file(GLOB NPV_API_HEADERS include/npv/*.hpp)
+file(GLOB NIV_SOURCES src/*.cpp)
+file(GLOB NIV_HEADERS src/*.hpp)
+file(GLOB NIV_API_HEADERS include/niv/*.hpp)
 
-add_library(npv
-  ${NPV_SOURCES}
-  ${NPV_HEADERS}
-  ${NPV_API_HEADERS}
-)
-target_include_directories(npv
+add_library(niv
+  ${NIV_SOURCES}
+  ${NIV_HEADERS}
+  ${NIV_API_HEADERS}
+  )
+target_include_directories(niv
   PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include
   PUBLIC ${CMAKE_CURRENT_BINARY_DIR}
+  )
+target_link_libraries(niv
+  conduit
+  )
+
+generate_export_header(niv
+  EXPORT_FILE_NAME ${CMAKE_CURRENT_BINARY_DIR}/include/niv/export.hpp
 )
 
-generate_export_header(npv
-  EXPORT_FILE_NAME ${CMAKE_CURRENT_BINARY_DIR}/include/npv/export.hpp
+set_warning_levels_RWTH(niv
+  SUPPRESS_WARNINGS_HEADER ${CMAKE_CURRENT_BINARY_DIR}/include/niv/suppress_warnings.hpp
 )
 
-set_warning_levels_RWTH(npv
-  SUPPRESS_WARNINGS_HEADER ${CMAKE_CURRENT_BINARY_DIR}/include/npv/suppress_warnings.hpp
+add_test_cpplint(NAME "niv--cpplint"
+  ${NIV_SOURCES}
+  ${NIV_HEADERS}
+  ${NIV_API_HEADERS}
 )
 
-add_test_cpplint(NAME "npv--cpplint"
-  ${NPV_SOURCES}
-  ${NPV_HEADERS}
-  ${NPV_API_HEADERS}
-)
-
-generate_configure_files(npv)
+generate_configure_files(niv)
 
 add_subdirectory(tests)
+add_subdirectory(helper_apps)

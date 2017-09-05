@@ -19,15 +19,26 @@
 # limitations under the License.
 #-------------------------------------------------------------------------------
 
-function(GENERATE_CONFIGURE_FILES TARGET)
-  # config for the build tree
-  set(CONF_INCLUDE_DIRS
-    ${CMAKE_CURRENT_SOURCE_DIR}
-    ${CMAKE_CURRENT_BINARY_DIR}
-  )
-  configure_file(
-    ${PROJECT_SOURCE_DIR}/cmake/${TARGET}-config.cmake.in
-    "${PROJECT_BINARY_DIR}/${TARGET}-config.cmake" @ONLY)
-  export(TARGETS ${TARGET}
-    FILE "${PROJECT_BINARY_DIR}/${TARGET}-targets.cmake")
-endfunction()
+file(GLOB PYTEST_UTILITIES_SOURCES src/*.cpp)
+
+find_package(Boost REQUIRED COMPONENTS python)
+find_package(PythonInterp)
+find_package(PythonLibs)
+
+python_add_module(pytest_utilities
+  ${PYTEST_UTILITIES_SOURCES}
+)
+
+target_include_directories(pytest_utilities PRIVATE ${Boost_INCLUDE_DIRS})
+target_link_libraries(pytest_utilities ${Boost_LIBRARIES})
+
+target_include_directories(pytest_utilities PRIVATE ${PYTHON_INCLUDE_DIRS})
+target_link_libraries(pytest_utilities ${PYTHON_LIBRARIES})
+
+set_warning_levels_RWTH(pytest_utilities
+  SUPPRESS_WARNINGS_HEADER ${CMAKE_CURRENT_BINARY_DIR}/include/pytest_utilities/suppress_warnings.hpp
+)
+
+add_test_cpplint(NAME "pytest_utilities--cpplint"
+  ${PYTEST_UTILITIES_SOURCES}
+)

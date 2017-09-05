@@ -19,7 +19,7 @@
 # limitations under the License.
 #-------------------------------------------------------------------------------
 
-include(FindPythonInterp)
+find_package(PythonInterp)
 if(NOT PYTHON_EXECUTABLE)
   message(SEND_ERROR
     " ERROR: Could not find any python interpreter.
@@ -27,32 +27,30 @@ if(NOT PYTHON_EXECUTABLE)
         CMake will not generate the project without it. ")
 endif()
 
-find_file(CPPLINT_COMMAND cpplint.py
-  PATHS $ENV{PATH} $ENV{CPPLINT_DIR}
+find_file(PY_TEST_COMMAND py.test
+  PATHS $ENV{PATH} $ENV{PY_TEST_DIR}
 )
-if(NOT CPPLINT_COMMAND)
+if(NOT PY_TEST_COMMAND)
   message(SEND_ERROR
-    " ERROR: Could not find cpplint.py.
-        Having cpplint.py is a mandatory requirement.
+    " ERROR: Could not find py.test.
+        Having py.test is a mandatory requirement.
         CMake will not generate the project without it.
         Add its location to the environments variables PATH or CPPLINT_DIR.")
 endif()
 
-function(ADD_TEST_CPPLINT)
+function(ADD_TEST_PY_TEST)
   set(options )
-  set(oneValueArgs NAME)
+  set(oneValueArgs NAME PYTHONPATH)
   set(multiValueArgs )
-  cmake_parse_arguments(ADD_TEST_CPPLINT
+  cmake_parse_arguments(ADD_TEST_PY_TEST
     "${options}" "${oneValueArgs}" "${multiValueArgs}" ${ARGN} )
 
-  if(MSVC)
-    set(CPPLINT_OUTPUT "--output=vs7")
-  else()
-    set(CPPLINT_OUTPUT "")
-  endif()
-
-  add_test(NAME "${ADD_TEST_CPPLINT_NAME}"
-    COMMAND ${PYTHON_EXECUTABLE} ${CPPLINT_COMMAND} ${CPPLINT_OUTPUT}
-    ${ADD_TEST_CPPLINT_UNPARSED_ARGUMENTS}
+  add_test(NAME "${ADD_TEST_PY_TEST_NAME}"
+    COMMAND ${PYTHON_EXECUTABLE} -B ${PY_TEST_COMMAND} -p no:cacheprovider
+    ${ADD_TEST_PY_TEST_UNPARSED_ARGUMENTS}
+    
   )
+  set_property(TEST ${ADD_TEST_PY_TEST_NAME} PROPERTY ENVIRONMENT
+    "PYTHONPATH=${ADD_TEST_PY_TEST_PYTHONPATH}:$PYTHONPATH"
+    )
 endfunction()
