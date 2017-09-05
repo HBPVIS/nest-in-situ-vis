@@ -1,5 +1,5 @@
 //------------------------------------------------------------------------------
-// nest python vis
+// nest in situ vis
 //
 // Copyright (c) 2017 RWTH Aachen University, Germany,
 // Virtual Reality & Immersive Visualisation Group.
@@ -19,15 +19,32 @@
 // limitations under the License.
 //------------------------------------------------------------------------------
 
-#ifndef NEST_PYTHON_VIS_INCLUDE_NPV_NPV_HPP_
-#define NEST_PYTHON_VIS_INCLUDE_NPV_NPV_HPP_
+#include "conduit_data.hpp"
 
-#include <string>
+#include <iostream>
 
-namespace npv {
+#include "pyniv.hpp"
 
-std::string Greet();
+namespace pyniv {
 
-}  // namespace npv
+ConduitData::ConduitData() {
+  node_["V_m"] = 1.2;
+  std::cout << "Ptr. to conduit node: " << Pointer() << std::endl;
+}
 
-#endif  // NEST_PYTHON_VIS_INCLUDE_NPV_NPV_HPP_
+void ConduitData::Set(const char* attribute, double value) {
+  node_[attribute] = value;
+}
+
+std::size_t ConduitData::Pointer() const {
+  return reinterpret_cast<std::size_t>(&node_);
+}
+
+template <>
+void expose<ConduitData>() {
+  class_<ConduitData>("ConduitData")
+      .def("Set", &ConduitData::Set)
+      .def("Pointer", &ConduitData::Pointer);
+}
+
+}  // namespace pyniv

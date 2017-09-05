@@ -1,5 +1,5 @@
 //------------------------------------------------------------------------------
-// nest python vis
+// nest in situ vis
 //
 // Copyright (c) 2017 RWTH Aachen University, Germany,
 // Virtual Reality & Immersive Visualisation Group.
@@ -19,12 +19,28 @@
 // limitations under the License.
 //------------------------------------------------------------------------------
 
-#include "npv/npv.hpp"
+#ifndef NIV_INCLUDE_NIV_RECEIVING_RELAY_SHARED_MEMORY_HPP_
+#define NIV_INCLUDE_NIV_RECEIVING_RELAY_SHARED_MEMORY_HPP_
 
-#include <string>
+#include <memory>
 
-namespace npv {
+#include "conduit/conduit_node.hpp"
 
-std::string Greet() { return "G'day!"; }
+#include "niv/relay_shared_memory.hpp"
+#include "niv/shared_memory.hpp"
 
-}  // namespace npv
+namespace niv {
+
+class ReceivingRelaySharedMemory : public RelaySharedMemory {
+ public:
+  explicit ReceivingRelaySharedMemory(
+      std::unique_ptr<SharedMemory> shared_memory);
+  virtual ~ReceivingRelaySharedMemory() = default;
+
+  void Receive(conduit::Node* node);
+  void Listen(conduit::Node* node);
+};
+
+}  // namespace niv
+
+#endif  // NIV_INCLUDE_NIV_RECEIVING_RELAY_SHARED_MEMORY_HPP_

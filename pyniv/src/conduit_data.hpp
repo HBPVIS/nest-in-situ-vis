@@ -1,5 +1,5 @@
 //------------------------------------------------------------------------------
-// nest python vis
+// nest in situ vis
 //
 // Copyright (c) 2017 RWTH Aachen University, Germany,
 // Virtual Reality & Immersive Visualisation Group.
@@ -19,5 +19,29 @@
 // limitations under the License.
 //------------------------------------------------------------------------------
 
-#define CATCH_CONFIG_MAIN
-#include "catch/catch.hpp"
+#ifndef PYNIV_SRC_CONDUIT_DATA_HPP_
+#define PYNIV_SRC_CONDUIT_DATA_HPP_
+
+#include "conduit/conduit.hpp"
+
+namespace pyniv {
+
+class ConduitData {
+ public:
+  ConduitData();
+  ~ConduitData() = default;
+  ConduitData(const ConduitData&) = default;
+  ConduitData(ConduitData&&) = default;
+
+  void Set(const char* attribute, double value);
+  std::size_t Pointer() const;
+
+  const conduit::Node& GetNode() const { return node_; }
+
+ private:
+  conduit::Node node_;
+};
+
+}  // namespace pyniv
+
+#endif  // PYNIV_SRC_CONDUIT_DATA_HPP_

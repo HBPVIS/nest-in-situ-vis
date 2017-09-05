@@ -1,5 +1,5 @@
 #-------------------------------------------------------------------------------
-# nest python vis
+# nest in situ vis
 #
 # Copyright (c) 2017 RWTH Aachen University, Germany,
 # Virtual Reality & Immersive Visualisation Group.
@@ -19,21 +19,9 @@
 # limitations under the License.
 #-------------------------------------------------------------------------------
 
-
-
-# - Config file for the npv package
-# It defines the following variables
-#  NPV_INCLUDE_DIRS - include directories for Project Phoenix
-#  NPV_LIBRARIES    - libraries to link against
- 
-# Compute paths
-get_filename_component(NPV_CMAKE_DIR "${CMAKE_CURRENT_LIST_FILE}" PATH)
-set(NPV_INCLUDE_DIRS "@CONF_INCLUDE_DIRS@")
- 
-# Our library dependencies (contains definitions for IMPORTED targets)
-if(NOT TARGET npv)
-  include("${NPV_CMAKE_DIR}/npv-targets.cmake")
-endif()
- 
-# These are IMPORTED targets created by npv-targets.cmake
-set(NPV_LIBRARIES npv)
+add_executable(niv-shared-memory
+  src/shared_memory.cpp
+  )
+target_link_libraries(niv-shared-memory
+  niv
+  )

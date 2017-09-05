@@ -19,15 +19,4 @@
 # limitations under the License.
 #-------------------------------------------------------------------------------
 
-function(GENERATE_CONFIGURE_FILES TARGET)
-  # config for the build tree
-  set(CONF_INCLUDE_DIRS
-    ${CMAKE_CURRENT_SOURCE_DIR}
-    ${CMAKE_CURRENT_BINARY_DIR}
-  )
-  configure_file(
-    ${PROJECT_SOURCE_DIR}/cmake/${TARGET}-config.cmake.in
-    "${PROJECT_BINARY_DIR}/${TARGET}-config.cmake" @ONLY)
-  export(TARGETS ${TARGET}
-    FILE "${PROJECT_BINARY_DIR}/${TARGET}-targets.cmake")
-endfunction()
+add_subdirectory(nest_python_vis)
