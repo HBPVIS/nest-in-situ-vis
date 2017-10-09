@@ -53,7 +53,7 @@ class Simulation:
     def CreateAndConnectConduitMultimeter(self):
         multimeter_conduit_params = {"interval": 0.1,
                                      "record_from": ["V_m", "g_ex", "g_in"],
-                                     "record_to": ["conduit"],
+                                     "record_to": ["stream"],
                                      "label": "multimeter_conduit"}
         multimeter_conduit = nest.Create("multimeter",
                                          params=multimeter_conduit_params)

@@ -75,9 +75,9 @@ class MainWindow:
         self.window.show()
 
     def UpdateValue(self):
-        self.value_V_m.setText("{:0.3f} mV".format(self.receiver.Get("V_m")))
-        self.value_g_ex.setText("{:0.3f}".format(self.receiver.Get("g_ex")))
-        self.value_g_in.setText("{:0.3f}".format(self.receiver.Get("g_in")))
+        self.value_V_m.setText("{:0.3f} mV".format(self.receiver.Get("multimeter_conduit-2-0/V_m")))
+        self.value_g_ex.setText("{:0.3f}".format(self.receiver.Get("multimeter_conduit-2-0/g_ex")))
+        self.value_g_in.setText("{:0.3f}".format(self.receiver.Get("multimeter_conduit-2-0/g_in")))
 
         self.value_V_m.update()
         self.window.update()
