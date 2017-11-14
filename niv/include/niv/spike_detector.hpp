@@ -35,17 +35,15 @@ class SpikeDetector final : public Recorder {
       : Recorder{name, node} {}
 
   void Record(std::size_t id) override {
-    conduit::Node& leaf_node = (*node_)[name_][recording_time_];
-    std::vector<std::size_t> data(GetDataFromLeaf(leaf_node));
+    std::vector<std::size_t> data(GetData(*timestep_node_));
     data.push_back(id);
-    leaf_node.set_uint64_vector(data);
+    timestep_node_->set_uint64_vector(data);
   }
 
  private:
-  std::vector<std::size_t> GetDataFromLeaf(const conduit::Node& node) {
+  std::vector<std::size_t> GetData(const conduit::Node& node) {
     if (node.total_bytes_allocated() != 0) {
-      const auto& node_data(node.as_uint64_array());
-      return AsVector(node_data);
+      return AsVector(node.as_uint64_array());
     }
     return std::vector<std::size_t>();
   }

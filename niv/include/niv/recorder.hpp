@@ -35,7 +35,7 @@ class Recorder {
   void SetRecordingTime(double time) {
     std::stringstream time_stream;
     time_stream << time;
-    recording_time_ = time_stream.str();
+    timestep_node_ = &(*node_)[name_][time_stream.str()];
   }
 
   virtual void Record(std::size_t) {}
@@ -46,11 +46,13 @@ class Recorder {
 
  protected:
   Recorder(const std::string& name, conduit::Node* node)
-      : node_(node), name_(name) {}
+      : node_(node), name_(name) {
+    SetRecordingTime(0.0);
+  }
 
   conduit::Node* node_{nullptr};
+  conduit::Node* timestep_node_{nullptr};
   std::string name_{"recorder"};
-  std::string recording_time_{"0"};
 };
 
 }  // namespace niv

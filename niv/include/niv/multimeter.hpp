@@ -37,20 +37,20 @@ class Multimeter final : public Recorder {
       : Recorder{name, node}, value_names_{value_names} {}
 
   void Record(std::size_t id, const std::vector<double> values) override {
-    conduit::Node& timestep_node = (*node_)[name_][recording_time_];
-    Record(id, values, &timestep_node);
+    const std::string id_string{IdString(id)};
+    for (std::size_t i = 0; i < value_names_.size(); ++i) {
+      Record(id_string, values, i);
+    }
   }
 
  private:
-  void Record(std::size_t id, const std::vector<double> values,
-              conduit::Node* node) {
-    const std::string id_string{IdString(id)};
-    for (std::size_t i = 0; i < value_names_.size(); ++i) {
-      const std::string& value_name = value_names_[i];
-      const double value = values[i];
-      (*node)[value_name][id_string] = value;
-    }
+  void Record(std::string id_string, const std::vector<double> values,
+              std::size_t value_index) {
+    const std::string& value_name = value_names_[value_index];
+    const double value = values[value_index];
+    (*timestep_node_)[value_name][id_string] = value;
   }
+
   std::string IdString(std::size_t id) const {
     std::stringstream id_stream;
     id_stream << id;
