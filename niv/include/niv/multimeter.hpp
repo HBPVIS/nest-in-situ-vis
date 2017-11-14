@@ -26,41 +26,38 @@
 #include <string>
 #include <vector>
 
-#include "conduit/conduit_node.hpp"
+#include "niv/recorder.hpp"
 
 namespace niv {
 
-class Multimeter {
+class Multimeter final : public Recorder {
  public:
   Multimeter(const std::string& name,
              const std::vector<std::string>& value_names, conduit::Node* node)
-      : node_{node}, name_{name}, value_names_{value_names} {}
+      : Recorder{name, node}, value_names_{value_names} {}
 
-  void SetRecordingTime(double time) {
-    std::stringstream time_stream;
-    time_stream << time;
-    recording_time_ = time_stream.str();
+  void Record(std::size_t id, const std::vector<double> values) override {
+    conduit::Node& timestep_node = (*node_)[name_][recording_time_];
+    Record(id, values, &timestep_node);
   }
 
-  void Record(std::size_t id, const std::vector<double> values) {
+ private:
+  void Record(std::size_t id, const std::vector<double> values,
+              conduit::Node* node) {
     const std::string id_string{IdString(id)};
     for (std::size_t i = 0; i < value_names_.size(); ++i) {
       const std::string& value_name = value_names_[i];
       const double value = values[i];
-      (*node_)[name_][recording_time_][value_name][id_string] = value;
+      (*node)[value_name][id_string] = value;
     }
   }
-
- private:
   std::string IdString(std::size_t id) const {
     std::stringstream id_stream;
     id_stream << id;
     return id_stream.str();
   }
-  conduit::Node* node_{nullptr};
-  std::string name_{"multimeter"};
+
   std::vector<std::string> value_names_;
-  std::string recording_time_{"0"};
 };
 
 }  // namespace niv

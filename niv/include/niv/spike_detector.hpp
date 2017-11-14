@@ -25,22 +25,16 @@
 #include <sstream>
 #include <string>
 
-#include "conduit/conduit_node.hpp"
+#include "niv/recorder.hpp"
 
 namespace niv {
 
-class SpikeDetector {
+class SpikeDetector final : public Recorder {
  public:
   SpikeDetector(const std::string& name, conduit::Node* node)
-      : node_{node}, name_{name} {}
+      : Recorder{name, node} {}
 
-  void SetRecordingTime(double time) {
-    std::stringstream time_stream;
-    time_stream << time;
-    recording_time_ = time_stream.str();
-  }
-
-  void Record(std::size_t id) {
+  void Record(std::size_t id) override {
     conduit::Node& leaf_node = (*node_)[name_][recording_time_];
     std::vector<std::size_t> data(GetDataFromLeaf(leaf_node));
     data.push_back(id);
@@ -62,10 +56,6 @@ class SpikeDetector {
     const auto* end = begin + num_elements;
     return std::vector<std::size_t>(begin, end);
   }
-
-  conduit::Node* node_{nullptr};
-  std::string name_{"spike_detector"};
-  std::string recording_time_{"0"};
 };
 
 }  // namespace niv
