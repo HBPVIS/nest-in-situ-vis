@@ -19,6 +19,10 @@
 // limitations under the License.
 //------------------------------------------------------------------------------
 
+#include <iterator>
+#include <string>
+#include <vector>
+
 #include "catch/catch.hpp"
 
 #include "conduit/conduit_node.hpp"
@@ -41,6 +45,34 @@ SCENARIO("update inserts new nodes", "[conduit]") {
         REQUIRE(a["sim/t=0/Vm/N1"].to_float() == 0.75f);
         REQUIRE(a["sim/t=1/Vm/N0"].to_float() == 1.5f);
         REQUIRE(a["sim/t=1/Vm/N1"].to_float() == 1.75f);
+      }
+    }
+  }
+}
+
+SCENARIO("conduit array leafs are compatible to std::vector", "[conduit]") {
+  const std::string some_path{"root/inner/leaf"};
+
+  GIVEN("a std vector assigning data to a node") {
+    const std::vector<std::size_t> some_data{1, 5, 7, 9};
+    conduit::Node node;
+    node[some_path].set(some_data);
+
+    THEN("data is stored in the node") {
+      for (std::size_t i = 0; i < some_data.size(); ++i) {
+        REQUIRE(node[some_path].as_uint64_array()[i] == some_data[i]);
+      }
+    }
+
+    WHEN("data is retrieved from the node into a vector") {
+      const auto& node_data = node[some_path].as_uint64_array();
+      const std::size_t num_elements = node_data.number_of_elements();
+      const auto* begin = reinterpret_cast<std::size_t*>(node_data.data_ptr());
+      const auto* end = begin + num_elements;
+      std::vector<std::size_t> retrieved_data(begin, end);
+
+      THEN("the vector and the original data are the same") {
+        REQUIRE(retrieved_data == some_data);
       }
     }
   }
