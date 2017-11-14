@@ -29,8 +29,8 @@ from PyQt5.QtCore import QTimer
 class Simulation:
     def __init__(self):
         self.ConfigureNest()
-        self.CreateNeuron()
-        self.CreateAndConnectMultimeters()
+        self.CreateAndConnectNeurons()
+        self.CreateAndConnectRecordingDevices()
         self.CreateAndConnectSpikeGenerators()
 
     def ConfigureNest(self):
@@ -40,33 +40,49 @@ class Simulation:
                               "data_prefix": ""})
         nest.SetDefaults('static_synapse', {'delay': 0.1})
 
-    def CreateNeuron(self):
+    def CreateAndConnectNeurons(self):
         neuron_params={"tau_syn_ex": 1.0,
                        "V_reset": -70.0}
-        self.neuron = nest.Create("iaf_cond_alpha",
-                                  params=neuron_params)
+        self.populationA = nest.Create("iaf_cond_alpha",
+                                       params=neuron_params)
+        self.populationB = nest.Create("iaf_cond_alpha", 2,
+                                       params=neuron_params)
+        nest.Connect(self.populationA, self.populationB, syn_spec={"weight": 100.0});
 
-    def CreateAndConnectMultimeters(self):
-        self.CreateAndConnectConduitMultimeter()
-        self.CreateAndConnectScreenMultimeter()
+    def CreateAndConnectRecordingDevices(self):
+        self.CreateAndConnectConduitMultimeter(self.populationA, "multimeter A")
+        self.CreateAndConnectConduitMultimeter(self.populationB, "multimeter B")
 
-    def CreateAndConnectConduitMultimeter(self):
-        multimeter_conduit_params = {"interval": 0.1,
-                                     "record_from": ["V_m", "g_ex", "g_in"],
-                                     "record_to": ["stream"],
-                                     "label": "multimeter_conduit"}
+        self.CreateAndConnectConduitSpikeDetector(self.populationA, "spikes A")
+        self.CreateAndConnectConduitSpikeDetector(self.populationB, "spikes B")
+
+        self.CreateAndConnectScreenMultimeter(self.populationA, "screen MM A")
+
+    def CreateAndConnectConduitMultimeter(self, population, label):
         multimeter_conduit = nest.Create("multimeter",
-                                         params=multimeter_conduit_params)
-        nest.Connect(multimeter_conduit, self.neuron)
+                                         params={"interval": 0.1,
+                                                 "record_from": ["V_m", "g_ex", "g_in"],
+                                                 "record_to": ["stream"],
+                                                 "label": label})
+        nest.Connect(multimeter_conduit, population)
 
-    def CreateAndConnectScreenMultimeter(self):
+    def CreateAndConnectConduitSpikeDetector(self, population, label):
+        spike_detector_conduit = nest.Create("spike_detector",
+                                             params={"record_to": ["stream"],
+                                                     "label": label})
+        nest.Connect(population, spike_detector_conduit)
+
+    def CreateAndConnectScreenMultimeter(self, population, label):
         multimeter_screen_params = {"interval": 0.1,
                                     "record_from": ["V_m", "g_ex", "g_in"],
                                     "record_to": ["screen"],
                                     "label": "my_screen_multimeter"}
         multimeter_screen = nest.Create("multimeter",
-                                        params=multimeter_screen_params)
-        nest.Connect(multimeter_screen, self.neuron)
+                                        params={"interval": 0.1,
+                                                "record_from": ["V_m", "g_ex", "g_in"],
+                                                "record_to": ["screen"],
+                                                "label": label})
+        nest.Connect(multimeter_screen, population)
 
     def CreateAndConnectSpikeGenerators(self):
         self.CreateAndConnectExitatorySpikeGenerator()
@@ -76,13 +92,13 @@ class Simulation:
         spikes_ex_params = {"spike_times": numpy.array([1.0, 5.0, 10.0, 15.0, 20.0, 50.0])}
         spikes_ex = nest.Create("spike_generator",
                                 params=spikes_ex_params)
-        nest.Connect(spikes_ex, self.neuron, syn_spec={"weight": 40.0})
+        nest.Connect(spikes_ex, self.populationA, syn_spec={"weight": 40.0})
 
     def CreateAndConnectInhibitorySpikeGenerator(self):
         spikes_in_params = {"spike_times": numpy.array([4.0, 8.0, 13.0, 18.0, 23.0, 53.0])}
         spikes_in = nest.Create("spike_generator",
                                 params=spikes_in_params)
-        nest.Connect(spikes_in, self.neuron, syn_spec={"weight": -20.0})
+        nest.Connect(spikes_in, self.populationA, syn_spec={"weight": -20.0})
 
     def Simulate(self, time):
         nest.Simulate(time)
