@@ -35,7 +35,7 @@ if(NOT PY_TEST_COMMAND)
     " ERROR: Could not find py.test.
         Having py.test is a mandatory requirement.
         CMake will not generate the project without it.
-        Add its location to the environments variables PATH or CPPLINT_DIR.")
+        Add its location to the environments variables PATH or PY_TEST_DIR.")
 endif()
 
 function(ADD_TEST_PY_TEST)
