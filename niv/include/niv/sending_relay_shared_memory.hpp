@@ -33,6 +33,7 @@ namespace niv {
 
 class SendingRelaySharedMemory : public RelaySharedMemory {
  public:
+  explicit SendingRelaySharedMemory(SharedMemory* shared_memory);
   explicit SendingRelaySharedMemory(
       std::unique_ptr<SharedMemory> shared_memory);
   virtual ~SendingRelaySharedMemory() = default;

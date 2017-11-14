@@ -29,6 +29,8 @@
 #include "conduit/conduit_schema.hpp"
 
 namespace niv {
+SendingRelaySharedMemory::SendingRelaySharedMemory(SharedMemory* shared_memory)
+    : SendingRelaySharedMemory(std::unique_ptr<SharedMemory>(shared_memory)) {}
 
 SendingRelaySharedMemory::SendingRelaySharedMemory(
     std::unique_ptr<SharedMemory> shared_memory)
