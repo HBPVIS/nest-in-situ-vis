@@ -45,12 +45,11 @@ SCENARIO("A multimeter records to a conduit node", "[niv][niv::Multimeter]") {
       multimeter.SetRecordingTime(any_time);
       WHEN("recording") {
         multimeter.Record(any_id, any_values);
-        node.print();
         THEN("data is recorded in the node") {
           for (std::size_t i = 0; i < any_value_names.size(); ++i) {
-            CHECK(node[any_name][any_time_string][any_value_names[i]]
-                      [any_id_string]
-                          .to_double() == Approx(any_values[i]));
+            REQUIRE(node[any_name][any_time_string][any_value_names[i]]
+                        [any_id_string]
+                            .to_double() == Approx(any_values[i]));
           }
         }
       }
