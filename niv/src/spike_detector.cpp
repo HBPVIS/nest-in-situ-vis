@@ -19,6 +19,7 @@
 // limitations under the License.
 //------------------------------------------------------------------------------
 
+#include <memory>
 #include <string>
 #include <vector>
 
@@ -48,6 +49,11 @@ std::vector<std::size_t> SpikeDetector::AsVector(
   const auto* begin = reinterpret_cast<std::size_t*>(array.data_ptr());
   const auto* end = begin + num_elements;
   return std::vector<std::size_t>(begin, end);
+}
+
+std::unique_ptr<SpikeDetector> SpikeDetector::New(const std::string& name,
+                                                  conduit::Node* node) {
+  return std::make_unique<SpikeDetector>(name, node);
 }
 
 }  // namespace niv

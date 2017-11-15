@@ -19,6 +19,7 @@
 // limitations under the License.
 //------------------------------------------------------------------------------
 
+#include <memory>
 #include <string>
 
 #include "catch/catch.hpp"
@@ -26,6 +27,15 @@
 #include "conduit/conduit_node.hpp"
 
 #include "niv/spike_detector.hpp"
+
+SCENARIO("A unique spike detector ptr can be constructed via its factory",
+         "[niv][niv::SpikeDetector]") {
+  WHEN("a new spike detector is constructed") {
+    std::unique_ptr<niv::SpikeDetector> spike_detector{
+        niv::SpikeDetector::New("name", nullptr)};
+    THEN("a pointer was obtained") { REQUIRE(spike_detector.get() != nullptr); }
+  }
+}
 
 SCENARIO("A spike detector records to a conduit node",
          "[niv][niv::SpikeDetector]") {

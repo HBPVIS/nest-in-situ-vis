@@ -19,6 +19,7 @@
 // limitations under the License.
 //------------------------------------------------------------------------------
 
+#include <memory>
 #include <string>
 #include <vector>
 
@@ -49,6 +50,12 @@ std::string Multimeter::IdString(std::size_t id) const {
   std::stringstream id_stream;
   id_stream << id;
   return id_stream.str();
+}
+
+std::unique_ptr<Multimeter> Multimeter::New(
+    const std::string& name, const std::vector<std::string>& value_names,
+    conduit::Node* node) {
+  return std::make_unique<Multimeter>(name, value_names, node);
 }
 
 }  // namespace niv

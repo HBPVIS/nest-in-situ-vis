@@ -19,6 +19,7 @@
 // limitations under the License.
 //------------------------------------------------------------------------------
 
+#include <memory>
 #include <string>
 #include <vector>
 
@@ -27,6 +28,15 @@
 #include "conduit/conduit_node.hpp"
 
 #include "niv/multimeter.hpp"
+
+SCENARIO("A unique multimeter ptr can be constructed via its factory",
+         "[niv][niv::Multimeter]") {
+  WHEN("a new multimeter is constructed") {
+    std::unique_ptr<niv::Multimeter> multimeter{
+        niv::Multimeter::New("name", std::vector<std::string>(), nullptr)};
+    THEN("a pointer was obtained") { REQUIRE(multimeter.get() != nullptr); }
+  }
+}
 
 SCENARIO("A multimeter records to a conduit node", "[niv][niv::Multimeter]") {
   const std::string any_name{"multimeter1"};

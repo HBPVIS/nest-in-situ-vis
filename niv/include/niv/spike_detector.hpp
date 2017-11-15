@@ -22,6 +22,7 @@
 #ifndef NIV_INCLUDE_NIV_SPIKE_DETECTOR_HPP_
 #define NIV_INCLUDE_NIV_SPIKE_DETECTOR_HPP_
 
+#include <memory>
 #include <string>
 #include <vector>
 
@@ -40,6 +41,9 @@ class SpikeDetector final : public Recorder {
 
   SpikeDetector& operator=(const SpikeDetector&) = default;
   SpikeDetector& operator=(SpikeDetector&&) = default;
+
+  static std::unique_ptr<SpikeDetector> New(const std::string& name,
+                                            conduit::Node* node);
 
  private:
   std::vector<std::size_t> GetData(const conduit::Node& node);

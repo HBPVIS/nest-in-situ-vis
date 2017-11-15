@@ -22,6 +22,7 @@
 #ifndef NIV_INCLUDE_NIV_MULTIMETER_HPP_
 #define NIV_INCLUDE_NIV_MULTIMETER_HPP_
 
+#include <memory>
 #include <sstream>
 #include <string>
 #include <vector>
@@ -42,6 +43,10 @@ class Multimeter final : public Recorder {
 
   Multimeter& operator=(const Multimeter&) = default;
   Multimeter& operator=(Multimeter&&) = default;
+
+  static std::unique_ptr<Multimeter> New(
+      const std::string& name, const std::vector<std::string>& value_names,
+      conduit::Node* node);
 
  private:
   void Record(std::string id_string, const std::vector<double> values,
