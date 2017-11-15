@@ -73,10 +73,6 @@ class Simulation:
         nest.Connect(population, spike_detector_conduit)
 
     def CreateAndConnectScreenMultimeter(self, population, label):
-        multimeter_screen_params = {"interval": 0.1,
-                                    "record_from": ["V_m", "g_ex", "g_in"],
-                                    "record_to": ["screen"],
-                                    "label": "my_screen_multimeter"}
         multimeter_screen = nest.Create("multimeter",
                                         params={"interval": 0.1,
                                                 "record_from": ["V_m", "g_ex", "g_in"],
