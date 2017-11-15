@@ -19,9 +19,7 @@
 // limitations under the License.
 //------------------------------------------------------------------------------
 
-#ifndef NIV_INCLUDE_NIV_SPIKE_DETECTOR_HPP_
-#define NIV_INCLUDE_NIV_SPIKE_DETECTOR_HPP_
-
+#include <sstream>
 #include <string>
 #include <vector>
 
@@ -29,23 +27,23 @@
 
 namespace niv {
 
-class SpikeDetector final : public Recorder {
- public:
-  SpikeDetector(const std::string& name, conduit::Node* node);
-  SpikeDetector(const SpikeDetector&) = default;
-  SpikeDetector(SpikeDetector&&) = default;
-  virtual ~SpikeDetector() = default;
+Recorder::Recorder(const std::string& name, conduit::Node* node)
+    : node_(node), name_(name) {}
 
-  void Record(std::size_t id) override;
+void Recorder::SetRecordingTime(double time) {
+  std::stringstream time_stream;
+  time_stream << time;
+  timestep_node_ = &(*node_)[name_][time_stream.str()];
+}
 
-  SpikeDetector& operator=(const SpikeDetector&) = default;
-  SpikeDetector& operator=(SpikeDetector&&) = default;
+void Recorder::Record(std::size_t) {}
+void Recorder::Record(std::size_t, const std::vector<double>&) {}
 
- private:
-  std::vector<std::size_t> GetData(const conduit::Node& node);
-  std::vector<std::size_t> AsVector(const conduit::uint64_array& array);
-};
+conduit::Node& Recorder::GetTimestepNode() {
+  if (timestep_node_ == nullptr) {
+    SetRecordingTime(0.0);
+  }
+  return *timestep_node_;
+}
 
 }  // namespace niv
-
-#endif  // NIV_INCLUDE_NIV_SPIKE_DETECTOR_HPP_

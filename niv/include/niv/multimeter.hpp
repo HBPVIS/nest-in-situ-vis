@@ -33,29 +33,20 @@ namespace niv {
 class Multimeter final : public Recorder {
  public:
   Multimeter(const std::string& name,
-             const std::vector<std::string>& value_names, conduit::Node* node)
-      : Recorder{name, node}, value_names_{value_names} {}
+             const std::vector<std::string>& value_names, conduit::Node* node);
+  Multimeter(const Multimeter&) = default;
+  Multimeter(Multimeter&&) = default;
+  virtual ~Multimeter() = default;
 
-  void Record(std::size_t id, const std::vector<double> values) override {
-    const std::string id_string{IdString(id)};
-    for (std::size_t i = 0; i < value_names_.size(); ++i) {
-      Record(id_string, values, i);
-    }
-  }
+  void Record(std::size_t id, const std::vector<double>& values) override;
+
+  Multimeter& operator=(const Multimeter&) = default;
+  Multimeter& operator=(Multimeter&&) = default;
 
  private:
   void Record(std::string id_string, const std::vector<double> values,
-              std::size_t value_index) {
-    const std::string& value_name = value_names_[value_index];
-    const double value = values[value_index];
-    (*timestep_node_)[value_name][id_string] = value;
-  }
-
-  std::string IdString(std::size_t id) const {
-    std::stringstream id_stream;
-    id_stream << id;
-    return id_stream.str();
-  }
+              std::size_t value_index);
+  std::string IdString(std::size_t id) const;
 
   std::vector<std::string> value_names_;
 };

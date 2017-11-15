@@ -22,6 +22,9 @@
 #ifndef NIV_INCLUDE_NIV_RECORDER_HPP_
 #define NIV_INCLUDE_NIV_RECORDER_HPP_
 
+#include <string>
+#include <vector>
+
 #include "conduit/conduit_node.hpp"
 
 namespace niv {
@@ -32,24 +35,20 @@ class Recorder {
   Recorder(Recorder&&) = default;
   virtual ~Recorder() = default;
 
-  void SetRecordingTime(double time) {
-    std::stringstream time_stream;
-    time_stream << time;
-    timestep_node_ = &(*node_)[name_][time_stream.str()];
-  }
+  void SetRecordingTime(double time);
 
-  virtual void Record(std::size_t) {}
-  virtual void Record(std::size_t, const std::vector<double>) {}
+  virtual void Record(std::size_t);
+  virtual void Record(std::size_t, const std::vector<double>&);
 
   Recorder& operator=(const Recorder&) = default;
   Recorder& operator=(Recorder&&) = default;
 
  protected:
-  Recorder(const std::string& name, conduit::Node* node)
-      : node_(node), name_(name) {
-    SetRecordingTime(0.0);
-  }
+  Recorder(const std::string& name, conduit::Node* node);
 
+  conduit::Node& GetTimestepNode();
+
+ private:
   conduit::Node* node_{nullptr};
   conduit::Node* timestep_node_{nullptr};
   std::string name_{"recorder"};

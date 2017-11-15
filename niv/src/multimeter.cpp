@@ -19,33 +19,36 @@
 // limitations under the License.
 //------------------------------------------------------------------------------
 
-#ifndef NIV_INCLUDE_NIV_SPIKE_DETECTOR_HPP_
-#define NIV_INCLUDE_NIV_SPIKE_DETECTOR_HPP_
-
 #include <string>
 #include <vector>
 
-#include "niv/recorder.hpp"
+#include "niv/multimeter.hpp"
 
 namespace niv {
 
-class SpikeDetector final : public Recorder {
- public:
-  SpikeDetector(const std::string& name, conduit::Node* node);
-  SpikeDetector(const SpikeDetector&) = default;
-  SpikeDetector(SpikeDetector&&) = default;
-  virtual ~SpikeDetector() = default;
+Multimeter::Multimeter(const std::string& name,
+                       const std::vector<std::string>& value_names,
+                       conduit::Node* node)
+    : Recorder{name, node}, value_names_{value_names} {}
 
-  void Record(std::size_t id) override;
+void Multimeter::Record(std::size_t id, const std::vector<double>& values) {
+  const std::string id_string{IdString(id)};
+  for (std::size_t i = 0; i < value_names_.size(); ++i) {
+    Record(id_string, values, i);
+  }
+}
 
-  SpikeDetector& operator=(const SpikeDetector&) = default;
-  SpikeDetector& operator=(SpikeDetector&&) = default;
+void Multimeter::Record(std::string id_string, const std::vector<double> values,
+                        std::size_t value_index) {
+  const std::string& value_name = value_names_[value_index];
+  const double value = values[value_index];
+  GetTimestepNode()[value_name][id_string] = value;
+}
 
- private:
-  std::vector<std::size_t> GetData(const conduit::Node& node);
-  std::vector<std::size_t> AsVector(const conduit::uint64_array& array);
-};
+std::string Multimeter::IdString(std::size_t id) const {
+  std::stringstream id_stream;
+  id_stream << id;
+  return id_stream.str();
+}
 
 }  // namespace niv
-
-#endif  // NIV_INCLUDE_NIV_SPIKE_DETECTOR_HPP_

@@ -19,33 +19,35 @@
 // limitations under the License.
 //------------------------------------------------------------------------------
 
-#ifndef NIV_INCLUDE_NIV_SPIKE_DETECTOR_HPP_
-#define NIV_INCLUDE_NIV_SPIKE_DETECTOR_HPP_
-
 #include <string>
 #include <vector>
 
-#include "niv/recorder.hpp"
+#include "niv/spike_detector.hpp"
 
 namespace niv {
 
-class SpikeDetector final : public Recorder {
- public:
-  SpikeDetector(const std::string& name, conduit::Node* node);
-  SpikeDetector(const SpikeDetector&) = default;
-  SpikeDetector(SpikeDetector&&) = default;
-  virtual ~SpikeDetector() = default;
+SpikeDetector::SpikeDetector(const std::string& name, conduit::Node* node)
+    : Recorder{name, node} {}
 
-  void Record(std::size_t id) override;
+void SpikeDetector::Record(std::size_t id) {
+  std::vector<std::size_t> data(GetData(GetTimestepNode()));
+  data.push_back(id);
+  GetTimestepNode().set_uint64_vector(data);
+}
 
-  SpikeDetector& operator=(const SpikeDetector&) = default;
-  SpikeDetector& operator=(SpikeDetector&&) = default;
+std::vector<std::size_t> SpikeDetector::GetData(const conduit::Node& node) {
+  if (node.total_bytes_allocated() != 0) {
+    return AsVector(node.as_uint64_array());
+  }
+  return std::vector<std::size_t>();
+}
 
- private:
-  std::vector<std::size_t> GetData(const conduit::Node& node);
-  std::vector<std::size_t> AsVector(const conduit::uint64_array& array);
-};
+std::vector<std::size_t> SpikeDetector::AsVector(
+    const conduit::uint64_array& array) {
+  const std::size_t num_elements = array.number_of_elements();
+  const auto* begin = reinterpret_cast<std::size_t*>(array.data_ptr());
+  const auto* end = begin + num_elements;
+  return std::vector<std::size_t>(begin, end);
+}
 
 }  // namespace niv
-
-#endif  // NIV_INCLUDE_NIV_SPIKE_DETECTOR_HPP_
