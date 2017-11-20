@@ -34,6 +34,8 @@ target_include_directories(niv
   )
 target_link_libraries(niv
   conduit
+  pthread
+  rt
   )
 
 generate_export_header(niv
