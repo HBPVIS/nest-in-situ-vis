@@ -19,9 +19,9 @@
 // limitations under the License.
 //------------------------------------------------------------------------------
 
-#include "niv/conduit_receiver.hpp"
-
 #include "pyniv.hpp"
+
+#include "niv/conduit_receiver.hpp"
 
 namespace pyniv {
 
