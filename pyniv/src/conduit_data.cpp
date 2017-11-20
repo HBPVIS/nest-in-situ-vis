@@ -19,11 +19,11 @@
 // limitations under the License.
 //------------------------------------------------------------------------------
 
+#include "pyniv.hpp"
+
 #include "conduit_data.hpp"
 
 #include <iostream>
-
-#include "pyniv.hpp"
 
 namespace pyniv {
 
