@@ -46,7 +46,7 @@ include(py.test)
 
 include(WarningLevels)
 
-find_package(conduit)
+find_package(Conduit)
 set_target_properties(conduit
   PROPERTIES INTERFACE_INCLUDE_DIRECTORIES "${CONDUIT_INCLUDE_DIRS}/..")
 
