@@ -25,6 +25,9 @@
 #include <utility>
 #include <vector>
 
+#include "conduit/conduit_node.hpp"
+#include "conduit/conduit_schema.hpp"
+
 namespace niv {
 
 SharedMemory::SharedMemory(const Create&)
@@ -48,12 +51,39 @@ std::size_t SharedMemory::GetFreeSize() const {
   return segment_.get_free_memory();
 }
 
+void SharedMemory::Store(const conduit::Node& node) {
+  StoreSchema(node);
+  StoreData(node);
+
+  conduit::Schema schema;
+  node.schema().compact_to(schema);
+  Store(schema.to_json());
+}
+
+void SharedMemory::StoreSchema(const conduit::Node& node) {
+  conduit::Schema schema;
+  node.schema().compact_to(schema);
+  Store(schema.to_json());
+}
+
+void SharedMemory::StoreData(const conduit::Node& node) {
+  std::vector<conduit::uint8> data;
+  node.serialize(data);
+  Store(data);
+}
+
 void SharedMemory::Store(const std::vector<conduit::uint8>& data) {
   data_vector_->assign(data.begin(), data.end());
 }
 
 void SharedMemory::Store(const std::string& schema) {
   schema_string_->assign(schema.begin(), schema.end());
+}
+
+void SharedMemory::Read(conduit::Node* node) {
+  auto schema = GetSchema();
+  auto data = GetData();
+  node->set_data_using_schema(conduit::Schema(schema), data.data());
 }
 
 std::vector<conduit::uint8> SharedMemory::GetData() const {

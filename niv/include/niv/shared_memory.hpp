@@ -30,6 +30,7 @@
 #include "boost/interprocess/managed_shared_memory.hpp"
 
 #include "conduit/conduit_core.hpp"
+#include "conduit/conduit_node.hpp"
 
 namespace niv {
 
@@ -53,11 +54,14 @@ class SharedMemory {
 
   std::size_t GetFreeSize() const;
 
+  void Store(const conduit::Node& node);
   void Store(const std::vector<conduit::uint8>& data);
   void Store(const std::string& schema);
   std::vector<conduit::uint8> GetData() const;
   conduit::uint8* GetRawData() const;
   std::string GetSchema() const;
+
+  void Read(conduit::Node* node);
 
   static constexpr const char* SegmentName() { return "niv-shared-memory"; }
   static constexpr const char* DataVectorName() { return "DataVector"; }
@@ -68,6 +72,10 @@ class SharedMemory {
   ManagedSharedMemory segment_;
   DataVector* data_vector_{nullptr};
   SchemaString* schema_string_{nullptr};
+
+ private:
+  void StoreSchema(const conduit::Node& node);
+  void StoreData(const conduit::Node& node);
 };
 
 }  // namespace niv
