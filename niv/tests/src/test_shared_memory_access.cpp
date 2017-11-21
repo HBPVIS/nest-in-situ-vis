@@ -24,8 +24,12 @@
 
 #include "catch/catch.hpp"
 
+#include "conduit/conduit_node.hpp"
+
 #include "niv/shared_memory_access.hpp"
 #include "niv/shared_memory_segment.hpp"
+
+#include "conduit_node_helper.hpp"
 
 SCENARIO("Shared memory access", "[niv][niv::SharedMemoryAccess]") {
   GIVEN("No shared memory segment") {
@@ -35,12 +39,8 @@ SCENARIO("Shared memory access", "[niv][niv::SharedMemoryAccess]") {
     }
   }
 
-  GIVEN("A shared memory segment with some data in it") {
+  GIVEN("A shared memory segment") {
     niv::SharedMemorySegment segment;
-    std::vector<conduit::uint8> some_data{1u, 2u, 3u};
-    segment.Store(some_data);
-    std::string some_schema{"foo bar"};
-    segment.Store(some_schema);
 
     WHEN("I create shared memory access") {
       THEN("It does not throw an exception") {
@@ -48,15 +48,14 @@ SCENARIO("Shared memory access", "[niv][niv::SharedMemoryAccess]") {
       }
       niv::SharedMemoryAccess segment_access;
 
-      WHEN("I read the data from shared memory access") {
-        auto read_data = segment_access.GetData();
-        THEN("I get the original data") { REQUIRE(read_data == some_data); }
-      }
+      WHEN("data is sotred in the shared memory access") {
+        conduit::Node any_node = testing::CreateAnyNode();
+        segment_access.Store(any_node);
 
-      WHEN("I read the schema from shared memory access") {
-        auto read_schema = segment_access.GetSchema();
-        THEN("I get the original schema") {
-          REQUIRE(read_schema == some_schema);
+        THEN("it can be retrieved") {
+          conduit::Node retrieved_node;
+          segment_access.Read(&retrieved_node);
+          testing::REQUIRE_EQUAL_NODES(retrieved_node, any_node);
         }
       }
     }

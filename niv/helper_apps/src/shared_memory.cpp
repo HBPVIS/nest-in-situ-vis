@@ -39,22 +39,9 @@ conduit::Node AnyNode() {
   return node;
 }
 
-void StoreSchema(const conduit::Node& node, niv::SharedMemory* shared_memory) {
-  conduit::Schema schema;
-  node.schema().compact_to(schema);
-  shared_memory->Store(schema.to_json());
-}
-
-void StoreData(const conduit::Node& node, niv::SharedMemory* shared_memory) {
-  std::vector<conduit::uint8> data;
-  node.serialize(data);
-  shared_memory->Store(data);
-}
-
 void FillWithData(niv::SharedMemory* shared_memory) {
   conduit::Node node{AnyNode()};
-  StoreSchema(node, shared_memory);
-  StoreData(node, shared_memory);
+  shared_memory->Store(node);
 }
 
 void Create() {

@@ -1,0 +1,56 @@
+//------------------------------------------------------------------------------
+// nest in situ vis
+//
+// Copyright (c) 2017 RWTH Aachen University, Germany,
+// Virtual Reality & Immersive Visualisation Group.
+//------------------------------------------------------------------------------
+//                                 License
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//     http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+//------------------------------------------------------------------------------
+
+#ifndef NIV_TESTS_SRC_CONDUIT_NODE_HELPER_HPP_
+#define NIV_TESTS_SRC_CONDUIT_NODE_HELPER_HPP_
+
+#include "catch/catch.hpp"
+
+#include "conduit/conduit_node.hpp"
+
+namespace testing {
+
+conduit::Node CreateAnyNode() {
+  conduit::Node node;
+  node["A/B/C"] = 3.1415;
+  node["A/B/D"] = 4.124;
+  node["A/E"] = 42.0;
+  return node;
+}
+
+conduit::Node CreateAnotherNode() {
+  conduit::Node node;
+  node["A/B/C"] = 2.0 * 3.1415;
+  node["A/B/D"] = 3.0 * 4.124;
+  node["A/E"] = 4.0 * 42.0;
+  return node;
+}
+
+void REQUIRE_EQUAL_NODES(const conduit::Node& actual,
+                         const conduit::Node& expected) {
+  REQUIRE(actual["A/B/C"].to_double() == Approx(expected["A/B/C"].to_double()));
+  REQUIRE(actual["A/B/D"].to_double() == Approx(expected["A/B/D"].to_double()));
+  REQUIRE(actual["A/E"].to_double() == Approx(expected["A/E"].to_double()));
+}
+
+}  // namespace testing
+
+#endif  // NIV_TESTS_SRC_CONDUIT_NODE_HELPER_HPP_

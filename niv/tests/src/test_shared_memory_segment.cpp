@@ -24,7 +24,11 @@
 
 #include "catch/catch.hpp"
 
+#include "conduit/conduit_node.hpp"
+
 #include "niv/shared_memory_segment.hpp"
+
+#include "conduit_node_helper.hpp"
 
 SCENARIO("Shared memory creation", "[niv][niv::SharedMemorySegment]") {
   GIVEN("A shared memory segment") {
@@ -35,40 +39,23 @@ SCENARIO("Shared memory creation", "[niv][niv::SharedMemorySegment]") {
     }
 
     WHEN("I retrieve data from the new segment") {
-      auto retrieved_data = segment.GetData();
-      THEN("it is empty") { REQUIRE(retrieved_data.size() == 0); }
+      conduit::Node node;
+      segment.Read(&node);
+      THEN("it is empty") { REQUIRE(node.dtype().is_empty()); }
     }
 
     WHEN("I store data in the segment") {
-      std::vector<conduit::uint8> some_data{1u, 2u, 3u};
       auto free_size_before = segment.GetFreeSize();
-      segment.Store(some_data);
+      const conduit::Node any_node = testing::CreateAnyNode();
+      segment.Store(any_node);
       auto free_size_after = segment.GetFreeSize();
       THEN("we have less free space in the segment") {
         REQUIRE(free_size_after < free_size_before);
       }
       THEN("I can retrieve the data") {
-        auto retrieved_data = segment.GetData();
-        REQUIRE(retrieved_data == some_data);
-      }
-    }
-
-    WHEN("I retrieve the schema from the new segment") {
-      auto retrieved_schema = segment.GetSchema();
-      THEN("it is empty") { REQUIRE(retrieved_schema.size() == 0); }
-    }
-
-    WHEN("I store a schema in the segment") {
-      std::string some_schema{"foo bar"};
-      auto free_size_before = segment.GetFreeSize();
-      segment.Store(some_schema);
-      auto free_size_after = segment.GetFreeSize();
-      THEN("we have less free space in the segment") {
-        REQUIRE(free_size_after < free_size_before);
-      }
-      THEN("I can retrieve it") {
-        auto retrieved_schema = segment.GetSchema();
-        REQUIRE(retrieved_schema == some_schema);
+        conduit::Node retrieved_node;
+        segment.Read(&retrieved_node);
+        testing::REQUIRE_EQUAL_NODES(retrieved_node, any_node);
       }
     }
 

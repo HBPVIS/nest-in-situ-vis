@@ -55,12 +55,6 @@ class SharedMemory {
   std::size_t GetFreeSize() const;
 
   void Store(const conduit::Node& node);
-  void Store(const std::vector<conduit::uint8>& data);
-  void Store(const std::string& schema);
-  std::vector<conduit::uint8> GetData() const;
-  conduit::uint8* GetRawData() const;
-  std::string GetSchema() const;
-
   void Read(conduit::Node* node);
   void Listen(conduit::Node* node);
 
@@ -77,6 +71,12 @@ class SharedMemory {
  private:
   void StoreSchema(const conduit::Node& node);
   void StoreData(const conduit::Node& node);
+
+  void Store(const std::vector<conduit::uint8>& data);
+  void Store(const std::string& schema);
+  std::vector<conduit::uint8> GetData() const;
+  conduit::uint8* GetRawData() const;
+  std::string GetSchema() const;
 };
 
 }  // namespace niv

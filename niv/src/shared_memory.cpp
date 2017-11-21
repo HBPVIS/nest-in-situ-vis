@@ -82,8 +82,12 @@ void SharedMemory::Store(const std::string& schema) {
 
 void SharedMemory::Read(conduit::Node* node) {
   auto schema = GetSchema();
-  auto data = GetData();
-  node->set_data_using_schema(conduit::Schema(schema), data.data());
+  if (schema.empty()) {
+    node->reset();
+  } else {
+    auto data = GetData();
+    node->set_data_using_schema(conduit::Schema(schema), data.data());
+  }
 }
 
 void SharedMemory::Listen(conduit::Node* node) {
