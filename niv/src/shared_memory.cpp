@@ -86,6 +86,12 @@ void SharedMemory::Read(conduit::Node* node) {
   node->set_data_using_schema(conduit::Schema(schema), data.data());
 }
 
+void SharedMemory::Listen(conduit::Node* node) {
+  auto schema = GetSchema();
+  auto raw_data = GetRawData();
+  node->set_external_data_using_schema(conduit::Schema(schema), raw_data);
+}
+
 std::vector<conduit::uint8> SharedMemory::GetData() const {
   return std::vector<conduit::uint8>{data_vector_->begin(),
                                      data_vector_->end()};

@@ -62,6 +62,7 @@ class SharedMemory {
   std::string GetSchema() const;
 
   void Read(conduit::Node* node);
+  void Listen(conduit::Node* node);
 
   static constexpr const char* SegmentName() { return "niv-shared-memory"; }
   static constexpr const char* DataVectorName() { return "DataVector"; }
