@@ -55,7 +55,7 @@ SCENARIO("Shared memory creation", "[niv][niv::SharedMemorySegment]") {
       THEN("I can retrieve the data") {
         conduit::Node retrieved_node;
         segment.Read(&retrieved_node);
-        testing::REQUIRE_EQUAL_NODES(retrieved_node, any_node);
+        REQUIRE_EQUAL_NODES(retrieved_node, any_node);
       }
     }
 
@@ -63,6 +63,25 @@ SCENARIO("Shared memory creation", "[niv][niv::SharedMemorySegment]") {
       THEN("It throws an exception") {
         REQUIRE_THROWS_WITH([]() { niv::SharedMemorySegment segment2; }(),
                             "File exists");
+      }
+    }
+  }
+}
+
+SCENARIO("write updated node to shared memory segment",
+         "[niv][niv::SharedMemorySegment]") {
+  GIVEN("a shared memory segment with some data") {
+    niv::SharedMemorySegment segment;
+    conduit::Node any_node = testing::CreateAnyNode();
+    segment.Store(any_node);
+    WHEN("a larger node is stored") {
+      segment.Store(testing::CreateCombinedNode());
+      WHEN("the node is retrieved") {
+        conduit::Node retrieved_node;
+        segment.Read(&retrieved_node);
+        THEN("the content is equal to the written one") {
+          REQUIRE_EQUAL_NODES(retrieved_node, testing::CreateCombinedNode());
+        }
       }
     }
   }

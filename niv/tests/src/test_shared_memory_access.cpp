@@ -55,7 +55,7 @@ SCENARIO("Shared memory access", "[niv][niv::SharedMemoryAccess]") {
         THEN("it can be retrieved") {
           conduit::Node retrieved_node;
           segment_access.Read(&retrieved_node);
-          testing::REQUIRE_EQUAL_NODES(retrieved_node, any_node);
+          REQUIRE_EQUAL_NODES(retrieved_node, any_node);
         }
       }
     }

@@ -42,7 +42,7 @@ SCENARIO("storing and retrieving conduit nodes to/from shared memory",
       THEN("it can be retrieved via access") {
         conduit::Node retrieved_node;
         shared_memory_access.Read(&retrieved_node);
-        testing::REQUIRE_EQUAL_NODES(retrieved_node, any_node);
+        REQUIRE_EQUAL_NODES(retrieved_node, any_node);
       }
 
       GIVEN("a node listening to shared memory") {
@@ -52,7 +52,7 @@ SCENARIO("storing and retrieving conduit nodes to/from shared memory",
           conduit::Node any_node = testing::CreateAnotherNode();
           shared_memory_segment.Store(any_node);
           THEN("the result arrives at the listening node") {
-            testing::REQUIRE_EQUAL_NODES(listening_node, any_node);
+            REQUIRE_EQUAL_NODES(listening_node, any_node);
           }
         }
       }
@@ -64,7 +64,7 @@ SCENARIO("storing and retrieving conduit nodes to/from shared memory",
       THEN("it can be retrieved from the segment") {
         conduit::Node retrieved_node;
         shared_memory_segment.Read(&retrieved_node);
-        testing::REQUIRE_EQUAL_NODES(retrieved_node, any_node);
+        REQUIRE_EQUAL_NODES(retrieved_node, any_node);
       }
 
       GIVEN("a node listening to shared memory") {
@@ -74,9 +74,29 @@ SCENARIO("storing and retrieving conduit nodes to/from shared memory",
           conduit::Node any_node = testing::CreateAnotherNode();
           shared_memory_segment.Store(any_node);
           THEN("the result arrives at the listening node") {
-            testing::REQUIRE_EQUAL_NODES(listening_node, any_node);
+            REQUIRE_EQUAL_NODES(listening_node, any_node);
           }
         }
+      }
+    }
+  }
+}
+
+SCENARIO("Overwriting data in shared memory",
+         "[niv][niv::SharedMemory][niv::SharedMemorySegment][niv::"
+         "SharedMemoryAccess") {
+  GIVEN("A shared memory segment + access, with some data in it") {
+    niv::SharedMemorySegment shared_memory_segment;
+    niv::SharedMemoryAccess shared_memory_access;
+    conduit::Node any_node = testing::CreateAnyNode();
+    shared_memory_segment.Store(any_node);
+    WHEN("when new data is stored in the segment") {
+      any_node = testing::CreateNewDataNode();
+      shared_memory_segment.Store(any_node);
+      WHEN("that data is retrieved") {
+        conduit::Node retrieved_node;
+        shared_memory_access.Read(&retrieved_node);
+        THEN("the retrieved data is equal to the stored one") {}
       }
     }
   }

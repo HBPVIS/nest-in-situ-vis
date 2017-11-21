@@ -32,14 +32,31 @@ namespace niv {
 
 SynchronizedRelaySharedMemory::SynchronizedRelaySharedMemory(
     std::unique_ptr<SharedMemory> shared_memory)
-    : RelaySharedMemory{std::move(shared_memory)} {}
+    : RelaySharedMemory{std::move(shared_memory)}, empty(true) {}
 
 void SynchronizedRelaySharedMemory::Send(const conduit::Node& node) {
+  if (empty) {
+    Store(node);
+  } else {
+    StoreUpdate(node);
+  }
+  empty = false;
+}
+
+void SynchronizedRelaySharedMemory::Store(const conduit::Node& node) {
   shared_memory_->Store(node);
+}
+
+void SynchronizedRelaySharedMemory::StoreUpdate(const conduit::Node& node) {
+  conduit::Node stored_node;
+  shared_memory_->Read(&stored_node);
+  stored_node.update(node);
+  shared_memory_->Store(stored_node);
 }
 
 void SynchronizedRelaySharedMemory::Receive(conduit::Node* node) {
   shared_memory_->Read(node);
+  empty = true;
 }
 
 }  // namespace niv

@@ -29,28 +29,11 @@
 #include "niv/shared_memory_segment.hpp"
 #include "niv/synchronized_relay_shared_memory.hpp"
 
-namespace {
-
-conduit::Node CreateAnyNode() {
-  conduit::Node node;
-  node["A/B/C"] = 3.1415;
-  node["A/B/D"] = 4.124;
-  node["A/D"] = 42.0;
-  return node;
-}
-
-void REQUIRE_EQUAL_NODES(const conduit::Node& actual,
-                         const conduit::Node& expected) {
-  REQUIRE(actual["A/B/C"].to_double() == Approx(expected["A/B/C"].to_double()));
-  REQUIRE(actual["A/B/D"].to_double() == Approx(expected["A/B/D"].to_double()));
-  REQUIRE(actual["A/D"].to_double() == Approx(expected["A/D"].to_double()));
-}
-
-}  // namespace
+#include "conduit_node_helper.hpp"
 
 SCENARIO("Data gets transported", "[niv][niv::SynchronizedRelaySharedMemory]") {
   GIVEN("A conduit node, a simulation relay, and a visualization relay") {
-    conduit::Node any_node = CreateAnyNode();
+    conduit::Node any_node = testing::CreateAnyNode();
     niv::SynchronizedRelaySharedMemory simulation_relay{
         std::make_unique<niv::SharedMemorySegment>()};
     niv::SynchronizedRelaySharedMemory visualization_relay{
@@ -65,6 +48,21 @@ SCENARIO("Data gets transported", "[niv][niv::SynchronizedRelaySharedMemory]") {
 
         THEN("received data matches original data") {
           REQUIRE_EQUAL_NODES(received_node, any_node);
+        }
+      }
+
+      WHEN("new data is sent") {
+        conduit::Node new_data = testing::CreateNewDataNode();
+        simulation_relay.Send(new_data);
+        WHEN("data is received via the visualization relay") {
+          conduit::Node received_node;
+          visualization_relay.Receive(&received_node);
+
+          THEN("received data matches original data +  new data") {
+            conduit::Node expected_node = any_node;
+            expected_node.update(new_data);
+            REQUIRE_EQUAL_NODES(received_node, expected_node);
+          }
         }
       }
     }

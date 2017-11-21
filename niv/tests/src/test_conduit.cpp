@@ -27,24 +27,18 @@
 
 #include "conduit/conduit_node.hpp"
 
+#include "conduit_node_helper.hpp"
+
 SCENARIO("update inserts new nodes", "[conduit]") {
   GIVEN("A conduit tree") {
-    conduit::Node a;
-    a["sim/t=0/Vm/N0"] = 0.5f;
-    a["sim/t=0/Vm/N1"] = 0.75f;
+    conduit::Node a = testing::CreateAnyNode();
 
     WHEN("A second node updates the second") {
-      conduit::Node b;
-      b["sim/t=1/Vm/N0"] = 1.5f;
-      b["sim/t=1/Vm/N1"] = 1.75f;
-
+      conduit::Node b = testing::CreateNewDataNode();
       a.update(b);
 
       THEN("the first node contains also the content of the second") {
-        REQUIRE(a["sim/t=0/Vm/N0"].to_float() == 0.5f);
-        REQUIRE(a["sim/t=0/Vm/N1"].to_float() == 0.75f);
-        REQUIRE(a["sim/t=1/Vm/N0"].to_float() == 1.5f);
-        REQUIRE(a["sim/t=1/Vm/N1"].to_float() == 1.75f);
+        REQUIRE_EQUAL_NODES(a, testing::CreateCombinedNode());
       }
     }
   }

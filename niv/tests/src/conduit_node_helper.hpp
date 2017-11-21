@@ -44,12 +44,26 @@ conduit::Node CreateAnotherNode() {
   return node;
 }
 
-void REQUIRE_EQUAL_NODES(const conduit::Node& actual,
-                         const conduit::Node& expected) {
-  REQUIRE(actual["A/B/C"].to_double() == Approx(expected["A/B/C"].to_double()));
-  REQUIRE(actual["A/B/D"].to_double() == Approx(expected["A/B/D"].to_double()));
-  REQUIRE(actual["A/E"].to_double() == Approx(expected["A/E"].to_double()));
+conduit::Node CreateNewDataNode() {
+  conduit::Node node;
+  node["A/B/F"] = 2.0 * 3.1415;
+  node["A/B/G"] = 3.0 * 4.124;
+  node["A/H"] = 4.0 * 42.0;
+  return node;
 }
+
+conduit::Node CreateCombinedNode() {
+  conduit::Node node;
+  node["A/B/C"] = 3.1415;
+  node["A/B/D"] = 4.124;
+  node["A/E"] = 42.0;
+  node["A/B/F"] = 2.0 * 3.1415;
+  node["A/B/G"] = 3.0 * 4.124;
+  node["A/H"] = 4.0 * 42.0;
+  return node;
+}
+
+#define REQUIRE_EQUAL_NODES(a, b) REQUIRE(a.to_json() == b.to_json())
 
 }  // namespace testing
 

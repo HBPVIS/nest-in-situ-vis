@@ -73,10 +73,12 @@ void SharedMemory::StoreData(const conduit::Node& node) {
 }
 
 void SharedMemory::Store(const std::vector<conduit::uint8>& data) {
+  data_vector_->clear();
   data_vector_->assign(data.begin(), data.end());
 }
 
 void SharedMemory::Store(const std::string& schema) {
+  schema_string_->clear();
   schema_string_->assign(schema.begin(), schema.end());
 }
 
