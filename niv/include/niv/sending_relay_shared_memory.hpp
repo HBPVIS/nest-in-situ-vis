@@ -39,10 +39,6 @@ class SendingRelaySharedMemory : public RelaySharedMemory {
   virtual ~SendingRelaySharedMemory() = default;
 
   void Send(const conduit::Node& node);
-
- private:
-  void SendData(const conduit::Node& node);
-  void SendSchema(const conduit::Node& node);
 };
 
 }  // namespace niv

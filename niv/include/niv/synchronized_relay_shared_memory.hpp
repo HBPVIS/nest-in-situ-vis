@@ -46,10 +46,6 @@ class SynchronizedRelaySharedMemory : public RelaySharedMemory {
       const SynchronizedRelaySharedMemory&) = delete;
   SynchronizedRelaySharedMemory& operator=(SynchronizedRelaySharedMemory&&) =
       default;
-
- private:
-  void SendData(const conduit::Node& node);
-  void SendSchema(const conduit::Node& node);
 };
 
 }  // namespace niv

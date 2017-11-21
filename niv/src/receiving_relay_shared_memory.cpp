@@ -34,15 +34,11 @@ ReceivingRelaySharedMemory::ReceivingRelaySharedMemory(
     : RelaySharedMemory{std::move(shared_memory)} {}
 
 void ReceivingRelaySharedMemory::Receive(conduit::Node* node) {
-  auto schema = shared_memory_->GetSchema();
-  auto data = shared_memory_->GetData();
-  node->set_data_using_schema(conduit::Schema(schema), data.data());
+  shared_memory_->Read(node);
 }
 
 void ReceivingRelaySharedMemory::Listen(conduit::Node* node) {
-  auto schema = shared_memory_->GetSchema();
-  auto raw_data = shared_memory_->GetRawData();
-  node->set_external_data_using_schema(conduit::Schema(schema), raw_data);
+  shared_memory_->Listen(node);
 }
 
 }  // namespace niv

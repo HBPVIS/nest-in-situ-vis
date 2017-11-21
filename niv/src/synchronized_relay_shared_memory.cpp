@@ -35,26 +35,11 @@ SynchronizedRelaySharedMemory::SynchronizedRelaySharedMemory(
     : RelaySharedMemory{std::move(shared_memory)} {}
 
 void SynchronizedRelaySharedMemory::Send(const conduit::Node& node) {
-  SendData(node);
-  SendSchema(node);
-}
-
-void SynchronizedRelaySharedMemory::SendData(const conduit::Node& node) {
-  std::vector<conduit::uint8> data;
-  node.serialize(data);
-  shared_memory_->Store(data);
-}
-
-void SynchronizedRelaySharedMemory::SendSchema(const conduit::Node& node) {
-  conduit::Schema schema;
-  node.schema().compact_to(schema);
-  shared_memory_->Store(schema.to_json());
+  shared_memory_->Store(node);
 }
 
 void SynchronizedRelaySharedMemory::Receive(conduit::Node* node) {
-  auto schema = shared_memory_->GetSchema();
-  auto data = shared_memory_->GetData();
-  node->set_data_using_schema(conduit::Schema(schema), data.data());
+  shared_memory_->Read(node);
 }
 
 }  // namespace niv
