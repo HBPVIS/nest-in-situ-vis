@@ -91,12 +91,47 @@ SCENARIO("Overwriting data in shared memory",
     conduit::Node any_node = testing::CreateAnyNode();
     shared_memory_segment.Store(any_node);
     WHEN("when new data is stored in the segment") {
-      any_node = testing::CreateNewDataNode();
-      shared_memory_segment.Store(any_node);
+      conduit::Node new_data_node = testing::CreateNewDataNode();
+      shared_memory_segment.Store(new_data_node);
       WHEN("that data is retrieved") {
         conduit::Node retrieved_node;
         shared_memory_access.Read(&retrieved_node);
-        THEN("the retrieved data is equal to the stored one") {}
+        THEN("the retrieved data is equal to the stored one") {
+          REQUIRE_EQUAL_NODES(retrieved_node, new_data_node);
+        }
+      }
+    }
+  }
+}
+
+SCENARIO("data can be updated in shared memory",
+         "[niv][niv::SharedMemory][niv::SharedMemorySegment][niv::"
+         "SharedMemoryAccess") {
+  std::cout << "SCENARIO(\"data can be updated in shared memory\")"
+            << std::endl;
+  GIVEN(
+      "a shared memory segment with a conduit node, and shared memory access") {
+    niv::SharedMemorySegment segment;
+    niv::SharedMemoryAccess segment_access;
+    conduit::Node node = testing::CreateAnyNode();
+    segment.Store(node);
+
+    WHEN("the data in the shared memory is updated") {
+      const conduit::Node update = testing::CreateNewDataNode();
+      segment.Update(update);
+      THEN("the  updated data can be retrieved from the segment") {
+        conduit::Node node_with_update = node;
+        node_with_update.update(update);
+        conduit::Node retrieved_node;
+        segment.Read(&retrieved_node);
+        // REQUIRE_EQUAL_NODES(retrieved_node, node_with_update);
+      }
+      THEN("the updated data can be retrieved from the segment access") {
+        conduit::Node node_with_update = node;
+        node_with_update.update(update);
+        conduit::Node retrieved_node;
+        segment_access.Read(&retrieved_node);
+        // REQUIRE_EQUAL_NODES(retrieved_node, node_with_update);
       }
     }
   }

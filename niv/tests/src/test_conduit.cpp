@@ -104,38 +104,27 @@ SCENARIO("node serialization works repeatedly", "[conduit]") {
 }
 
 SCENARIO("node serialization works repeatedly including updates", "[conduit]") {
-  GIVEN("a conduit node with some data") {
+  GIVEN("storage for data and schema with a conduit node") {
+    std::string schema_string;
+    std::vector<conduit::uint8> data;
     conduit::Node node = testing::CreateAnyNode();
-    WHEN("node is serialized") {
-      std::string schema_string;
-      std::vector<conduit::uint8> data;
-      testing::Serialize(node, &schema_string, &data);
-      WHEN("serialization is read into a second node") {
-        conduit::Node second_node;
-        second_node.set_data_using_schema(conduit::Schema(schema_string),
-                                          data.data());
-        THEN("they are identical") { REQUIRE_EQUAL_NODES(second_node, node); }
+    testing::Serialize(node, &schema_string, &data);
 
-        WHEN("second node is updates") {
-          conduit::Node update = testing::CreateNewDataNode();
-          second_node.update(update);
-          WHEN("updated second node is serialized") {
-            std::string second_schema_string;
-            std::vector<conduit::uint8> second_data;
-            testing::Serialize(second_node, &second_schema_string,
-                               &second_data);
-            WHEN("serialization is read into a third node") {
-              conduit::Node third_node;
-              third_node.set_data_using_schema(
-                  conduit::Schema(second_schema_string), second_data.data());
-              THEN("they are identical") {
-                conduit::Node node_including_update = node;
-                node_including_update.update(update);
-                REQUIRE_EQUAL_NODES(third_node, node_including_update);
-              }
-            }
-          }
-        }
+    WHEN("the data in the storage is updated") {
+      const conduit::Node update = testing::CreateNewDataNode();
+
+      conduit::Node tmp;
+      tmp.set_data_using_schema(conduit::Schema(schema_string), data.data());
+      tmp.update(update);
+      testing::Serialize(tmp, &schema_string, &data);
+
+      THEN("the updated data can be retrieved from the segment") {
+        conduit::Node node_with_update = node;
+        node_with_update.update(update);
+        conduit::Node retrieved_node;
+        retrieved_node.set_data_using_schema(conduit::Schema(schema_string),
+                                             data.data());
+        REQUIRE_EQUAL_NODES(retrieved_node, node_with_update);
       }
     }
   }

@@ -55,6 +55,7 @@ class SharedMemory {
   std::size_t GetFreeSize() const;
 
   void Store(const conduit::Node& node);
+  void Update(const conduit::Node& node);
   void Read(conduit::Node* node);
   void Listen(conduit::Node* node);
 

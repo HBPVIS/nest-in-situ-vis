@@ -56,10 +56,6 @@ void SharedMemory::Store(const conduit::Node& node) {
   node.print();
   StoreSchema(node);
   StoreData(node);
-
-  conduit::Schema schema;
-  node.schema().compact_to(schema);
-  Store(schema.to_json());
 }
 
 void SharedMemory::StoreSchema(const conduit::Node& node) {
@@ -89,6 +85,13 @@ void SharedMemory::Store(const std::vector<conduit::uint8>& data) {
 void SharedMemory::Store(const std::string& schema) {
   schema_string_->clear();
   schema_string_->assign(schema.begin(), schema.end());
+}
+
+void SharedMemory::Update(const conduit::Node& node) {
+  conduit::Node tmp;
+  Read(&tmp);
+  tmp.update(node);
+  Store(tmp);
 }
 
 void SharedMemory::Read(conduit::Node* node) {

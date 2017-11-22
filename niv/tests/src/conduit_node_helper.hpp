@@ -72,8 +72,15 @@ void Serialize(const conduit::Node node, std::string* schema_string,
                std::vector<conduit::uint8>* data) {
   conduit::Schema schema;
   node.schema().compact_to(schema);
-  *schema_string = schema.to_json();
-  node.serialize(*data);
+  const std::string schema_json{schema.to_json()};
+
+  schema_string->clear();
+  schema_string->assign(schema_json.begin(), schema_json.end());
+
+  std::vector<conduit::uint8> serialized_data;
+  node.serialize(serialized_data);
+  data->clear();
+  data->assign(serialized_data.begin(), serialized_data.end());
 }
 
 }  // namespace testing
