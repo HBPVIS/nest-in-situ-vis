@@ -61,7 +61,7 @@ SCENARIO("Data gets transported", "[niv][niv::SynchronizedRelaySharedMemory]") {
           THEN("received data matches original data +  new data") {
             conduit::Node expected_node = any_node;
             expected_node.update(new_data);
-            // REQUIRE_EQUAL_NODES(received_node, expected_node);
+            REQUIRE_EQUAL_NODES(received_node, expected_node);
           }
         }
       }
