@@ -31,9 +31,7 @@ SCENARIO("storing and reading a node", "[niv][niv::NodeStorage]") {
     WHEN("a node is stored") {
       storage.Store(testing::AnyNode());
       THEN("it can be read") {
-        conduit::Node read_node;
-        storage.Read(&read_node);
-        REQUIRE_EQUAL_NODES(read_node, testing::AnyNode());
+        REQUIRE_EQUAL_NODES(storage.Read(), testing::AnyNode());
       }
     }
   }

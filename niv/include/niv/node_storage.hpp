@@ -44,10 +44,6 @@ class NodeStorage {
     StoreSchema(tmp);
     StoreData(tmp);
   }
-  void Read(conduit::Node* node) {
-    node->set_data_using_schema(conduit::Schema(schema_storage_),
-                                data_storage_.data());
-  }
 
   conduit::Node Read() {
     constexpr bool external = false;
