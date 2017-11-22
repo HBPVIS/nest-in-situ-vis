@@ -74,99 +74,6 @@ SCENARIO("conduit array leafs are compatible to std::vector", "[conduit]") {
   }
 }
 
-SCENARIO("manual node serialization works repeatedly", "[conduit]") {
-  GIVEN("a serialized node") {
-    std::string schema_storage;
-    std::vector<conduit::uint8> data_storage;
-
-    const conduit::Node node{testing::AnyNode()};
-
-    conduit::Schema compact_schema;
-    node.schema().compact_to(compact_schema);
-    const std::string compact_schema_json{compact_schema.to_json()};
-    schema_storage.assign(compact_schema_json.begin(),
-                          compact_schema_json.end());
-
-    std::vector<conduit::uint8> data;
-    node.serialize(data);
-    data_storage.assign(data.begin(), data.end());
-
-    WHEN("serialization is read into a second node") {
-      conduit::Node second_node(schema_storage, data_storage.data(), false);
-      // second_node.set_data_using_schema(conduit::Schema(schema_storage),
-      //                                  data_storage.data());
-
-      THEN("they are identical") { REQUIRE_EQUAL_NODES(second_node, node); }
-
-      WHEN("the second node is serialized and read again") {
-        conduit::Schema second_compact_schema;
-        second_node.schema().compact_to(second_compact_schema);
-        const std::string second_compact_schema_json{
-            second_compact_schema.to_json()};
-        schema_storage.assign(second_compact_schema_json.begin(),
-                              second_compact_schema_json.end());
-
-        std::vector<conduit::uint8> second_data;
-        second_node.serialize(second_data);
-        data_storage.assign(second_data.begin(), second_data.end());
-
-        conduit::Node third_node(schema_storage, data_storage.data(), false);
-        // third_node.set_data_using_schema(conduit::Schema(schema_storage),
-        //                                 data_storage.data());
-
-        THEN("they are identical") { REQUIRE_EQUAL_NODES(third_node, node); }
-      }
-
-      WHEN("the second node is copied, serialized and read again") {
-        conduit::Node copied_second_node(second_node);
-
-        conduit::Schema second_compact_schema;
-        copied_second_node.schema().compact_to(second_compact_schema);
-        const std::string second_compact_schema_json{
-            second_compact_schema.to_json()};
-        schema_storage.assign(second_compact_schema_json.begin(),
-                              second_compact_schema_json.end());
-
-        std::vector<conduit::uint8> second_data;
-        copied_second_node.serialize(second_data);
-        data_storage.assign(second_data.begin(), second_data.end());
-
-        conduit::Node third_node;
-        third_node.set_data_using_schema(conduit::Schema(schema_storage),
-                                         data_storage.data());
-
-        THEN("they are identical") { REQUIRE_EQUAL_NODES(third_node, node); }
-      }
-    }
-  }
-}
-
-SCENARIO("node serialization works repeatedly", "[conduit]") {
-  GIVEN("a serialized node") {
-    std::string schema_string;
-    std::vector<conduit::uint8> data;
-    testing::Serialize(testing::AnyNode(), &schema_string, &data);
-    WHEN("serialization is read into a second node") {
-      conduit::Node second_node;
-      second_node.set_data_using_schema(conduit::Schema(schema_string),
-                                        data.data());
-      THEN("they are identical") {
-        REQUIRE_EQUAL_NODES(second_node, testing::AnyNode());
-      }
-
-      WHEN("the second node is serialized and read again") {
-        testing::Serialize(second_node, &schema_string, &data);
-        conduit::Node third_node;
-        third_node.set_data_using_schema(conduit::Schema(schema_string),
-                                         data.data());
-        THEN("they are identical") {
-          REQUIRE_EQUAL_NODES(third_node, testing::AnyNode());
-        }
-      }
-    }
-  }
-}
-
 SCENARIO("node serialization works repeatedly using a node storage",
          "[conduit]") {
   GIVEN("a serialized node") {
@@ -187,30 +94,8 @@ SCENARIO("node serialization works repeatedly using a node storage",
         storage.Read(&third_node);
 
         THEN("they are identical") {
-          // REQUIRE_EQUAL_NODES(third_node, testing::AnyNode());
+          REQUIRE_EQUAL_NODES(third_node, testing::AnyNode());
         }
-      }
-    }
-  }
-}
-
-SCENARIO("node serialization works repeatedly including updates", "[conduit]") {
-  GIVEN("a serialized node in some storage") {
-    std::string schema_string;
-    std::vector<conduit::uint8> data;
-    testing::Serialize(testing::AnyNode(), &schema_string, &data);
-
-    WHEN("the data in the storage is updated") {
-      conduit::Node tmp;
-      tmp.set_data_using_schema(conduit::Schema(schema_string), data.data());
-      tmp.update(testing::Update());
-      testing::Serialize(tmp, &schema_string, &data);
-
-      THEN("the updated data can be read from the storage") {
-        conduit::Node read_node;
-        read_node.set_data_using_schema(conduit::Schema(schema_string),
-                                        data.data());
-        // REQUIRE_EQUAL_NODES(read_node, testing::UpdatedNode());
       }
     }
   }
