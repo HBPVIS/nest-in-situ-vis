@@ -71,3 +71,72 @@ SCENARIO("conduit array leafs are compatible to std::vector", "[conduit]") {
     }
   }
 }
+
+SCENARIO("node serialization works repeatedly", "[conduit]") {
+  GIVEN("a conduit node with some data") {
+    conduit::Node node = testing::CreateAnyNode();
+    WHEN("node is serialized") {
+      std::string schema_string;
+      std::vector<conduit::uint8> data;
+      testing::Serialize(node, &schema_string, &data);
+      WHEN("serialization is read into a second node") {
+        conduit::Node second_node;
+        second_node.set_data_using_schema(conduit::Schema(schema_string),
+                                          data.data());
+        THEN("they are identical") { REQUIRE_EQUAL_NODES(second_node, node); }
+
+        WHEN("second node is serialized") {
+          std::string second_schema_string;
+          std::vector<conduit::uint8> second_data;
+          testing::Serialize(second_node, &second_schema_string, &second_data);
+          WHEN("serialization is read into a third node") {
+            conduit::Node third_node;
+            third_node.set_data_using_schema(
+                conduit::Schema(second_schema_string), second_data.data());
+            THEN("they are identical") {
+              REQUIRE_EQUAL_NODES(third_node, node);
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+SCENARIO("node serialization works repeatedly including updates", "[conduit]") {
+  GIVEN("a conduit node with some data") {
+    conduit::Node node = testing::CreateAnyNode();
+    WHEN("node is serialized") {
+      std::string schema_string;
+      std::vector<conduit::uint8> data;
+      testing::Serialize(node, &schema_string, &data);
+      WHEN("serialization is read into a second node") {
+        conduit::Node second_node;
+        second_node.set_data_using_schema(conduit::Schema(schema_string),
+                                          data.data());
+        THEN("they are identical") { REQUIRE_EQUAL_NODES(second_node, node); }
+
+        WHEN("second node is updates") {
+          conduit::Node update = testing::CreateNewDataNode();
+          second_node.update(update);
+          WHEN("updated second node is serialized") {
+            std::string second_schema_string;
+            std::vector<conduit::uint8> second_data;
+            testing::Serialize(second_node, &second_schema_string,
+                               &second_data);
+            WHEN("serialization is read into a third node") {
+              conduit::Node third_node;
+              third_node.set_data_using_schema(
+                  conduit::Schema(second_schema_string), second_data.data());
+              THEN("they are identical") {
+                conduit::Node node_including_update = node;
+                node_including_update.update(update);
+                REQUIRE_EQUAL_NODES(third_node, node_including_update);
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

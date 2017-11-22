@@ -22,6 +22,9 @@
 #ifndef NIV_TESTS_SRC_CONDUIT_NODE_HELPER_HPP_
 #define NIV_TESTS_SRC_CONDUIT_NODE_HELPER_HPP_
 
+#include <string>
+#include <vector>
+
 #include "catch/catch.hpp"
 
 #include "conduit/conduit_node.hpp"
@@ -64,6 +67,14 @@ conduit::Node CreateCombinedNode() {
 }
 
 #define REQUIRE_EQUAL_NODES(a, b) REQUIRE(a.to_json() == b.to_json())
+
+void Serialize(const conduit::Node node, std::string* schema_string,
+               std::vector<conduit::uint8>* data) {
+  conduit::Schema schema;
+  node.schema().compact_to(schema);
+  *schema_string = schema.to_json();
+  node.serialize(*data);
+}
 
 }  // namespace testing
 
