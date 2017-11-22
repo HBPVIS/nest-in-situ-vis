@@ -114,12 +114,12 @@ SCENARIO("data can be updated in shared memory",
       THEN("the  updated data can be read from the segment") {
         conduit::Node read_node;
         segment.Read(&read_node);
-        // REQUIRE_EQUAL_NODES(read_node, testing::UpdatedNode());
+        REQUIRE_EQUAL_NODES(read_node, testing::UpdatedNode());
       }
       THEN("the updated data can be read from the segment access") {
         conduit::Node read_node;
         segment_access.Read(&read_node);
-        // REQUIRE_EQUAL_NODES(read_node, testing::UpdatedNode());
+        REQUIRE_EQUAL_NODES(read_node, testing::UpdatedNode());
       }
     }
   }
