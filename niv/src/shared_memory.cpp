@@ -88,17 +88,9 @@ void SharedMemory::Update(const conduit::Node& node) {
 void SharedMemory::Read(conduit::Node* node) {
   auto schema = GetSchema();
   if (schema.empty()) {
-    std::cout << "resetting node" << std::endl;
     node->reset();
   } else {
     auto data = GetData();
-    std::cout << "reading data:" << std::endl;
-    for (unsigned int i = 0; i < data.size() / 8; ++i) {
-      for (int j = 0; j < 8; ++j) {
-        std::cout << int{data[8 * i + j]} << ' ';
-      }
-      std::cout << std::endl;
-    }
     node->set_data_using_schema(conduit::Schema(schema), data.data());
   }
 }
