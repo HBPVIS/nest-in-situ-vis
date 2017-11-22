@@ -29,6 +29,8 @@
 
 #include "conduit/conduit_node.hpp"
 
+#include "niv/node_storage.hpp"
+
 namespace testing {
 
 conduit::Node AnyNode() {
@@ -70,19 +72,15 @@ conduit::Node ADifferentNode() { return Update(); }
 
 #define REQUIRE_EQUAL_NODES(a, b) REQUIRE(a.to_json() == b.to_json())
 
-void Serialize(const conduit::Node node, std::string* schema_string,
-               std::vector<conduit::uint8>* data) {
-  conduit::Schema schema;
-  node.schema().compact_to(schema);
-  const std::string schema_json{schema.to_json()};
+void Serialize(const conduit::Node& node, std::string* schema_storage,
+               std::vector<conduit::uint8>* data_storage) {
+  const std::string schema{niv::CompactedSchemaJson(node)};
+  schema_storage->clear();
+  schema_storage->assign(schema.begin(), schema.end());
 
-  schema_string->clear();
-  schema_string->assign(schema_json.begin(), schema_json.end());
-
-  std::vector<conduit::uint8> serialized_data;
-  node.serialize(serialized_data);
-  data->clear();
-  data->assign(serialized_data.begin(), serialized_data.end());
+  const std::vector<conduit::uint8> data{niv::Serialize(node)};
+  data_storage->clear();
+  data_storage->assign(data.begin(), data.end());
 }
 
 }  // namespace testing

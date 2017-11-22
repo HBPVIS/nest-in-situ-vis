@@ -27,6 +27,8 @@
 
 #include "conduit/conduit_node.hpp"
 
+#include "niv/node_storage.hpp"
+
 #include "conduit_node_helper.hpp"
 
 SCENARIO("update inserts new nodes", "[conduit]") {
@@ -90,6 +92,33 @@ SCENARIO("node serialization works repeatedly", "[conduit]") {
         conduit::Node third_node;
         third_node.set_data_using_schema(conduit::Schema(schema_string),
                                          data.data());
+        THEN("they are identical") {
+          REQUIRE_EQUAL_NODES(third_node, testing::AnyNode());
+        }
+      }
+    }
+  }
+}
+
+SCENARIO("node serialization works repeatedly using a node storage",
+         "[conduit]") {
+  GIVEN("a serialized node") {
+    niv::LocalNodeStorage storage;
+    storage.Store(testing::AnyNode());
+
+    WHEN("serialization is read into a second node") {
+      conduit::Node second_node;
+      storage.Read(&second_node);
+
+      THEN("they are identical") {
+        REQUIRE_EQUAL_NODES(second_node, testing::AnyNode());
+      }
+
+      WHEN("the second node is serialized and read again") {
+        storage.Store(second_node);
+        conduit::Node third_node;
+        storage.Read(&third_node);
+
         THEN("they are identical") {
           REQUIRE_EQUAL_NODES(third_node, testing::AnyNode());
         }

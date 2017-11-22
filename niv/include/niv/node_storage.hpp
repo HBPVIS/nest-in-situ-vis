@@ -47,11 +47,13 @@ class NodeStorage {
  private:
   void StoreSchema(const conduit::Node& node) {
     const std::string schema{CompactedSchemaJson(node)};
+    schema_storage_.clear();
     schema_storage_.assign(schema.begin(), schema.end());
   }
 
   void StoreData(const conduit::Node& node) {
     const std::vector<conduit::uint8> data{Serialize(node)};
+    data_storage_.clear();
     data_storage_.assign(data.begin(), data.end());
   }
 
