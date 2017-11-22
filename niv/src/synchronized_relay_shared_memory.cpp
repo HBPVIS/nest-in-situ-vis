@@ -35,6 +35,7 @@ SynchronizedRelaySharedMemory::SynchronizedRelaySharedMemory(
     : RelaySharedMemory{std::move(shared_memory)}, empty(true) {}
 
 void SynchronizedRelaySharedMemory::Send(const conduit::Node& node) {
+  std::cout << "SynchronizedRelaySharedMemory::Send" << std::endl;
   if (empty) {
     Store(node);
   } else {
@@ -44,17 +45,26 @@ void SynchronizedRelaySharedMemory::Send(const conduit::Node& node) {
 }
 
 void SynchronizedRelaySharedMemory::Store(const conduit::Node& node) {
+  std::cout << "SynchronizedRelaySharedMemory::Store" << std::endl;
   shared_memory_->Store(node);
 }
 
 void SynchronizedRelaySharedMemory::StoreUpdate(const conduit::Node& node) {
+  std::cout << "SynchronizedRelaySharedMemory::StoreUpdate" << std::endl;
   conduit::Node stored_node;
   shared_memory_->Read(&stored_node);
   stored_node.update(node);
+  std::cout << "updated schema: " << std::endl;
+  std::cout << stored_node.schema().to_json() << std::endl;
+  std::cout << "updated compact schema: " << std::endl;
+  conduit::Schema comp_schema;
+  stored_node.schema().compact_to(comp_schema);
+  std::cout << comp_schema.to_json() << std::endl;
   shared_memory_->Store(stored_node);
 }
 
 void SynchronizedRelaySharedMemory::Receive(conduit::Node* node) {
+  std::cout << "SynchronizedRelaySharedMemory::Receive" << std::endl;
   shared_memory_->Read(node);
   empty = true;
 }
