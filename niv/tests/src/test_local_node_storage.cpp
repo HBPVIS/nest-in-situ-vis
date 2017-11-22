@@ -21,7 +21,7 @@
 
 #include "catch/catch.hpp"
 
-#include "niv/node_storage.hpp"
+#include "niv/local_node_storage.hpp"
 
 #include "conduit_node_helper.hpp"
 
