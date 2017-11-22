@@ -49,13 +49,12 @@ SCENARIO("Shared memory access", "[niv][niv::SharedMemoryAccess]") {
       niv::SharedMemoryAccess segment_access;
 
       WHEN("data is sotred in the shared memory access") {
-        conduit::Node any_node = testing::CreateAnyNode();
-        segment_access.Store(any_node);
+        segment_access.Store(testing::AnyNode());
 
-        THEN("it can be retrieved") {
-          conduit::Node retrieved_node;
-          segment_access.Read(&retrieved_node);
-          REQUIRE_EQUAL_NODES(retrieved_node, any_node);
+        THEN("it can be read") {
+          conduit::Node read_node;
+          segment_access.Read(&read_node);
+          REQUIRE_EQUAL_NODES(read_node, testing::AnyNode());
         }
       }
     }

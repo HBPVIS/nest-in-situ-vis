@@ -38,7 +38,7 @@ SCENARIO("Shared memory creation", "[niv][niv::SharedMemorySegment]") {
       THEN("it is > 0") { REQUIRE(free_size_after_creation > 0); }
     }
 
-    WHEN("I retrieve data from the new segment") {
+    WHEN("I read data from the new segment") {
       conduit::Node node;
       segment.Read(&node);
       THEN("it is empty") { REQUIRE(node.dtype().is_empty()); }
@@ -46,16 +46,15 @@ SCENARIO("Shared memory creation", "[niv][niv::SharedMemorySegment]") {
 
     WHEN("I store data in the segment") {
       auto free_size_before = segment.GetFreeSize();
-      const conduit::Node any_node = testing::CreateAnyNode();
-      segment.Store(any_node);
+      segment.Store(testing::AnyNode());
       auto free_size_after = segment.GetFreeSize();
       THEN("we have less free space in the segment") {
         REQUIRE(free_size_after < free_size_before);
       }
-      THEN("I can retrieve the data") {
-        conduit::Node retrieved_node;
-        segment.Read(&retrieved_node);
-        REQUIRE_EQUAL_NODES(retrieved_node, any_node);
+      THEN("I can read the data") {
+        conduit::Node read_node;
+        segment.Read(&read_node);
+        REQUIRE_EQUAL_NODES(read_node, testing::AnyNode());
       }
     }
 
@@ -72,38 +71,14 @@ SCENARIO("write updated node to shared memory segment",
          "[niv][niv::SharedMemorySegment]") {
   GIVEN("a shared memory segment with some data") {
     niv::SharedMemorySegment segment;
-    conduit::Node any_node = testing::CreateAnyNode();
-    segment.Store(any_node);
+    segment.Store(testing::AnyNode());
     WHEN("a larger node is stored") {
-      segment.Store(testing::CreateCombinedNode());
-      WHEN("the node is retrieved") {
-        conduit::Node retrieved_node;
-        segment.Read(&retrieved_node);
-        THEN("the content is equal to the written one") {
-          REQUIRE_EQUAL_NODES(retrieved_node, testing::CreateCombinedNode());
-        }
-      }
-    }
-  }
-}
-
-SCENARIO("data in shared memory segment gets updated on sending update",
-         "[niv][niv::SharedMemorySegment]") {
-  GIVEN("a conduit node and a shared memory segment storing the data") {
-    conduit::Node any_node = testing::CreateAnyNode();
-    niv::SharedMemorySegment segment;
-    segment.Store(any_node);
-
-    WHEN("an update gets sent to the segment ") {
-      conduit::Node update = testing::CreateNewDataNode();
-      segment.Update(update);
-      WHEN("the node is read from the segment") {
+      segment.Store(testing::UpdatedNode());
+      WHEN("the node is read") {
         conduit::Node read_node;
         segment.Read(&read_node);
-        THEN("the read node includes the update") {
-          conduit::Node updated_node = any_node;
-          updated_node.update(update);
-          REQUIRE_EQUAL_NODES(read_node, updated_node);
+        THEN("the content is equal to the written one") {
+          REQUIRE_EQUAL_NODES(read_node, testing::UpdatedNode());
         }
       }
     }

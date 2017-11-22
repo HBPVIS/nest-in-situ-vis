@@ -32,22 +32,21 @@
 #include "conduit_node_helper.hpp"
 
 SCENARIO("Data gets transported", "[niv][niv::SynchronizedRelaySharedMemory]") {
-  GIVEN("A conduit node, a simulation relay, and a visualization relay") {
-    conduit::Node any_node = testing::CreateAnyNode();
+  GIVEN("a simulation relay, and a visualization relay") {
     niv::SynchronizedRelaySharedMemory simulation_relay{
         std::make_unique<niv::SharedMemorySegment>()};
     niv::SynchronizedRelaySharedMemory visualization_relay{
         std::make_unique<niv::SharedMemoryAccess>()};
 
-    WHEN("the node is sent via the simulation relay") {
-      simulation_relay.Send(any_node);
+    WHEN("a node is sent via the simulation relay") {
+      simulation_relay.Send(testing::AnyNode());
 
-      WHEN("data is received via the visualization relay") {
-        conduit::Node received_node;
-        visualization_relay.Receive(&received_node);
+      WHEN("data is read via the visualization relay") {
+        conduit::Node read_node;
+        visualization_relay.Receive(&read_node);
 
         THEN("received data matches original data") {
-          REQUIRE_EQUAL_NODES(received_node, any_node);
+          REQUIRE_EQUAL_NODES(read_node, testing::AnyNode());
         }
       }
     }
@@ -56,22 +55,18 @@ SCENARIO("Data gets transported", "[niv][niv::SynchronizedRelaySharedMemory]") {
 
 SCENARIO("data in relay gets updated on sending update",
          "[niv][niv::SynchronizedRelaySharedMemory]") {
-  GIVEN("a conduit node and a relay storing the data") {
-    conduit::Node any_node = testing::CreateAnyNode();
+  GIVEN("a relay storing data") {
     niv::SynchronizedRelaySharedMemory simulation_relay{
         std::make_unique<niv::SharedMemorySegment>()};
-    simulation_relay.Send(any_node);
+    simulation_relay.Send(testing::AnyNode());
 
     WHEN("an update gets sent to the relay") {
-      conduit::Node update = testing::CreateNewDataNode();
-      simulation_relay.Send(update);
+      simulation_relay.Send(testing::Update());
       WHEN("the node is read from the relay") {
         conduit::Node read_node;
         simulation_relay.Receive(&read_node);
         THEN("the received node includes the update") {
-          conduit::Node updated_node = any_node;
-          updated_node.update(update);
-          REQUIRE_EQUAL_NODES(read_node, updated_node);
+          REQUIRE_EQUAL_NODES(read_node, testing::UpdatedNode());
         }
       }
     }

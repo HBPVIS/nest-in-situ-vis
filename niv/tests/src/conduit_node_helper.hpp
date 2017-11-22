@@ -31,7 +31,7 @@
 
 namespace testing {
 
-conduit::Node CreateAnyNode() {
+conduit::Node AnyNode() {
   conduit::Node node;
   node["A/B/C"] = 3.1415;
   node["A/B/D"] = 4.124;
@@ -39,7 +39,7 @@ conduit::Node CreateAnyNode() {
   return node;
 }
 
-conduit::Node CreateAnotherNode() {
+conduit::Node AnotherNode() {
   conduit::Node node;
   node["A/B/C"] = 2.0 * 3.1415;
   node["A/B/D"] = 3.0 * 4.124;
@@ -47,7 +47,7 @@ conduit::Node CreateAnotherNode() {
   return node;
 }
 
-conduit::Node CreateNewDataNode() {
+conduit::Node Update() {
   conduit::Node node;
   node["A/B/F"] = 2.0 * 3.1415;
   node["A/B/G"] = 3.0 * 4.124;
@@ -55,7 +55,7 @@ conduit::Node CreateNewDataNode() {
   return node;
 }
 
-conduit::Node CreateCombinedNode() {
+conduit::Node UpdatedNode() {
   conduit::Node node;
   node["A/B/C"] = 3.1415;
   node["A/B/D"] = 4.124;
@@ -65,6 +65,8 @@ conduit::Node CreateCombinedNode() {
   node["A/H"] = 4.0 * 42.0;
   return node;
 }
+
+conduit::Node ADifferentNode() { return Update(); }
 
 #define REQUIRE_EQUAL_NODES(a, b) REQUIRE(a.to_json() == b.to_json())
 
