@@ -86,3 +86,26 @@ SCENARIO("write updated node to shared memory segment",
     }
   }
 }
+
+SCENARIO("data in shared memory segment gets updated on sending update",
+         "[niv][niv::SharedMemorySegment]") {
+  GIVEN("a conduit node and a shared memory segment storing the data") {
+    conduit::Node any_node = testing::CreateAnyNode();
+    niv::SharedMemorySegment segment;
+    segment.Store(any_node);
+
+    WHEN("an update gets sent to the segment ") {
+      conduit::Node update = testing::CreateNewDataNode();
+      segment.Update(update);
+      WHEN("the node is read from the segment") {
+        conduit::Node read_node;
+        segment.Read(&read_node);
+        THEN("the read node includes the update") {
+          conduit::Node updated_node = any_node;
+          updated_node.update(update);
+          REQUIRE_EQUAL_NODES(read_node, updated_node);
+        }
+      }
+    }
+  }
+}

@@ -50,19 +50,28 @@ SCENARIO("Data gets transported", "[niv][niv::SynchronizedRelaySharedMemory]") {
           REQUIRE_EQUAL_NODES(received_node, any_node);
         }
       }
+    }
+  }
+}
 
-      WHEN("new data is sent") {
-        conduit::Node new_data = testing::CreateNewDataNode();
-        simulation_relay.Send(new_data);
-        WHEN("data is received via the visualization relay") {
-          conduit::Node received_node;
-          visualization_relay.Receive(&received_node);
+SCENARIO("data in relay gets updated on sending update",
+         "[niv][niv::SynchronizedRelaySharedMemory]") {
+  GIVEN("a conduit node and a relay storing the data") {
+    conduit::Node any_node = testing::CreateAnyNode();
+    niv::SynchronizedRelaySharedMemory simulation_relay{
+        std::make_unique<niv::SharedMemorySegment>()};
+    simulation_relay.Send(any_node);
 
-          THEN("received data matches original data +  new data") {
-            conduit::Node expected_node = any_node;
-            expected_node.update(new_data);
-            REQUIRE_EQUAL_NODES(received_node, expected_node);
-          }
+    WHEN("an update gets sent to the relay") {
+      conduit::Node update = testing::CreateNewDataNode();
+      simulation_relay.Send(update);
+      WHEN("the node is read from the relay") {
+        conduit::Node read_node;
+        simulation_relay.Receive(&read_node);
+        THEN("the received node includes the update") {
+          conduit::Node updated_node = any_node;
+          updated_node.update(update);
+          REQUIRE_EQUAL_NODES(read_node, updated_node);
         }
       }
     }
