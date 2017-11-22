@@ -52,8 +52,6 @@ std::size_t SharedMemory::GetFreeSize() const {
 }
 
 void SharedMemory::Store(const conduit::Node& node) {
-  std::cout << "Storing node: " << std::endl;
-  node.print();
   StoreSchema(node);
   StoreData(node);
 }
@@ -71,13 +69,6 @@ void SharedMemory::StoreData(const conduit::Node& node) {
 }
 
 void SharedMemory::Store(const std::vector<conduit::uint8>& data) {
-  std::cout << "Storing data" << std::endl;
-  for (unsigned int i = 0; i < data.size() / 8; ++i) {
-    for (int j = 0; j < 8; ++j) {
-      std::cout << int{data[8 * i + j]} << ' ';
-    }
-    std::cout << std::endl;
-  }
   data_vector_->clear();
   data_vector_->assign(data.begin(), data.end());
 }
