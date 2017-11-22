@@ -36,12 +36,22 @@ template <typename SchemaStorage, typename DataStorage>
 class NodeStorage {
  public:
   void Store(const conduit::Node& node) {
-    StoreSchema(node);
-    StoreData(node);
+    // the following copy is required due to conduit's issue #226
+    // (https://github.com/LLNL/conduit/issues/226)
+    // see niv/tests/test_conduit.cpp for a smoke test, failing if fixed
+    conduit::Node tmp(node);
+
+    StoreSchema(tmp);
+    StoreData(tmp);
   }
   void Read(conduit::Node* node) {
     node->set_data_using_schema(conduit::Schema(schema_storage_),
                                 data_storage_.data());
+  }
+
+  conduit::Node Read() {
+    constexpr bool external = false;
+    return conduit::Node(schema_storage_, data_storage_.data(), external);
   }
 
  private:

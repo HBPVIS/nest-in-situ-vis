@@ -38,3 +38,19 @@ SCENARIO("storing and reading a node", "[niv][niv::NodeStorage]") {
     }
   }
 }
+
+SCENARIO("a node can be stored and read multiple times",
+         "[niv][niv::NodeStorage]") {
+  GIVEN("a node stored and read back") {
+    niv::LocalNodeStorage storage;
+    storage.Store(testing::AnyNode());
+    storage.Store(storage.Read());
+
+    WHEN("the node is read") {
+      conduit::Node read_node{storage.Read()};
+      THEN("it is equal to the initial one") {
+        REQUIRE_EQUAL_NODES(read_node, testing::AnyNode());
+      }
+    }
+  }
+}
