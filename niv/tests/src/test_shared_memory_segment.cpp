@@ -40,6 +40,8 @@ SCENARIO("Shared memory creation", "[niv][niv::SharedMemorySegment]") {
 
     WHEN("I read data from the new segment") {
       conduit::Node node;
+      THEN("it does not throw") { REQUIRE_NOTHROW(segment.Read(&node)); }
+
       segment.Read(&node);
       THEN("it is empty") { REQUIRE(node.dtype().is_empty()); }
     }

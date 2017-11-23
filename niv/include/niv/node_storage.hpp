@@ -53,21 +53,13 @@ class NodeStorage {
   }
 
   conduit::Node Read() {
-    if (schema_storage_->empty()) {
-      return conduit::Node();
-    } else {
-      constexpr bool external = false;
-      return conduit::Node(GetSchema(), data_storage_->data(), external);
-    }
+    constexpr bool keep_listening = false;
+    return ConstructNode(keep_listening);
   }
 
   conduit::Node Listen() {
-    if (schema_storage_->empty()) {
-      return conduit::Node();
-    } else {
-      constexpr bool external = true;
-      return conduit::Node(GetSchema(), data_storage_->data(), external);
-    }
+    constexpr bool keep_listening = true;
+    return ConstructNode(keep_listening);
   }
 
   NodeStorage& operator=(const NodeStorage&) = default;
@@ -78,6 +70,14 @@ class NodeStorage {
   DataStorage* GetDataStorage() { return data_storage_; }
 
  private:
+  conduit::Node ConstructNode(bool keep_listening) {
+    if (schema_storage_->empty()) {
+      return conduit::Node();
+    } else {
+      return conduit::Node(GetSchema(), data_storage_->data(), keep_listening);
+    }
+  }
+
   std::string GetSchema() {
     return std::string(schema_storage_->begin(), schema_storage_->end());
   }
