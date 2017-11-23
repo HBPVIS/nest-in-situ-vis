@@ -26,7 +26,7 @@
 #include "conduit/conduit_node.hpp"
 
 #include "niv/conduit_receiver.hpp"
-#include "niv/sending_relay_shared_memory.hpp"
+#include "niv/relay_shared_memory.hpp"
 #include "niv/shared_memory_access.hpp"
 
 SCENARIO("Conduit data is received by a conduit receiver",
@@ -39,8 +39,7 @@ SCENARIO("Conduit data is received by a conduit receiver",
       data["A"]["B"] = 17.0;
       data["A"]["C"] = 42.0;
 
-      niv::SendingRelaySharedMemory relay(
-          std::make_unique<niv::SharedMemoryAccess>());
+      niv::RelaySharedMemory relay(std::make_unique<niv::SharedMemoryAccess>());
       relay.Send(data);
 
       THEN("I receive the data") {

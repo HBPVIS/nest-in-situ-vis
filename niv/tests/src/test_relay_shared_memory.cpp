@@ -25,8 +25,7 @@
 
 #include "conduit/conduit_node.hpp"
 
-#include "niv/receiving_relay_shared_memory.hpp"
-#include "niv/sending_relay_shared_memory.hpp"
+#include "niv/relay_shared_memory.hpp"
 #include "niv/shared_memory_access.hpp"
 #include "niv/shared_memory_segment.hpp"
 
@@ -37,9 +36,9 @@ SCENARIO("Communicate a conduit node from shared mem segment to access",
   GIVEN(
       "A conduit node with some data, a sending shared memory segment relay, a "
       "receiving shared memory access relay, and a receiving node") {
-    niv::SendingRelaySharedMemory sending_relay{
+    niv::RelaySharedMemory sending_relay{
         std::make_unique<niv::SharedMemorySegment>()};
-    niv::ReceivingRelaySharedMemory receiving_relay{
+    niv::RelaySharedMemory receiving_relay{
         std::make_unique<niv::SharedMemoryAccess>()};
     conduit::Node receiving_node;
 
@@ -83,10 +82,10 @@ SCENARIO("Communicate a conduit node from shared mem access to segment",
   GIVEN(
       "A conduit node with some data, a sending shared memory access relay, a "
       "receiving shared memory segment relay, and a receiving node") {
-    niv::ReceivingRelaySharedMemory receiving_relay{
+    niv::RelaySharedMemory receiving_relay{
         std::make_unique<niv::SharedMemorySegment>()};
     conduit::Node receiving_node;
-    niv::SendingRelaySharedMemory sending_relay{
+    niv::RelaySharedMemory sending_relay{
         std::make_unique<niv::SharedMemoryAccess>()};
 
     WHEN("I send the data via the sending relay") {

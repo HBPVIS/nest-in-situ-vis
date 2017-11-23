@@ -48,9 +48,8 @@ class SynchronizedRelaySharedMemory : public RelaySharedMemory {
       default;
 
  private:
-  void Store(const conduit::Node& node);
-  void StoreUpdate(const conduit::Node& node);
-  bool empty;
+  void SendUpdate(const conduit::Node& node);
+  bool empty{true};
 };
 
 }  // namespace niv

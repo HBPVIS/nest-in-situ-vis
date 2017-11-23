@@ -32,4 +32,16 @@ RelaySharedMemory::RelaySharedMemory(
     std::unique_ptr<SharedMemory> shared_memory)
     : shared_memory_{std::move(shared_memory)} {}
 
+void RelaySharedMemory::Send(const conduit::Node& node) {
+  shared_memory_->Store(node);
+}
+
+void RelaySharedMemory::Receive(conduit::Node* node) {
+  shared_memory_->Read(node);
+}
+
+void RelaySharedMemory::Listen(conduit::Node* node) {
+  shared_memory_->Listen(node);
+}
+
 }  // namespace niv
