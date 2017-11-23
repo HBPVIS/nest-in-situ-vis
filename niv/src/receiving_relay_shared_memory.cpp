@@ -34,11 +34,11 @@ ReceivingRelaySharedMemory::ReceivingRelaySharedMemory(
     : RelaySharedMemory{std::move(shared_memory)} {}
 
 void ReceivingRelaySharedMemory::Receive(conduit::Node* node) {
-  shared_memory_->Read(node);
+  GetSharedMemory()->Read(node);
 }
 
 void ReceivingRelaySharedMemory::Listen(conduit::Node* node) {
-  shared_memory_->Listen(node);
+  GetSharedMemory()->Listen(node);
 }
 
 }  // namespace niv

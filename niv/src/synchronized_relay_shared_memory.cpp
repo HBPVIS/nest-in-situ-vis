@@ -44,18 +44,15 @@ void SynchronizedRelaySharedMemory::Send(const conduit::Node& node) {
 }
 
 void SynchronizedRelaySharedMemory::Store(const conduit::Node& node) {
-  shared_memory_->Store(node);
+  GetSharedMemory()->Store(node);
 }
 
 void SynchronizedRelaySharedMemory::StoreUpdate(const conduit::Node& node) {
-  conduit::Node stored_node;
-  shared_memory_->Read(&stored_node);
-  stored_node.update(node);
-  shared_memory_->Store(stored_node);
+  GetSharedMemory()->Update(node);
 }
 
 void SynchronizedRelaySharedMemory::Receive(conduit::Node* node) {
-  shared_memory_->Read(node);
+  GetSharedMemory()->Read(node);
   empty = true;
 }
 

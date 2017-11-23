@@ -33,12 +33,18 @@ namespace niv {
 
 class SendingRelaySharedMemory : public RelaySharedMemory {
  public:
+  SendingRelaySharedMemory() = delete;
   explicit SendingRelaySharedMemory(SharedMemory* shared_memory);
   explicit SendingRelaySharedMemory(
       std::unique_ptr<SharedMemory> shared_memory);
+  SendingRelaySharedMemory(const SendingRelaySharedMemory&) = delete;
+  SendingRelaySharedMemory(SendingRelaySharedMemory&&) = delete;
   virtual ~SendingRelaySharedMemory() = default;
 
   void Send(const conduit::Node& node);
+
+  SendingRelaySharedMemory& operator=(const SendingRelaySharedMemory&) = delete;
+  SendingRelaySharedMemory& operator=(SendingRelaySharedMemory&&) = delete;
 };
 
 }  // namespace niv

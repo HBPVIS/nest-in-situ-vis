@@ -37,7 +37,7 @@ SendingRelaySharedMemory::SendingRelaySharedMemory(
     : RelaySharedMemory{std::move(shared_memory)} {}
 
 void SendingRelaySharedMemory::Send(const conduit::Node& node) {
-  shared_memory_->Store(node);
+  GetSharedMemory()->Store(node);
 }
 
 }  // namespace niv

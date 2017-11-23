@@ -30,10 +30,19 @@ namespace niv {
 
 class RelaySharedMemory {
  public:
+  RelaySharedMemory() = delete;
   virtual ~RelaySharedMemory() = default;
+  RelaySharedMemory(const RelaySharedMemory&) = delete;
+  RelaySharedMemory(RelaySharedMemory&&) = delete;
+
+  RelaySharedMemory& operator=(const RelaySharedMemory&) = delete;
+  RelaySharedMemory& operator=(RelaySharedMemory&&) = delete;
 
  protected:
   explicit RelaySharedMemory(std::unique_ptr<SharedMemory> shared_memory);
+  SharedMemory* GetSharedMemory() { return shared_memory_.get(); }
+
+ private:
   std::unique_ptr<SharedMemory> shared_memory_;
 };
 

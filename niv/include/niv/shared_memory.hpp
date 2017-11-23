@@ -48,8 +48,9 @@ class SharedMemory {
   using DataStorage = std::vector<conduit::uint8, Allocator<conduit::uint8>>;
   using SchemaStorage = std::vector<char, Allocator<char>>;
 
-  explicit SharedMemory(const Create&);
-  explicit SharedMemory(const Access&);
+  SharedMemory() = delete;
+  SharedMemory(const SharedMemory&) = delete;
+  SharedMemory(SharedMemory&&) = delete;
   virtual ~SharedMemory() = default;
 
   void Destroy();
@@ -62,14 +63,19 @@ class SharedMemory {
   void Listen(conduit::Node* node);
 
   static constexpr const char* SegmentName() { return "niv-shared-memory"; }
-  static constexpr const char* DataStorageName() { return "DataVector"; }
-  static constexpr const char* SchemaStorageName() { return "SchemaString"; }
+  static constexpr const char* DataStorageName() { return "DataStorage"; }
+  static constexpr const char* SchemaStorageName() { return "SchemaStorage"; }
   static constexpr std::size_t InitialSize() { return 65536u; }
 
+  SharedMemory& operator=(const SharedMemory&) = delete;
+  SharedMemory& operator=(SharedMemory&&) = delete;
+
  protected:
-  ManagedSharedMemory segment_;
+  explicit SharedMemory(const Create&);
+  explicit SharedMemory(const Access&);
 
  private:
+  ManagedSharedMemory segment_;
   NodeStorage<SchemaStorage, DataStorage> node_storage_;
 };
 
