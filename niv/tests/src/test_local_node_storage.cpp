@@ -52,3 +52,18 @@ SCENARIO("a node can be stored and read multiple times",
     }
   }
 }
+
+SCENARIO("a node can be listening to changes", "[niv][niv::NodeStorage]") {
+  GIVEN("a node listening to data") {
+    niv::LocalNodeStorage storage;
+    storage.Store(testing::AnyNode());
+    conduit::Node listening_node{storage.Listen()};
+
+    WHEN("stored data is changed") {
+      storage.Store(testing::AnotherNode());
+      THEN("the listening node gets the change") {
+        REQUIRE_EQUAL_NODES(listening_node, testing::AnotherNode());
+      }
+    }
+  }
+}

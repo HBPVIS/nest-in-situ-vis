@@ -32,6 +32,8 @@
 #include "conduit/conduit_core.hpp"
 #include "conduit/conduit_node.hpp"
 
+#include "niv/node_storage.hpp"
+
 namespace niv {
 
 class SharedMemory {
@@ -43,8 +45,8 @@ class SharedMemory {
   using SegmentManager = ManagedSharedMemory::segment_manager;
   template <typename T>
   using Allocator = boost::interprocess::allocator<T, SegmentManager>;
-  using DataVector = std::vector<conduit::uint8, Allocator<conduit::uint8>>;
-  using SchemaString = std::vector<char, Allocator<char>>;
+  using DataStorage = std::vector<conduit::uint8, Allocator<conduit::uint8>>;
+  using SchemaStorage = std::vector<char, Allocator<char>>;
 
   explicit SharedMemory(const Create&);
   explicit SharedMemory(const Access&);
@@ -60,24 +62,15 @@ class SharedMemory {
   void Listen(conduit::Node* node);
 
   static constexpr const char* SegmentName() { return "niv-shared-memory"; }
-  static constexpr const char* DataVectorName() { return "DataVector"; }
-  static constexpr const char* SchemaStringName() { return "SchemaString"; }
+  static constexpr const char* DataStorageName() { return "DataVector"; }
+  static constexpr const char* SchemaStorageName() { return "SchemaString"; }
   static constexpr std::size_t InitialSize() { return 65536u; }
 
  protected:
   ManagedSharedMemory segment_;
-  DataVector* data_vector_{nullptr};
-  SchemaString* schema_string_{nullptr};
 
  private:
-  void StoreSchema(const conduit::Node& node);
-  void StoreData(const conduit::Node& node);
-
-  void Store(const std::vector<conduit::uint8>& data);
-  void Store(const std::string& schema);
-  std::vector<conduit::uint8> GetData() const;
-  conduit::uint8* GetRawData() const;
-  std::string GetSchema() const;
+  NodeStorage<SchemaStorage, DataStorage> node_storage_;
 };
 
 }  // namespace niv

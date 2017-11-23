@@ -40,7 +40,7 @@ class NodeStorage {
       : schema_storage_{schema_storage}, data_storage_{data_storage} {}
   NodeStorage(const NodeStorage&) = default;
   NodeStorage(NodeStorage&&) = default;
-  ~NodeStorage() = default;
+  virtual ~NodeStorage() = default;
 
   void Store(const conduit::Node& node) {
     // the following copy is required due to conduit's issue #226
@@ -53,8 +53,21 @@ class NodeStorage {
   }
 
   conduit::Node Read() {
-    constexpr bool external = false;
-    return conduit::Node(*schema_storage_, data_storage_->data(), external);
+    if (schema_storage_->empty()) {
+      return conduit::Node();
+    } else {
+      constexpr bool external = false;
+      return conduit::Node(GetSchema(), data_storage_->data(), external);
+    }
+  }
+
+  conduit::Node Listen() {
+    if (schema_storage_->empty()) {
+      return conduit::Node();
+    } else {
+      constexpr bool external = true;
+      return conduit::Node(GetSchema(), data_storage_->data(), external);
+    }
   }
 
   NodeStorage& operator=(const NodeStorage&) = default;
@@ -65,6 +78,9 @@ class NodeStorage {
   DataStorage* GetDataStorage() { return data_storage_; }
 
  private:
+  std::string GetSchema() {
+    return std::string(schema_storage_->begin(), schema_storage_->end());
+  }
   void StoreSchema(const conduit::Node& node) {
     const std::string schema{CompactedSchemaJson(node)};
     schema_storage_->clear();

@@ -35,9 +35,9 @@ using NodeStorageBase = NodeStorage<std::string, std::vector<conduit::uint8>>;
 class LocalNodeStorage : public NodeStorageBase {
  public:
   LocalNodeStorage()
-      : NodeStorageBase(new std::string, new std::vector<conduit::uint8>),
-        owned_schema_storage_(GetSchemaStorage()),
-        owned_data_storage_(GetDataStorage()) {}
+      : NodeStorageBase{new std::string, new std::vector<conduit::uint8>},
+        owned_schema_storage_{GetSchemaStorage()},
+        owned_data_storage_{GetDataStorage()} {}
   LocalNodeStorage(const LocalNodeStorage&) = delete;
   LocalNodeStorage(LocalNodeStorage&&) = default;
   ~LocalNodeStorage() = default;
