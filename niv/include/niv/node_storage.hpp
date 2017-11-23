@@ -52,6 +52,12 @@ class NodeStorage {
     StoreData(tmp);
   }
 
+  void Update(const conduit::Node& node) {
+    conduit::Node tmp{Read()};
+    tmp.update(node);
+    Store(tmp);
+  }
+
   conduit::Node Read() {
     constexpr bool keep_listening = false;
     return ConstructNode(keep_listening);

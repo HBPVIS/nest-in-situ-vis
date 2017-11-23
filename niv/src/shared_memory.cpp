@@ -57,10 +57,7 @@ void SharedMemory::Store(const conduit::Node& node) {
 }
 
 void SharedMemory::Update(const conduit::Node& node) {
-  conduit::Node tmp;
-  Read(&tmp);
-  tmp.update(node);
-  Store(tmp);
+  node_storage_.Update(node);
 }
 
 void SharedMemory::Read(conduit::Node* node) { *node = node_storage_.Read(); }
