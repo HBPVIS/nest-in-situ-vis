@@ -34,11 +34,12 @@ namespace niv {
 SUPPRESS_WARNINGS_BEGIN_PADDED
 class SynchronizedRelaySharedMemory : public RelaySharedMemory {
  public:
+  SynchronizedRelaySharedMemory() = delete;
   explicit SynchronizedRelaySharedMemory(
       std::unique_ptr<SharedMemory> shared_memory);
   ~SynchronizedRelaySharedMemory() = default;
   SynchronizedRelaySharedMemory(const SynchronizedRelaySharedMemory&) = delete;
-  SynchronizedRelaySharedMemory(SynchronizedRelaySharedMemory&&) = default;
+  SynchronizedRelaySharedMemory(SynchronizedRelaySharedMemory&&) = delete;
 
   void Send(const conduit::Node& node);
   void Receive(conduit::Node*);
@@ -46,7 +47,7 @@ class SynchronizedRelaySharedMemory : public RelaySharedMemory {
   SynchronizedRelaySharedMemory& operator=(
       const SynchronizedRelaySharedMemory&) = delete;
   SynchronizedRelaySharedMemory& operator=(SynchronizedRelaySharedMemory&&) =
-      default;
+      delete;
 
  private:
   void SendUpdate(const conduit::Node& node);
