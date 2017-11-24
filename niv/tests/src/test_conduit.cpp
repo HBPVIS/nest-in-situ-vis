@@ -31,6 +31,13 @@
 
 #include "conduit_node_helper.hpp"
 
+namespace conduit {
+
+template <>
+DataArray<uint64>::~DataArray();
+
+}  // namespace conduit
+
 SCENARIO("update inserts new nodes", "[conduit]") {
   GIVEN("A conduit tree") {
     conduit::Node a = testing::AnyNode();

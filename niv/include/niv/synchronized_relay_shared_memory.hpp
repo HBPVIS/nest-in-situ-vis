@@ -31,6 +31,7 @@
 
 namespace niv {
 
+SUPPRESS_WARNINGS_BEGIN_PADDED
 class SynchronizedRelaySharedMemory : public RelaySharedMemory {
  public:
   explicit SynchronizedRelaySharedMemory(
@@ -51,6 +52,7 @@ class SynchronizedRelaySharedMemory : public RelaySharedMemory {
   void SendUpdate(const conduit::Node& node);
   bool empty{true};
 };
+SUPPRESS_WARNINGS_END
 
 }  // namespace niv
 

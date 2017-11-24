@@ -22,23 +22,51 @@
 #ifndef NEST_IN_SITU_VIS_SUPPRESS_WARNINGS_
 #define NEST_IN_SITU_VIS_SUPPRESS_WARNINGS_
 
+// clang-format off
 #if defined __clang__
-#define SUPPRESS_WARNINGS_BEGIN                           \
-  _Pragma("clang diagnostic push")                        \
-      _Pragma("clang diagnostic ignored \"-Wall\"")       \
-          _Pragma("clang diagnostic ignored \"-Wextra\"") \
-              _Pragma("clang diagnostic ignored \"-Wc++98-compat-pedantic\"")
+#define SUPPRESS_WARNINGS_BEGIN                                                \
+  _Pragma("clang diagnostic push")                                             \
+  _Pragma("clang diagnostic ignored \"-Wall\"")                                \
+  _Pragma("clang diagnostic ignored \"-Wextra\"")                              \
+  _Pragma("clang diagnostic ignored \"-Wc++98-compat-pedantic\"")              \
+  _Pragma("clang diagnostic ignored \"-Wundefined-func-template\"")            \
+  _Pragma("clang diagnostic ignored \"-Wold-style-cast\"")                     \
+  _Pragma("clang diagnostic ignored \"-Wreserved-id-macro\"")                  \
+  _Pragma("clang diagnostic ignored \"-Wdocumentation-unknown-command\"")      \
+  _Pragma("clang diagnostic ignored \"-Wdeprecated-dynamic-exception-spec\"")  \
+  _Pragma("clang diagnostic ignored \"-Wpadded\"")                             \
+  _Pragma("clang diagnostic ignored \"-Wdocumentation\"")                      \
+  _Pragma("clang diagnostic ignored \"-Wswitch-enum\"")                        \
+  _Pragma("clang diagnostic ignored \"-Wextra-semi\"")                         \
+  _Pragma("clang diagnostic ignored \"-Wundef\"")                              \
+  _Pragma("clang diagnostic ignored \"-Wcovered-switch-default\"")             \
+  _Pragma("clang diagnostic ignored \"-Wglobal-constructors\"")                \
+  _Pragma("clang diagnostic ignored \"-Wdeprecated\"")                         \
+  _Pragma("clang diagnostic ignored \"-Wmissing-noreturn\"")                   \
+  _Pragma("clang diagnostic ignored \"-Wdouble-promotion\"")                   \
+  _Pragma("clang diagnostic ignored \"-Wdouble-promotion\"")                   \
+  _Pragma("clang diagnostic ignored \"-Wdisabled-macro-expansion\"")           \
+  _Pragma("clang diagnostic ignored \"-Wcast-align\"")
+// clang-format on
+
+#define SUPPRESS_WARNINGS_BEGIN_PADDED \
+  _Pragma("clang diagnostic push")     \
+      _Pragma("clang diagnostic ignored \"-Wpadded\"")
+
 #define SUPPRESS_WARNINGS_END _Pragma("clang diagnostic pop")
 
 #elif defined _MSC_VER
 #define NOMINMAX
 #define SUPPRESS_WARNINGS_BEGIN __pragma(warning(push, 0));
+#define SUPPRESS_WARNINGS_BEGIN_PADDED
+
 #define SUPPRESS_WARNINGS_END __pragma(warning(pop));
 
 #elif defined __GNUC__
 #define SUPPRESS_WARNINGS_BEGIN                                              \
   _Pragma("GCC diagnostic push") _Pragma("GCC diagnostic ignored \"-Wall\"") \
       _Pragma("GCC diagnostic ignored \"-Wextra\"")
+#define SUPPRESS_WARNINGS_BEGIN_PADDED
 #define SUPPRESS_WARNINGS_END _Pragma("GCC diagnostic pop")
 
 #endif
