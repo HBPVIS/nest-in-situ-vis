@@ -31,7 +31,7 @@ SCENARIO("storing and reading a node", "[niv][niv::NodeStorage]") {
     WHEN("a node is stored") {
       storage.Store(testing::AnyNode());
       THEN("it can be read") {
-        REQUIRE_EQUAL_NODES(storage.Read(), testing::AnyNode());
+        REQUIRE_THAT(storage.Read(), Equals(testing::AnyNode()));
       }
     }
   }
@@ -47,7 +47,7 @@ SCENARIO("a node can be stored and read multiple times",
     WHEN("the node is read") {
       conduit::Node read_node{storage.Read()};
       THEN("it is equal to the initial one") {
-        REQUIRE_EQUAL_NODES(read_node, testing::AnyNode());
+        REQUIRE_THAT(read_node, Equals(testing::AnyNode()));
       }
     }
   }
@@ -62,7 +62,7 @@ SCENARIO("a node can be listening to changes", "[niv][niv::NodeStorage]") {
     WHEN("stored data is changed") {
       storage.Store(testing::AnotherNode());
       THEN("the listening node gets the change") {
-        REQUIRE_EQUAL_NODES(listening_node, testing::AnotherNode());
+        REQUIRE_THAT(listening_node, Equals(testing::AnotherNode()));
       }
     }
   }

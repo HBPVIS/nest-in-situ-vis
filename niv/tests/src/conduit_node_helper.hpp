@@ -70,8 +70,6 @@ conduit::Node UpdatedNode() {
 
 conduit::Node ADifferentNode() { return Update(); }
 
-#define REQUIRE_EQUAL_NODES(a, b) REQUIRE(a.to_json() == b.to_json())
-
 void Serialize(const conduit::Node& node, std::string* schema_storage,
                std::vector<conduit::uint8>* data_storage) {
   const std::string schema{niv::CompactedSchemaJson(node)};
@@ -84,5 +82,39 @@ void Serialize(const conduit::Node& node, std::string* schema_storage,
 }
 
 }  // namespace testing
+
+namespace Catch {
+template <>
+struct StringMaker<conduit::Node> {
+  static std::string convert(const conduit::Node& node) {
+    return node.to_json();
+  }
+};
+
+namespace Matchers {
+
+class ConduitNodeEquals : public Catch::MatcherBase<conduit::Node> {
+ public:
+  explicit ConduitNodeEquals(const conduit::Node& node) : node_{node} {}
+  bool match(const conduit::Node& node) const override {
+    return Catch::Matchers::Equals(node.to_json()).match(node_.to_json());
+  }
+  std::string describe() const override {
+    return Catch::Matchers::Equals(node_.to_json()).describe();
+  }
+
+ private:
+  const conduit::Node& node_;
+};
+
+inline ConduitNodeEquals Equals(const conduit::Node& node) {
+  return ConduitNodeEquals(node);
+}
+
+}  // namespace Matchers
+
+}  // namespace Catch
+
+using Catch::Matchers::Equals;
 
 #endif  // NIV_TESTS_SRC_CONDUIT_NODE_HELPER_HPP_

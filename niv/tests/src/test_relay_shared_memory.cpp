@@ -45,29 +45,29 @@ SCENARIO("Communicate a conduit node from shared mem segment to access",
       sending_relay.Send(testing::AnyNode());
 
       THEN("I receive the data on the receiving relay") {
-        REQUIRE_EQUAL_NODES(receiving_relay.Receive(), testing::AnyNode());
+        REQUIRE_THAT(receiving_relay.Receive(), Equals(testing::AnyNode()));
       }
 
       WHEN("I change the values and send again") {
         sending_relay.Send(testing::AnotherNode());
 
         THEN("I receive the data on the receiving relay") {
-          REQUIRE_EQUAL_NODES(receiving_relay.Receive(),
-                              testing::AnotherNode());
+          REQUIRE_THAT(receiving_relay.Receive(),
+                       Equals(testing::AnotherNode()));
         }
       }
 
       WHEN("I listen to the data on the receiving relay") {
         conduit::Node listening_node{receiving_relay.Listen()};
         THEN("I receive the data on the receiving relay") {
-          REQUIRE_EQUAL_NODES(listening_node, testing::AnyNode());
+          REQUIRE_THAT(listening_node, Equals(testing::AnyNode()));
         }
 
         WHEN("I change the values and send again") {
           sending_relay.Send(testing::AnotherNode());
 
           THEN("I receive the data on the receiving relay") {
-            REQUIRE_EQUAL_NODES(listening_node, testing::AnotherNode());
+            REQUIRE_THAT(listening_node, Equals(testing::AnotherNode()));
           }
         }
       }
@@ -89,29 +89,29 @@ SCENARIO("Communicate a conduit node from shared mem access to segment",
       sending_relay.Send(testing::AnyNode());
 
       THEN("I receive the data on the receiving relay") {
-        REQUIRE_EQUAL_NODES(receiving_relay.Receive(), testing::AnyNode());
+        REQUIRE_THAT(receiving_relay.Receive(), Equals(testing::AnyNode()));
       }
 
       WHEN("I change the values and send again") {
         sending_relay.Send(testing::AnotherNode());
 
         THEN("I receive the data on the receiving relay") {
-          REQUIRE_EQUAL_NODES(receiving_relay.Receive(),
-                              testing::AnotherNode());
+          REQUIRE_THAT(receiving_relay.Receive(),
+                       Equals(testing::AnotherNode()));
         }
       }
 
       WHEN("I listen to the data on the receiving relay") {
         conduit::Node listening_node{receiving_relay.Listen()};
         THEN("I receive the data on the receiving relay") {
-          REQUIRE_EQUAL_NODES(listening_node, testing::AnyNode());
+          REQUIRE_THAT(listening_node, Equals(testing::AnyNode()));
         }
 
         WHEN("I change the values and send again") {
           sending_relay.Send(testing::AnotherNode());
 
           THEN("I receive the data on the receiving relay") {
-            REQUIRE_EQUAL_NODES(listening_node, testing::AnotherNode());
+            REQUIRE_THAT(listening_node, Equals(testing::AnotherNode()));
           }
         }
       }

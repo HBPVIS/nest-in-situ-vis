@@ -45,7 +45,7 @@ SCENARIO("Data gets transported", "[niv][niv::SynchronizedRelaySharedMemory]") {
         conduit::Node received_node{visualization_relay.Receive()};
 
         THEN("received data matches original data") {
-          REQUIRE_EQUAL_NODES(received_node, testing::AnyNode());
+          REQUIRE_THAT(received_node, Equals(testing::AnyNode()));
         }
       }
     }
@@ -64,7 +64,7 @@ SCENARIO("data in relay gets updated on sending update",
       WHEN("the node is received from the relay") {
         conduit::Node received_node{simulation_relay.Receive()};
         THEN("the received node includes the update") {
-          REQUIRE_EQUAL_NODES(received_node, testing::UpdatedNode());
+          REQUIRE_THAT(received_node, Equals(testing::UpdatedNode()));
         }
       }
     }

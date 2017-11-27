@@ -47,7 +47,7 @@ SCENARIO("update inserts new nodes", "[conduit]") {
       a.update(b);
 
       THEN("the first node contains also the content of the second") {
-        REQUIRE_EQUAL_NODES(a, testing::UpdatedNode());
+        REQUIRE_THAT(a, Equals(testing::UpdatedNode()));
       }
     }
   }
@@ -156,7 +156,7 @@ SCENARIO(
       std::string original_json_copied{copied_node.to_json()};
 
       THEN("The two nodes are equal") {
-        REQUIRE_EQUAL_NODES(external_node, copied_node);
+        REQUIRE_THAT(external_node, Equals(copied_node));
       }
 
       WHEN("the data is changed") {
@@ -180,7 +180,7 @@ SCENARIO(
       std::string original_json_assigned{assigned_node.to_json()};
 
       THEN("The two nodes are equal") {
-        REQUIRE_EQUAL_NODES(external_node, assigned_node);
+        REQUIRE_THAT(external_node, Equals(assigned_node));
       }
 
       WHEN("the data is changed") {

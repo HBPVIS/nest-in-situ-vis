@@ -52,7 +52,7 @@ SCENARIO("Shared memory access", "[niv][niv::SharedMemoryAccess]") {
         segment_access.Store(testing::AnyNode());
 
         THEN("it can be read") {
-          REQUIRE_EQUAL_NODES(segment_access.Read(), testing::AnyNode());
+          REQUIRE_THAT(segment_access.Read(), Equals(testing::AnyNode()));
         }
       }
     }
