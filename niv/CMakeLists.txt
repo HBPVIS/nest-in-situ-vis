@@ -37,20 +37,23 @@ target_link_libraries(niv
   pthread
   rt
   )
+target_compile_options(niv
+  PRIVATE -fPIC
+  )
 
 generate_export_header(niv
   EXPORT_FILE_NAME ${CMAKE_CURRENT_BINARY_DIR}/include/niv/export.hpp
-)
+  )
 
 set_warning_levels_RWTH(niv
   SUPPRESS_WARNINGS_HEADER ${CMAKE_CURRENT_BINARY_DIR}/include/niv/suppress_warnings.hpp
-)
+  )
 
 add_test_cpplint(NAME "niv--cpplint"
   ${NIV_SOURCES}
   ${NIV_HEADERS}
   ${NIV_API_HEADERS}
-)
+  )
 
 generate_configure_files(niv)
 
