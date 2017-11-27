@@ -26,7 +26,8 @@
 #include "conduit/conduit_node.hpp"
 #include "conduit/conduit_schema.hpp"
 
-#include "niv/shared_memory.hpp"
+#include "niv/shared_memory_access.hpp"
+#include "niv/shared_memory_segment.hpp"
 
 conduit::Node AnyNode() {
   conduit::Node node;
@@ -39,37 +40,24 @@ conduit::Node AnyNode() {
   return node;
 }
 
-void StoreSchema(const conduit::Node& node, niv::SharedMemory* shared_memory) {
-  conduit::Schema schema;
-  node.schema().compact_to(schema);
-  shared_memory->Store(schema.to_json());
-}
-
-void StoreData(const conduit::Node& node, niv::SharedMemory* shared_memory) {
-  std::vector<conduit::uint8> data;
-  node.serialize(data);
-  shared_memory->Store(data);
-}
-
 void FillWithData(niv::SharedMemory* shared_memory) {
   conduit::Node node{AnyNode()};
-  StoreSchema(node, shared_memory);
-  StoreData(node, shared_memory);
+  shared_memory->Store(node);
 }
 
 void Create() {
-  niv::SharedMemory shared_memory{niv::SharedMemory::Create()};
-  FillWithData(&shared_memory);
+  niv::SharedMemorySegment segment;
+  FillWithData(&segment);
 }
 
 void Fill() {
-  niv::SharedMemory shared_memory{niv::SharedMemory::Access()};
-  FillWithData(&shared_memory);
+  niv::SharedMemoryAccess access;
+  FillWithData(&access);
 }
 
 void Destroy() {
-  niv::SharedMemory s{niv::SharedMemory::Access()};
-  s.Destroy();
+  niv::SharedMemoryAccess access;
+  access.Destroy();
 }
 
 int Command(char* command) {

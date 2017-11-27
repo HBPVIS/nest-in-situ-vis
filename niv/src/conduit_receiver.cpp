@@ -25,7 +25,7 @@
 
 namespace niv {
 
-void ConduitReceiver::Start() { relay_.Listen(&node_); }
+void ConduitReceiver::Start() { node_ = relay_.Listen(); }
 
 double ConduitReceiver::Get(const std::string& path) const {
   return node_.fetch(path).as_double();

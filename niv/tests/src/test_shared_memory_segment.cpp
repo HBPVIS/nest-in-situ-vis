@@ -24,7 +24,11 @@
 
 #include "catch/catch.hpp"
 
+#include "conduit/conduit_node.hpp"
+
 #include "niv/shared_memory_segment.hpp"
+
+#include "conduit_node_helper.hpp"
 
 SCENARIO("Shared memory creation", "[niv][niv::SharedMemorySegment]") {
   GIVEN("A shared memory segment") {
@@ -34,41 +38,20 @@ SCENARIO("Shared memory creation", "[niv][niv::SharedMemorySegment]") {
       THEN("it is > 0") { REQUIRE(free_size_after_creation > 0); }
     }
 
-    WHEN("I retrieve data from the new segment") {
-      auto retrieved_data = segment.GetData();
-      THEN("it is empty") { REQUIRE(retrieved_data.size() == 0); }
+    WHEN("I read data from the new segment") {
+      THEN("it does not throw") { REQUIRE_NOTHROW(segment.Read()); }
+      THEN("it is empty") { REQUIRE(segment.Read().dtype().is_empty()); }
     }
 
     WHEN("I store data in the segment") {
-      std::vector<conduit::uint8> some_data{1u, 2u, 3u};
       auto free_size_before = segment.GetFreeSize();
-      segment.Store(some_data);
+      segment.Store(testing::AnyNode());
       auto free_size_after = segment.GetFreeSize();
       THEN("we have less free space in the segment") {
         REQUIRE(free_size_after < free_size_before);
       }
-      THEN("I can retrieve the data") {
-        auto retrieved_data = segment.GetData();
-        REQUIRE(retrieved_data == some_data);
-      }
-    }
-
-    WHEN("I retrieve the schema from the new segment") {
-      auto retrieved_schema = segment.GetSchema();
-      THEN("it is empty") { REQUIRE(retrieved_schema.size() == 0); }
-    }
-
-    WHEN("I store a schema in the segment") {
-      std::string some_schema{"foo bar"};
-      auto free_size_before = segment.GetFreeSize();
-      segment.Store(some_schema);
-      auto free_size_after = segment.GetFreeSize();
-      THEN("we have less free space in the segment") {
-        REQUIRE(free_size_after < free_size_before);
-      }
-      THEN("I can retrieve it") {
-        auto retrieved_schema = segment.GetSchema();
-        REQUIRE(retrieved_schema == some_schema);
+      THEN("I can read the data") {
+        REQUIRE_EQUAL_NODES(segment.Read(), testing::AnyNode());
       }
     }
 
@@ -76,6 +59,23 @@ SCENARIO("Shared memory creation", "[niv][niv::SharedMemorySegment]") {
       THEN("It throws an exception") {
         REQUIRE_THROWS_WITH([]() { niv::SharedMemorySegment segment2; }(),
                             "File exists");
+      }
+    }
+  }
+}
+
+SCENARIO("write updated node to shared memory segment",
+         "[niv][niv::SharedMemorySegment]") {
+  GIVEN("a shared memory segment with some data") {
+    niv::SharedMemorySegment segment;
+    segment.Store(testing::AnyNode());
+    WHEN("a larger node is stored") {
+      segment.Store(testing::UpdatedNode());
+      WHEN("the node is read") {
+        conduit::Node read_node{segment.Read()};
+        THEN("the content is equal to the written one") {
+          REQUIRE_EQUAL_NODES(read_node, testing::UpdatedNode());
+        }
       }
     }
   }

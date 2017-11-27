@@ -27,7 +27,7 @@
 
 #include "conduit/conduit_node.hpp"
 
-#include "niv/receiving_relay_shared_memory.hpp"
+#include "niv/relay_shared_memory.hpp"
 #include "niv/shared_memory_segment.hpp"
 
 namespace niv {
@@ -38,8 +38,7 @@ class ConduitReceiver {
   double Get(const std::string& path) const;
 
  private:
-  niv::ReceivingRelaySharedMemory relay_{
-      std::make_unique<SharedMemorySegment>()};
+  niv::RelaySharedMemory relay_{std::make_unique<SharedMemorySegment>()};
   conduit::Node node_;
 };
 

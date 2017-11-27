@@ -35,12 +35,13 @@ Multimeter::Multimeter(const std::string& name,
 void Multimeter::Record(std::size_t id, const std::vector<double>& values) {
   const std::string id_string{IdString(id)};
   for (std::size_t i = 0; i < value_names_.size(); ++i) {
-    Record(id_string, values, i);
+    RecordValue(id_string, values, i);
   }
 }
 
-void Multimeter::Record(std::string id_string, const std::vector<double> values,
-                        std::size_t value_index) {
+void Multimeter::RecordValue(std::string id_string,
+                             const std::vector<double> values,
+                             std::size_t value_index) {
   const std::string& value_name = value_names_[value_index];
   const double value = values[value_index];
   GetTimestepNode()[value_name][id_string] = value;

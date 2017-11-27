@@ -19,28 +19,37 @@
 // limitations under the License.
 //------------------------------------------------------------------------------
 
-#ifndef NIV_INCLUDE_NIV_RECEIVING_RELAY_SHARED_MEMORY_HPP_
-#define NIV_INCLUDE_NIV_RECEIVING_RELAY_SHARED_MEMORY_HPP_
+#ifndef NIV_INCLUDE_NIV_LOCAL_NODE_STORAGE_HPP_
+#define NIV_INCLUDE_NIV_LOCAL_NODE_STORAGE_HPP_
 
 #include <memory>
+#include <string>
+#include <vector>
 
-#include "conduit/conduit_node.hpp"
-
-#include "niv/relay_shared_memory.hpp"
-#include "niv/shared_memory.hpp"
+#include "niv/node_storage.hpp"
 
 namespace niv {
 
-class ReceivingRelaySharedMemory : public RelaySharedMemory {
- public:
-  explicit ReceivingRelaySharedMemory(
-      std::unique_ptr<SharedMemory> shared_memory);
-  virtual ~ReceivingRelaySharedMemory() = default;
+using NodeStorageBase = NodeStorage<std::string, std::vector<conduit::uint8>>;
 
-  void Receive(conduit::Node* node);
-  void Listen(conduit::Node* node);
+class LocalNodeStorage : public NodeStorageBase {
+ public:
+  LocalNodeStorage()
+      : NodeStorageBase{new std::string, new std::vector<conduit::uint8>},
+        owned_schema_storage_{GetSchemaStorage()},
+        owned_data_storage_{GetDataStorage()} {}
+  LocalNodeStorage(const LocalNodeStorage&) = delete;
+  LocalNodeStorage(LocalNodeStorage&&) = default;
+  ~LocalNodeStorage() = default;
+
+  LocalNodeStorage& operator=(const LocalNodeStorage&) = delete;
+  LocalNodeStorage& operator=(LocalNodeStorage&&) = default;
+
+ private:
+  std::unique_ptr<std::string> owned_schema_storage_;
+  std::unique_ptr<std::vector<conduit::uint8>> owned_data_storage_;
 };
 
 }  // namespace niv
 
-#endif  // NIV_INCLUDE_NIV_RECEIVING_RELAY_SHARED_MEMORY_HPP_
+#endif  // NIV_INCLUDE_NIV_LOCAL_NODE_STORAGE_HPP_

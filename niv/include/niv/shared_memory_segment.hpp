@@ -26,8 +26,10 @@
 
 #include <vector>
 
+SUPPRESS_WARNINGS_BEGIN
 #include "boost/interprocess/allocators/allocator.hpp"
 #include "boost/interprocess/managed_shared_memory.hpp"
+SUPPRESS_WARNINGS_BEGIN
 
 #include "conduit/conduit_core.hpp"
 

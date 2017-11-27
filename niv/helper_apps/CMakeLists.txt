@@ -25,3 +25,7 @@ add_executable(niv-shared-memory
 target_link_libraries(niv-shared-memory
   niv
   )
+set_warning_levels_RWTH(niv-shared-memory
+  SUPPRESS_WARNINGS_HEADER
+    ${CMAKE_CURRENT_BINARY_DIR}/include/niv/suppress_warnings.hpp
+  )

@@ -49,8 +49,8 @@ class Multimeter final : public Recorder {
       conduit::Node* node);
 
  private:
-  void Record(std::string id_string, const std::vector<double> values,
-              std::size_t value_index);
+  void RecordValue(std::string id_string, const std::vector<double> values,
+                   std::size_t value_index);
   std::string IdString(std::size_t id) const;
 
   std::vector<std::string> value_names_;

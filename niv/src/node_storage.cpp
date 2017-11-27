@@ -19,30 +19,27 @@
 // limitations under the License.
 //------------------------------------------------------------------------------
 
-#include "niv/receiving_relay_shared_memory.hpp"
-
-#include <memory>
-#include <utility>
+#include <string>
+#include <vector>
 
 #include "conduit/conduit_node.hpp"
 #include "conduit/conduit_schema.hpp"
 
+#include "niv/node_storage.hpp"
+
 namespace niv {
 
-ReceivingRelaySharedMemory::ReceivingRelaySharedMemory(
-    std::unique_ptr<SharedMemory> shared_memory)
-    : RelaySharedMemory{std::move(shared_memory)} {}
-
-void ReceivingRelaySharedMemory::Receive(conduit::Node* node) {
-  auto schema = shared_memory_->GetSchema();
-  auto data = shared_memory_->GetData();
-  node->set_data_using_schema(conduit::Schema(schema), data.data());
+std::string CompactedSchemaJson(const conduit::Node& node) {
+  const conduit::Schema schema{node.schema()};
+  conduit::Schema compact_schema;
+  schema.compact_to(compact_schema);
+  return compact_schema.to_json();
 }
 
-void ReceivingRelaySharedMemory::Listen(conduit::Node* node) {
-  auto schema = shared_memory_->GetSchema();
-  auto raw_data = shared_memory_->GetRawData();
-  node->set_external_data_using_schema(conduit::Schema(schema), raw_data);
+std::vector<conduit::uint8> Serialize(const conduit::Node& node) {
+  std::vector<conduit::uint8> data;
+  node.serialize(data);
+  return data;
 }
 
 }  // namespace niv

@@ -27,10 +27,15 @@
 #include <utility>
 #include <vector>
 
+SUPPRESS_WARNINGS_BEGIN
 #include "boost/interprocess/allocators/allocator.hpp"
 #include "boost/interprocess/managed_shared_memory.hpp"
+SUPPRESS_WARNINGS_END
 
 #include "conduit/conduit_core.hpp"
+#include "conduit/conduit_node.hpp"
+
+#include "niv/node_storage.hpp"
 
 namespace niv {
 
@@ -43,32 +48,38 @@ class SharedMemory {
   using SegmentManager = ManagedSharedMemory::segment_manager;
   template <typename T>
   using Allocator = boost::interprocess::allocator<T, SegmentManager>;
-  using DataVector = std::vector<conduit::uint8, Allocator<conduit::uint8>>;
-  using SchemaString = std::vector<char, Allocator<char>>;
+  using DataStorage = std::vector<conduit::uint8, Allocator<conduit::uint8>>;
+  using SchemaStorage = std::vector<char, Allocator<char>>;
 
-  explicit SharedMemory(const Create&);
-  explicit SharedMemory(const Access&);
+  SharedMemory() = delete;
+  SharedMemory(const SharedMemory&) = delete;
+  SharedMemory(SharedMemory&&) = delete;
   virtual ~SharedMemory() = default;
 
   void Destroy();
 
   std::size_t GetFreeSize() const;
 
-  void Store(const std::vector<conduit::uint8>& data);
-  void Store(const std::string& schema);
-  std::vector<conduit::uint8> GetData() const;
-  conduit::uint8* GetRawData() const;
-  std::string GetSchema() const;
+  void Store(const conduit::Node& node);
+  void Update(const conduit::Node& node);
+  conduit::Node Read();
+  conduit::Node Listen();
 
   static constexpr const char* SegmentName() { return "niv-shared-memory"; }
-  static constexpr const char* DataVectorName() { return "DataVector"; }
-  static constexpr const char* SchemaStringName() { return "SchemaString"; }
+  static constexpr const char* DataStorageName() { return "DataStorage"; }
+  static constexpr const char* SchemaStorageName() { return "SchemaStorage"; }
   static constexpr std::size_t InitialSize() { return 65536u; }
 
+  SharedMemory& operator=(const SharedMemory&) = delete;
+  SharedMemory& operator=(SharedMemory&&) = delete;
+
  protected:
+  explicit SharedMemory(const Create&);
+  explicit SharedMemory(const Access&);
+
+ private:
   ManagedSharedMemory segment_;
-  DataVector* data_vector_{nullptr};
-  SchemaString* schema_string_{nullptr};
+  NodeStorage<SchemaStorage, DataStorage> node_storage_;
 };
 
 }  // namespace niv

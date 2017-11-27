@@ -27,24 +27,27 @@
 
 #include "conduit/conduit_node.hpp"
 
+#include "niv/node_storage.hpp"
+
+#include "conduit_node_helper.hpp"
+
+namespace conduit {
+
+template <>
+DataArray<uint64>::~DataArray();
+
+}  // namespace conduit
+
 SCENARIO("update inserts new nodes", "[conduit]") {
   GIVEN("A conduit tree") {
-    conduit::Node a;
-    a["sim/t=0/Vm/N0"] = 0.5f;
-    a["sim/t=0/Vm/N1"] = 0.75f;
+    conduit::Node a = testing::AnyNode();
 
-    WHEN("A second node updates the second") {
-      conduit::Node b;
-      b["sim/t=1/Vm/N0"] = 1.5f;
-      b["sim/t=1/Vm/N1"] = 1.75f;
-
+    WHEN("A second node updates the tree") {
+      conduit::Node b = testing::Update();
       a.update(b);
 
       THEN("the first node contains also the content of the second") {
-        REQUIRE(a["sim/t=0/Vm/N0"].to_float() == 0.5f);
-        REQUIRE(a["sim/t=0/Vm/N1"].to_float() == 0.75f);
-        REQUIRE(a["sim/t=1/Vm/N0"].to_float() == 1.5f);
-        REQUIRE(a["sim/t=1/Vm/N1"].to_float() == 1.75f);
+        REQUIRE_EQUAL_NODES(a, testing::UpdatedNode());
       }
     }
   }
@@ -74,6 +77,51 @@ SCENARIO("conduit array leafs are compatible to std::vector", "[conduit]") {
       THEN("the vector and the original data are the same") {
         REQUIRE(retrieved_data == some_data);
       }
+    }
+  }
+}
+
+namespace {
+
+void SerializeConstRef(const conduit::Node& node, std::string* schema,
+                       std::vector<conduit::uint8>* bytes) {
+  conduit::Schema compact_schema;
+  node.schema().compact_to(compact_schema);
+  const std::string compact_schema_json(compact_schema.to_json());
+  schema->assign(compact_schema_json.begin(), compact_schema_json.end());
+
+  // intermediate vector not required in general, but our use case requires it
+  std::vector<conduit::uint8> data;
+  node.serialize(data);
+  bytes->assign(data.begin(), data.end());
+}
+
+}  // namespace
+
+SCENARIO("confirm that conduit issue #226 is not yet fixed", "[conduit]") {
+  INFO(
+      "This test's failing indicates that conduit issue #226 might have been "
+      "fixed.\n"
+      "Check https://github.com/LLNL/conduit/issues/226 \n"
+      "Also adjust niv::NodeStorage::Store(...) and "
+      "niv::NodeStorage::Update(...) \n"
+      "so that they not do superfluous copying anymore.");
+  GIVEN("a node that is serialized and read back") {
+    std::string schema;
+    std::vector<conduit::uint8> bytes;
+
+    SerializeConstRef(testing::AnyNode(), &schema, &bytes);
+
+    conduit::Node second_node;
+    second_node.set_data_using_schema(conduit::Schema(schema), bytes.data());
+
+    WHEN("the second node is serialized and read into a third node") {
+      SerializeConstRef(second_node, &schema, &bytes);
+
+      conduit::Node third_node;
+      third_node.set_data_using_schema(conduit::Schema(schema), bytes.data());
+
+      REQUIRE_FALSE(third_node.to_json() == testing::AnyNode().to_json());
     }
   }
 }

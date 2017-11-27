@@ -19,32 +19,42 @@
 // limitations under the License.
 //------------------------------------------------------------------------------
 
-#ifndef NIV_INCLUDE_NIV_SENDING_RELAY_SHARED_MEMORY_HPP_
-#define NIV_INCLUDE_NIV_SENDING_RELAY_SHARED_MEMORY_HPP_
+#ifndef NIV_INCLUDE_NIV_SYNCHRONIZED_RELAY_SHARED_MEMORY_HPP_
+#define NIV_INCLUDE_NIV_SYNCHRONIZED_RELAY_SHARED_MEMORY_HPP_
 
 #include <memory>
+#include <vector>
 
 #include "conduit/conduit_node.hpp"
 
 #include "niv/relay_shared_memory.hpp"
-#include "niv/shared_memory.hpp"
 
 namespace niv {
 
-class SendingRelaySharedMemory : public RelaySharedMemory {
+SUPPRESS_WARNINGS_BEGIN_PADDED
+class SynchronizedRelaySharedMemory : public RelaySharedMemory {
  public:
-  explicit SendingRelaySharedMemory(SharedMemory* shared_memory);
-  explicit SendingRelaySharedMemory(
+  SynchronizedRelaySharedMemory() = delete;
+  explicit SynchronizedRelaySharedMemory(
       std::unique_ptr<SharedMemory> shared_memory);
-  virtual ~SendingRelaySharedMemory() = default;
+  ~SynchronizedRelaySharedMemory() = default;
+  SynchronizedRelaySharedMemory(const SynchronizedRelaySharedMemory&) = delete;
+  SynchronizedRelaySharedMemory(SynchronizedRelaySharedMemory&&) = delete;
 
   void Send(const conduit::Node& node);
+  conduit::Node Receive();
+
+  SynchronizedRelaySharedMemory& operator=(
+      const SynchronizedRelaySharedMemory&) = delete;
+  SynchronizedRelaySharedMemory& operator=(SynchronizedRelaySharedMemory&&) =
+      delete;
 
  private:
-  void SendData(const conduit::Node& node);
-  void SendSchema(const conduit::Node& node);
+  void SendUpdate(const conduit::Node& node);
+  bool empty{true};
 };
+SUPPRESS_WARNINGS_END
 
 }  // namespace niv
 
-#endif  // NIV_INCLUDE_NIV_SENDING_RELAY_SHARED_MEMORY_HPP_
+#endif  // NIV_INCLUDE_NIV_SYNCHRONIZED_RELAY_SHARED_MEMORY_HPP_

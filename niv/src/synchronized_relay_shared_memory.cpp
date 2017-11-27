@@ -19,38 +19,37 @@
 // limitations under the License.
 //------------------------------------------------------------------------------
 
-#include "niv/sending_relay_shared_memory.hpp"
-
 #include <memory>
 #include <utility>
 #include <vector>
 
-#include "conduit/conduit_node.hpp"
+#include "conduit/conduit_core.hpp"
 #include "conduit/conduit_schema.hpp"
 
-namespace niv {
-SendingRelaySharedMemory::SendingRelaySharedMemory(SharedMemory* shared_memory)
-    : SendingRelaySharedMemory(std::unique_ptr<SharedMemory>(shared_memory)) {}
+#include "niv/synchronized_relay_shared_memory.hpp"
 
-SendingRelaySharedMemory::SendingRelaySharedMemory(
+namespace niv {
+
+SynchronizedRelaySharedMemory::SynchronizedRelaySharedMemory(
     std::unique_ptr<SharedMemory> shared_memory)
     : RelaySharedMemory{std::move(shared_memory)} {}
 
-void SendingRelaySharedMemory::Send(const conduit::Node& node) {
-  SendData(node);
-  SendSchema(node);
+void SynchronizedRelaySharedMemory::Send(const conduit::Node& node) {
+  if (empty) {
+    RelaySharedMemory::Send(node);
+  } else {
+    SendUpdate(node);
+  }
+  empty = false;
 }
 
-void SendingRelaySharedMemory::SendData(const conduit::Node& node) {
-  std::vector<conduit::uint8> data;
-  node.serialize(data);
-  shared_memory_->Store(data);
+void SynchronizedRelaySharedMemory::SendUpdate(const conduit::Node& node) {
+  GetSharedMemory()->Update(node);
 }
 
-void SendingRelaySharedMemory::SendSchema(const conduit::Node& node) {
-  conduit::Schema schema;
-  node.schema().compact_to(schema);
-  shared_memory_->Store(schema.to_json());
+conduit::Node SynchronizedRelaySharedMemory::Receive() {
+  empty = true;
+  return RelaySharedMemory::Receive();
 }
 
 }  // namespace niv

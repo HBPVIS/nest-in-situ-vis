@@ -25,22 +25,26 @@
 #include <utility>
 #include <vector>
 
+#include "conduit/conduit_node.hpp"
+#include "conduit/conduit_schema.hpp"
+
 namespace niv {
 
 SharedMemory::SharedMemory(const Create&)
     : segment_{boost::interprocess::create_only, SegmentName(), InitialSize()},
-      data_vector_{segment_.construct<DataVector>(DataVectorName())(
-          DataVector::allocator_type(segment_.get_segment_manager()))},
-      schema_string_{segment_.construct<SchemaString>(SchemaStringName())(
-          SchemaString::allocator_type(segment_.get_segment_manager()))} {}
+      node_storage_{
+          segment_.construct<SchemaStorage>(SchemaStorageName())(
+              SchemaStorage::allocator_type(segment_.get_segment_manager())),
+          segment_.construct<DataStorage>(DataStorageName())(
+              DataStorage::allocator_type(segment_.get_segment_manager()))} {}
 SharedMemory::SharedMemory(const Access&)
     : segment_{boost::interprocess::open_only, SegmentName()},
-      data_vector_{segment_.find<DataVector>(DataVectorName()).first},
-      schema_string_{segment_.find<SchemaString>(SchemaStringName()).first} {}
+      node_storage_{segment_.find<SchemaStorage>(SchemaStorageName()).first,
+                    segment_.find<DataStorage>(DataStorageName()).first} {}
 
 void SharedMemory::Destroy() {
-  segment_.destroy<DataVector>(DataVectorName());
-  segment_.destroy<SchemaString>(SchemaStringName());
+  segment_.destroy<SchemaStorage>(SchemaStorageName());
+  segment_.destroy<DataStorage>(DataStorageName());
   boost::interprocess::shared_memory_object::remove(SegmentName());
 }
 
@@ -48,25 +52,16 @@ std::size_t SharedMemory::GetFreeSize() const {
   return segment_.get_free_memory();
 }
 
-void SharedMemory::Store(const std::vector<conduit::uint8>& data) {
-  data_vector_->assign(data.begin(), data.end());
+void SharedMemory::Store(const conduit::Node& node) {
+  node_storage_.Store(node);
 }
 
-void SharedMemory::Store(const std::string& schema) {
-  schema_string_->assign(schema.begin(), schema.end());
+void SharedMemory::Update(const conduit::Node& node) {
+  node_storage_.Update(node);
 }
 
-std::vector<conduit::uint8> SharedMemory::GetData() const {
-  return std::vector<conduit::uint8>{data_vector_->begin(),
-                                     data_vector_->end()};
-}
+conduit::Node SharedMemory::Read() { return node_storage_.Read(); }
 
-conduit::uint8* SharedMemory::GetRawData() const {
-  return data_vector_->data();
-}
-
-std::string SharedMemory::GetSchema() const {
-  return std::string{schema_string_->begin(), schema_string_->end()};
-}
+conduit::Node SharedMemory::Listen() { return node_storage_.Listen(); }
 
 }  // namespace niv
