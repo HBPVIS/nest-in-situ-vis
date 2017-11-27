@@ -39,11 +39,8 @@ SCENARIO("Shared memory creation", "[niv][niv::SharedMemorySegment]") {
     }
 
     WHEN("I read data from the new segment") {
-      conduit::Node node;
-      THEN("it does not throw") { REQUIRE_NOTHROW(segment.Read(&node)); }
-
-      segment.Read(&node);
-      THEN("it is empty") { REQUIRE(node.dtype().is_empty()); }
+      THEN("it does not throw") { REQUIRE_NOTHROW(segment.Read()); }
+      THEN("it is empty") { REQUIRE(segment.Read().dtype().is_empty()); }
     }
 
     WHEN("I store data in the segment") {
@@ -54,9 +51,7 @@ SCENARIO("Shared memory creation", "[niv][niv::SharedMemorySegment]") {
         REQUIRE(free_size_after < free_size_before);
       }
       THEN("I can read the data") {
-        conduit::Node read_node;
-        segment.Read(&read_node);
-        REQUIRE_EQUAL_NODES(read_node, testing::AnyNode());
+        REQUIRE_EQUAL_NODES(segment.Read(), testing::AnyNode());
       }
     }
 
@@ -77,8 +72,7 @@ SCENARIO("write updated node to shared memory segment",
     WHEN("a larger node is stored") {
       segment.Store(testing::UpdatedNode());
       WHEN("the node is read") {
-        conduit::Node read_node;
-        segment.Read(&read_node);
+        conduit::Node read_node{segment.Read()};
         THEN("the content is equal to the written one") {
           REQUIRE_EQUAL_NODES(read_node, testing::UpdatedNode());
         }

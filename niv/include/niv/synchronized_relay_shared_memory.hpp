@@ -42,7 +42,7 @@ class SynchronizedRelaySharedMemory : public RelaySharedMemory {
   SynchronizedRelaySharedMemory(SynchronizedRelaySharedMemory&&) = delete;
 
   void Send(const conduit::Node& node);
-  void Receive(conduit::Node*);
+  conduit::Node Receive();
 
   SynchronizedRelaySharedMemory& operator=(
       const SynchronizedRelaySharedMemory&) = delete;

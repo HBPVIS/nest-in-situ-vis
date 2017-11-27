@@ -40,36 +40,34 @@ SCENARIO("Communicate a conduit node from shared mem segment to access",
         std::make_unique<niv::SharedMemorySegment>()};
     niv::RelaySharedMemory receiving_relay{
         std::make_unique<niv::SharedMemoryAccess>()};
-    conduit::Node receiving_node;
 
     WHEN("I send the data via the sending relay") {
       sending_relay.Send(testing::AnyNode());
 
       THEN("I receive the data on the receiving relay") {
-        receiving_relay.Receive(&receiving_node);
-        REQUIRE_EQUAL_NODES(receiving_node, testing::AnyNode());
+        REQUIRE_EQUAL_NODES(receiving_relay.Receive(), testing::AnyNode());
       }
 
       WHEN("I change the values and send again") {
         sending_relay.Send(testing::AnotherNode());
 
         THEN("I receive the data on the receiving relay") {
-          receiving_relay.Receive(&receiving_node);
-          REQUIRE_EQUAL_NODES(receiving_node, testing::AnotherNode());
+          REQUIRE_EQUAL_NODES(receiving_relay.Receive(),
+                              testing::AnotherNode());
         }
       }
 
       WHEN("I listen to the data on the receiving relay") {
-        receiving_relay.Listen(&receiving_node);
+        conduit::Node listening_node{receiving_relay.Listen()};
         THEN("I receive the data on the receiving relay") {
-          REQUIRE_EQUAL_NODES(receiving_node, testing::AnyNode());
+          REQUIRE_EQUAL_NODES(listening_node, testing::AnyNode());
         }
 
         WHEN("I change the values and send again") {
           sending_relay.Send(testing::AnotherNode());
 
           THEN("I receive the data on the receiving relay") {
-            REQUIRE_EQUAL_NODES(receiving_node, testing::AnotherNode());
+            REQUIRE_EQUAL_NODES(listening_node, testing::AnotherNode());
           }
         }
       }
@@ -84,7 +82,6 @@ SCENARIO("Communicate a conduit node from shared mem access to segment",
       "receiving shared memory segment relay, and a receiving node") {
     niv::RelaySharedMemory receiving_relay{
         std::make_unique<niv::SharedMemorySegment>()};
-    conduit::Node receiving_node;
     niv::RelaySharedMemory sending_relay{
         std::make_unique<niv::SharedMemoryAccess>()};
 
@@ -92,30 +89,29 @@ SCENARIO("Communicate a conduit node from shared mem access to segment",
       sending_relay.Send(testing::AnyNode());
 
       THEN("I receive the data on the receiving relay") {
-        receiving_relay.Receive(&receiving_node);
-        REQUIRE_EQUAL_NODES(receiving_node, testing::AnyNode());
+        REQUIRE_EQUAL_NODES(receiving_relay.Receive(), testing::AnyNode());
       }
 
       WHEN("I change the values and send again") {
         sending_relay.Send(testing::AnotherNode());
 
         THEN("I receive the data on the receiving relay") {
-          receiving_relay.Receive(&receiving_node);
-          REQUIRE_EQUAL_NODES(receiving_node, testing::AnotherNode());
+          REQUIRE_EQUAL_NODES(receiving_relay.Receive(),
+                              testing::AnotherNode());
         }
       }
 
       WHEN("I listen to the data on the receiving relay") {
-        receiving_relay.Listen(&receiving_node);
+        conduit::Node listening_node{receiving_relay.Listen()};
         THEN("I receive the data on the receiving relay") {
-          REQUIRE_EQUAL_NODES(receiving_node, testing::AnyNode());
+          REQUIRE_EQUAL_NODES(listening_node, testing::AnyNode());
         }
 
         WHEN("I change the values and send again") {
           sending_relay.Send(testing::AnotherNode());
 
           THEN("I receive the data on the receiving relay") {
-            REQUIRE_EQUAL_NODES(receiving_node, testing::AnotherNode());
+            REQUIRE_EQUAL_NODES(listening_node, testing::AnotherNode());
           }
         }
       }

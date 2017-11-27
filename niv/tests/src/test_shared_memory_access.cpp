@@ -52,9 +52,7 @@ SCENARIO("Shared memory access", "[niv][niv::SharedMemoryAccess]") {
         segment_access.Store(testing::AnyNode());
 
         THEN("it can be read") {
-          conduit::Node read_node;
-          segment_access.Read(&read_node);
-          REQUIRE_EQUAL_NODES(read_node, testing::AnyNode());
+          REQUIRE_EQUAL_NODES(segment_access.Read(), testing::AnyNode());
         }
       }
     }

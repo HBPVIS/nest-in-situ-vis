@@ -60,10 +60,8 @@ void SharedMemory::Update(const conduit::Node& node) {
   node_storage_.Update(node);
 }
 
-void SharedMemory::Read(conduit::Node* node) { *node = node_storage_.Read(); }
+conduit::Node SharedMemory::Read() { return node_storage_.Read(); }
 
-void SharedMemory::Listen(conduit::Node* node) {
-  node->set_external(node_storage_.Listen());
-}
+conduit::Node SharedMemory::Listen() { return node_storage_.Listen(); }
 
 }  // namespace niv

@@ -37,8 +37,8 @@ class RelaySharedMemory {
   virtual ~RelaySharedMemory() = default;
 
   virtual void Send(const conduit::Node& node);
-  virtual void Receive(conduit::Node* node);
-  void Listen(conduit::Node* node);
+  conduit::Node Receive();
+  conduit::Node Listen();
 
   RelaySharedMemory& operator=(const RelaySharedMemory&) = delete;
   RelaySharedMemory& operator=(RelaySharedMemory&&) = delete;
