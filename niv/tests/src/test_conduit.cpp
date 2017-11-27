@@ -137,7 +137,9 @@ SCENARIO(
   INFO(
       "This test's failing indicates that conduit issue #228 might have been "
       "fixed.\n"
-      "Check https://github.com/LLNL/conduit/issues/228 \n")
+      "Check https://github.com/LLNL/conduit/issues/228 \n"
+      "Also adjust niv::ConduitReceiver::Start(...) "
+      "to not use set_external(...) anymore.")
   GIVEN("An external conduit node") {
     std::string schema;
     std::vector<conduit::uint8> data;
