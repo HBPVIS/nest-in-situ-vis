@@ -21,9 +21,9 @@
 
 #include "pyniv.hpp"
 
-#include "conduit_data.hpp"
+#include <iostream>  // NOLINT
 
-#include <iostream>
+#include "conduit_data.hpp"
 
 namespace pyniv {
 

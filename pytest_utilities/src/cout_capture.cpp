@@ -25,8 +25,8 @@ SUPPRESS_WARNINGS_BEGIN
 #include "boost/python.hpp"
 SUPPRESS_WARNINGS_END
 
-#include <iostream>
-#include <string>
+#include <iostream> // NOLINT
+#include <string> // NOLINT
 
 
 namespace test_utilities {
