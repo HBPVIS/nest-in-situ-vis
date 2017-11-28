@@ -43,13 +43,8 @@ class NodeStorage {
   virtual ~NodeStorage() = default;
 
   void Store(const conduit::Node& node) {
-    // the following copy is required due to conduit's issue #226
-    // (https://github.com/LLNL/conduit/issues/226)
-    // see niv/tests/test_conduit.cpp for a smoke test, failing if fixed
-    conduit::Node tmp(node);
-
-    StoreSchema(tmp);
-    StoreData(tmp);
+    StoreSchema(node);
+    StoreData(node);
   }
 
   void Update(const conduit::Node& node) {

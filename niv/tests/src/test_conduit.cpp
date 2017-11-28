@@ -99,16 +99,15 @@ void SerializeConstRef(const conduit::Node& node, std::string* schema,
 }  // namespace
 
 SCENARIO(
-    "multiple serialize and re-read does not work. confirm that conduit issue "
-    "#226 is not yet fixed",
+    "multiple serialization and re-read works. Conduit's issues #226, #229 are "
+    "fixed."
     "[conduit]") {
   INFO(
-      "This test's failing indicates that conduit issue #226 might have been "
-      "fixed.\n"
-      "Check https://github.com/LLNL/conduit/issues/226 \n"
-      "Also adjust niv::NodeStorage::Store(...) and "
-      "niv::NodeStorage::Update(...) \n"
-      "so that they not do superfluous copying anymore.");
+      "This test's failing indicates that something might have broken the "
+      "fixes for conduit's issues #226, #229.\n"
+      "See \n"
+      "* https://github.com/LLNL/conduit/issues/226 \n"
+      "* https://github.com/LLNL/conduit/issues/229 \n")
   GIVEN("a node that is serialized and read back") {
     std::string schema;
     std::vector<conduit::uint8> bytes;
@@ -124,7 +123,7 @@ SCENARIO(
       conduit::Node third_node;
       third_node.set_data_using_schema(conduit::Schema(schema), bytes.data());
 
-      REQUIRE_FALSE(third_node.to_json() == testing::AnyNode().to_json());
+      REQUIRE(third_node.to_json() == testing::AnyNode().to_json());
     }
   }
 }
