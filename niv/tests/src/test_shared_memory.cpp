@@ -39,7 +39,7 @@ SCENARIO("storing and retrieving conduit nodes to/from shared memory",
       shared_memory_segment.Store(testing::AnyNode());
 
       THEN("it can be read via access") {
-        REQUIRE_EQUAL_NODES(shared_memory_access.Read(), testing::AnyNode());
+        REQUIRE_THAT(shared_memory_access.Read(), Equals(testing::AnyNode()));
       }
 
       GIVEN("a node listening to shared memory") {
@@ -47,7 +47,7 @@ SCENARIO("storing and retrieving conduit nodes to/from shared memory",
         WHEN("the first node is updated and stored again") {
           shared_memory_segment.Store(testing::AnotherNode());
           THEN("the result arrives at the listening node") {
-            REQUIRE_EQUAL_NODES(listening_node, testing::AnotherNode());
+            REQUIRE_THAT(listening_node, Equals(testing::AnotherNode()));
           }
         }
       }
@@ -57,7 +57,7 @@ SCENARIO("storing and retrieving conduit nodes to/from shared memory",
       shared_memory_access.Store(testing::AnyNode());
 
       THEN("it can be read from the segment") {
-        REQUIRE_EQUAL_NODES(shared_memory_segment.Read(), testing::AnyNode());
+        REQUIRE_THAT(shared_memory_segment.Read(), Equals(testing::AnyNode()));
       }
 
       GIVEN("a node listening to shared memory") {
@@ -65,7 +65,7 @@ SCENARIO("storing and retrieving conduit nodes to/from shared memory",
         WHEN("the first node is updated and stored again") {
           shared_memory_segment.Store(testing::AnotherNode());
           THEN("the result arrives at the listening node") {
-            REQUIRE_EQUAL_NODES(listening_node, testing::AnotherNode());
+            REQUIRE_THAT(listening_node, Equals(testing::AnotherNode()));
           }
         }
       }
@@ -85,7 +85,7 @@ SCENARIO("Overwriting data in shared memory",
       WHEN("that data is read") {
         conduit::Node read_node{shared_memory_access.Read()};
         THEN("the read data is equal to the stored one") {
-          REQUIRE_EQUAL_NODES(read_node, testing::ADifferentNode());
+          REQUIRE_THAT(read_node, Equals(testing::ADifferentNode()));
         }
       }
     }
@@ -105,10 +105,10 @@ SCENARIO("data can be updated in shared memory",
     WHEN("the data in the shared memory is updated") {
       segment.Update(testing::Update());
       THEN("the  updated data can be read from the segment") {
-        REQUIRE_EQUAL_NODES(segment.Read(), testing::UpdatedNode());
+        REQUIRE_THAT(segment.Read(), Equals(testing::UpdatedNode()));
       }
       THEN("the updated data can be read from the segment access") {
-        REQUIRE_EQUAL_NODES(segment.Read(), testing::UpdatedNode());
+        REQUIRE_THAT(segment.Read(), Equals(testing::UpdatedNode()));
       }
     }
   }

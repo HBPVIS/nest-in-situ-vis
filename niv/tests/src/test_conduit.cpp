@@ -47,7 +47,7 @@ SCENARIO("update inserts new nodes", "[conduit]") {
       a.update(b);
 
       THEN("the first node contains also the content of the second") {
-        REQUIRE_EQUAL_NODES(a, testing::UpdatedNode());
+        REQUIRE_THAT(a, Equals(testing::UpdatedNode()));
       }
     }
   }
@@ -98,14 +98,16 @@ void SerializeConstRef(const conduit::Node& node, std::string* schema,
 
 }  // namespace
 
-SCENARIO("confirm that conduit issue #226 is not yet fixed", "[conduit]") {
+SCENARIO(
+    "multiple serialization and re-read works. Conduit's issues #226, #229 are "
+    "fixed."
+    "[conduit]") {
   INFO(
-      "This test's failing indicates that conduit issue #226 might have been "
-      "fixed.\n"
-      "Check https://github.com/LLNL/conduit/issues/226 \n"
-      "Also adjust niv::NodeStorage::Store(...) and "
-      "niv::NodeStorage::Update(...) \n"
-      "so that they not do superfluous copying anymore.");
+      "This test's failing indicates that something might have broken the "
+      "fixes for conduit's issues #226, #229.\n"
+      "See \n"
+      "* https://github.com/LLNL/conduit/issues/226 \n"
+      "* https://github.com/LLNL/conduit/issues/229 \n")
   GIVEN("a node that is serialized and read back") {
     std::string schema;
     std::vector<conduit::uint8> bytes;
@@ -121,7 +123,78 @@ SCENARIO("confirm that conduit issue #226 is not yet fixed", "[conduit]") {
       conduit::Node third_node;
       third_node.set_data_using_schema(conduit::Schema(schema), bytes.data());
 
-      REQUIRE_FALSE(third_node.to_json() == testing::AnyNode().to_json());
+      REQUIRE(third_node.to_json() == testing::AnyNode().to_json());
+    }
+  }
+}
+
+SCENARIO(
+    "Node copy does not preserve externalness. confirm that conduit issue #228 "
+    "is not "
+    "yet fixed",
+    "[conduit]") {
+  INFO(
+      "This test's failing indicates that conduit issue #228 might have been "
+      "fixed.\n"
+      "Check https://github.com/LLNL/conduit/issues/228 \n"
+      "Also adjust niv::ConduitReceiver::Start(...) "
+      "to not use set_external(...) anymore.")
+  GIVEN("An external conduit node") {
+    std::string schema;
+    std::vector<conduit::uint8> data;
+    niv::NodeStorage<std::string, std::vector<conduit::uint8>> storage(&schema,
+                                                                       &data);
+    storage.Store(testing::AnyNode());
+
+    constexpr bool external{true};
+    conduit::Node external_node(schema, data.data(), external);
+    const std::string original_json{external_node.to_json()};
+
+    GIVEN("a copy of the external node") {
+      conduit::Node copied_node(external_node);
+      std::string original_json_copied{copied_node.to_json()};
+
+      THEN("The two nodes are equal") {
+        REQUIRE_THAT(external_node, Equals(copied_node));
+      }
+
+      WHEN("the data is changed") {
+        data[0] = ~data[0];
+        data[7] = ~data[7];
+        THEN("the external node has changed data") {
+          REQUIRE(external_node.to_json() != original_json);
+        }
+        THEN("the copied node has changed data") {
+          REQUIRE_FALSE(copied_node.to_json() != original_json_copied);
+        }
+        THEN("the copied node is still equal to the external one") {
+          REQUIRE_FALSE(external_node.to_json() == copied_node.to_json());
+        }
+      }
+    }
+
+    GIVEN("the external node assigned to a new one") {
+      conduit::Node assigned_node;
+      assigned_node = external_node;
+      std::string original_json_assigned{assigned_node.to_json()};
+
+      THEN("The two nodes are equal") {
+        REQUIRE_THAT(external_node, Equals(assigned_node));
+      }
+
+      WHEN("the data is changed") {
+        data[0] = ~data[0];
+        data[7] = ~data[7];
+        THEN("the external node has changed data") {
+          REQUIRE(external_node.to_json() != original_json);
+        }
+        THEN("the assigned node has changed data") {
+          REQUIRE_FALSE(assigned_node.to_json() != original_json_assigned);
+        }
+        THEN("the copied node is still equal to the external one") {
+          REQUIRE_FALSE(external_node.to_json() == assigned_node.to_json());
+        }
+      }
     }
   }
 }

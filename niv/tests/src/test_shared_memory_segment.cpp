@@ -51,7 +51,7 @@ SCENARIO("Shared memory creation", "[niv][niv::SharedMemorySegment]") {
         REQUIRE(free_size_after < free_size_before);
       }
       THEN("I can read the data") {
-        REQUIRE_EQUAL_NODES(segment.Read(), testing::AnyNode());
+        REQUIRE_THAT(segment.Read(), Equals(testing::AnyNode()));
       }
     }
 
@@ -74,7 +74,7 @@ SCENARIO("write updated node to shared memory segment",
       WHEN("the node is read") {
         conduit::Node read_node{segment.Read()};
         THEN("the content is equal to the written one") {
-          REQUIRE_EQUAL_NODES(read_node, testing::UpdatedNode());
+          REQUIRE_THAT(read_node, Equals(testing::UpdatedNode()));
         }
       }
     }
