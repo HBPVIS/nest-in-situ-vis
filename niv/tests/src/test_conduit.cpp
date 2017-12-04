@@ -129,15 +129,14 @@ SCENARIO(
 }
 
 SCENARIO(
-    "Node copy does not preserve externalness. confirm that conduit issue #228 "
-    "is not "
-    "yet fixed",
+    "Node copy does not preserve externalness as intended by conduit."
     "[conduit]") {
   INFO(
-      "This test's failing indicates that conduit issue #228 might have been "
-      "fixed.\n"
-      "Check https://github.com/LLNL/conduit/issues/228 \n"
-      "Also adjust niv::ConduitReceiver::Start(...) "
+      "This test's failing indicates that the intended behaviour of conduit "
+      "has changed. \n"
+      "On failure: Copying preserves externalness. \n"
+      "* Check back with the conduit developers, if this is intended. \n"
+      "* Simplify listening, e.g., in niv::ConduitReceiver::Start(...) "
       "to not use set_external(...) anymore.")
   GIVEN("An external conduit node") {
     std::string schema;
