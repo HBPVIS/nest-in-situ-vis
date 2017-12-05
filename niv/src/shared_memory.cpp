@@ -65,5 +65,6 @@ conduit::Node SharedMemory::Read() { return node_storage_.Read(); }
 conduit::Node SharedMemory::Listen() { return node_storage_.Listen(); }
 
 void SharedMemory::Clear() { node_storage_.Clear(); }
+bool SharedMemory::IsEmpty() const { return node_storage_.IsEmpty(); }
 
 }  // namespace niv

@@ -45,6 +45,7 @@ class RelaySharedMemory {
 
  protected:
   SharedMemory* GetSharedMemory() { return shared_memory_.get(); }
+  const SharedMemory* GetSharedMemory() const { return shared_memory_.get(); }
 
  private:
   std::unique_ptr<SharedMemory> shared_memory_;

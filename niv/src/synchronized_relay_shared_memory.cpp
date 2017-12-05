@@ -19,14 +19,14 @@
 // limitations under the License.
 //------------------------------------------------------------------------------
 
+#include "niv/synchronized_relay_shared_memory.hpp"
+
 #include <memory>
 #include <utility>
 #include <vector>
 
 #include "conduit/conduit_core.hpp"
 #include "conduit/conduit_schema.hpp"
-
-#include "niv/synchronized_relay_shared_memory.hpp"
 
 namespace niv {
 
@@ -35,12 +35,11 @@ SynchronizedRelaySharedMemory::SynchronizedRelaySharedMemory(
     : RelaySharedMemory{std::move(shared_memory)} {}
 
 void SynchronizedRelaySharedMemory::Send(const conduit::Node& node) {
-  if (empty) {
+  if (IsEmpty()) {
     RelaySharedMemory::Send(node);
   } else {
     SendUpdate(node);
   }
-  empty = false;
 }
 
 void SynchronizedRelaySharedMemory::SendUpdate(const conduit::Node& node) {
@@ -50,8 +49,11 @@ void SynchronizedRelaySharedMemory::SendUpdate(const conduit::Node& node) {
 conduit::Node SynchronizedRelaySharedMemory::Receive() {
   auto received_data = RelaySharedMemory::Receive();
   GetSharedMemory()->Clear();
-  empty = true;
   return received_data;
+}
+
+bool SynchronizedRelaySharedMemory::IsEmpty() const {
+  return GetSharedMemory()->IsEmpty();
 }
 
 }  // namespace niv

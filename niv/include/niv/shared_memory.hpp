@@ -65,6 +65,7 @@ class SharedMemory {
   conduit::Node Listen();
 
   void Clear();
+  bool IsEmpty() const;
 
   static constexpr const char* SegmentName() { return "niv-shared-memory"; }
   static constexpr const char* DataStorageName() { return "DataStorage"; }
