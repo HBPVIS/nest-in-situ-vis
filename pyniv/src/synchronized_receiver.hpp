@@ -19,38 +19,35 @@
 // limitations under the License.
 //------------------------------------------------------------------------------
 
-#ifndef NIV_INCLUDE_NIV_RELAY_SHARED_MEMORY_HPP_
-#define NIV_INCLUDE_NIV_RELAY_SHARED_MEMORY_HPP_
+#ifndef PYNIV_SRC_SYNCHRONIZED_RECEIVER_HPP_
+#define PYNIV_SRC_SYNCHRONIZED_RECEIVER_HPP_
 
-#include <memory>
+#include "niv/shared_memory_segment.hpp"
+#include "niv/synchronized_relay_shared_memory.hpp"
 
-#include "niv/shared_memory.hpp"
+#include "conduit_data.hpp"
 
-namespace niv {
+namespace pyniv {
 
-class RelaySharedMemory {
+class SynchronizedReceiver {
  public:
-  RelaySharedMemory() = delete;
-  explicit RelaySharedMemory(std::unique_ptr<SharedMemory> shared_memory);
-  RelaySharedMemory(const RelaySharedMemory&) = delete;
-  RelaySharedMemory(RelaySharedMemory&&) = delete;
-  virtual ~RelaySharedMemory() = default;
+  SynchronizedReceiver() = default;
+  SynchronizedReceiver(const SynchronizedReceiver&) = delete;
+  SynchronizedReceiver(SynchronizedReceiver&&) = delete;
+  ~SynchronizedReceiver() = default;
 
-  virtual void Send(const conduit::Node& node);
-  conduit::Node Receive();
-  conduit::Node Listen();
+  SynchronizedReceiver& operator=(const SynchronizedReceiver&) = delete;
+  SynchronizedReceiver& operator=(SynchronizedReceiver&&) = delete;
 
-  RelaySharedMemory& operator=(const RelaySharedMemory&) = delete;
-  RelaySharedMemory& operator=(RelaySharedMemory&&) = delete;
+  ConduitData Receive();
 
- protected:
-  SharedMemory* GetSharedMemory() { return shared_memory_.get(); }
-  const SharedMemory* GetSharedMemory() const { return shared_memory_.get(); }
+  void Print() const;
 
  private:
-  std::unique_ptr<SharedMemory> shared_memory_;
+  niv::SynchronizedRelaySharedMemory relay_{
+      std::make_unique<niv::SharedMemorySegment>()};
 };
 
-}  // namespace niv
+}  // namespace pyniv
 
-#endif  // NIV_INCLUDE_NIV_RELAY_SHARED_MEMORY_HPP_
+#endif  // PYNIV_SRC_SYNCHRONIZED_RECEIVER_HPP_

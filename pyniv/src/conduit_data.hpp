@@ -29,12 +29,16 @@ namespace pyniv {
 class ConduitData {
  public:
   ConduitData();
+  explicit ConduitData(const conduit::Node& node);
+
   ~ConduitData() = default;
   ConduitData(const ConduitData&) = default;
   ConduitData(ConduitData&&) = default;
 
-  void Set(const char* attribute, double value);
-  std::size_t Pointer() const;
+  void Set(const char* path, double value);
+  double Get(const char* path);
+
+  void Print() const;
 
   const conduit::Node& GetNode() const { return node_; }
 

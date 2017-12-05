@@ -70,3 +70,53 @@ SCENARIO("data in relay gets updated on sending update",
     }
   }
 }
+
+SCENARIO("Data in relay is cleared on receive",
+         "[niv][niv::SynchronizedRelaySharedMemory]") {
+  GIVEN("A synchronized relay with some data") {
+    niv::SynchronizedRelaySharedMemory relay{
+        std::make_unique<niv::SharedMemorySegment>()};
+    relay.Send(testing::AnyNode());
+
+    WHEN("Data is received") {
+      auto node{relay.Receive()};
+      THEN("the node is not empty") { REQUIRE_FALSE(node.dtype().is_empty()); }
+
+      WHEN("data is read a second time") {
+        auto node{relay.Receive()};
+        THEN("the node is empty") { REQUIRE(node.dtype().is_empty()); }
+      }
+    }
+  }
+}
+
+SCENARIO("Relay's emptyness is passed throug shared memory",
+         "[niv][niv::SynchronizedRelaySharedMemory]") {
+  GIVEN("a pair of relays") {
+    niv::SynchronizedRelaySharedMemory relay_segment{
+        std::make_unique<niv::SharedMemorySegment>()};
+    niv::SynchronizedRelaySharedMemory relay_access{
+        std::make_unique<niv::SharedMemoryAccess>()};
+
+    THEN("both relays are empty") {
+      REQUIRE(relay_segment.IsEmpty());
+      REQUIRE(relay_access.IsEmpty());
+    }
+
+    WHEN("Data is sent") {
+      relay_segment.Send(testing::AnyNode());
+      THEN("both relays are not empty.") {
+        REQUIRE_FALSE(relay_segment.IsEmpty());
+        REQUIRE_FALSE(relay_access.IsEmpty());
+      }
+
+      WHEN("Data is received") {
+        relay_access.Receive();
+        THEN("both relays are empty again.") {
+          REQUIRE(relay_segment.IsEmpty());
+          REQUIRE(relay_access.IsEmpty());
+        }
+      }
+    }
+  }
+}

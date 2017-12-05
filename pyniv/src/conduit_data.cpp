@@ -27,24 +27,22 @@
 
 namespace pyniv {
 
-ConduitData::ConduitData() {
-  node_["V_m"] = 1.2;
-  std::cout << "Ptr. to conduit node: " << Pointer() << std::endl;
-}
+ConduitData::ConduitData() { node_["V_m"] = 1.2; }
 
-void ConduitData::Set(const char* attribute, double value) {
-  node_[attribute] = value;
-}
+ConduitData::ConduitData(const conduit::Node& node) { node_ = node; }
 
-std::size_t ConduitData::Pointer() const {
-  return reinterpret_cast<std::size_t>(&node_);
-}
+void ConduitData::Set(const char* path, double value) { node_[path] = value; }
+
+double ConduitData::Get(const char* path) { return node_[path].as_double(); }
+
+void ConduitData::Print() const { std::cout << node_.to_json() << std::endl; }
 
 template <>
 void expose<ConduitData>() {
   class_<ConduitData>("ConduitData")
       .def("Set", &ConduitData::Set)
-      .def("Pointer", &ConduitData::Pointer);
+      .def("Get", &ConduitData::Get)
+      .def("Print", &ConduitData::Print);
 }
 
 }  // namespace pyniv

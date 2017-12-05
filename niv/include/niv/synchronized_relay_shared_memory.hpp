@@ -49,9 +49,10 @@ class SynchronizedRelaySharedMemory : public RelaySharedMemory {
   SynchronizedRelaySharedMemory& operator=(SynchronizedRelaySharedMemory&&) =
       delete;
 
+  bool IsEmpty() const;
+
  private:
   void SendUpdate(const conduit::Node& node);
-  bool empty{true};
 };
 SUPPRESS_WARNINGS_END
 
