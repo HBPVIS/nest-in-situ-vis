@@ -67,7 +67,7 @@ class SharedMemory {
   static constexpr const char* SegmentName() { return "niv-shared-memory"; }
   static constexpr const char* DataStorageName() { return "DataStorage"; }
   static constexpr const char* SchemaStorageName() { return "SchemaStorage"; }
-  static constexpr std::size_t InitialSize() { return 65536u; }
+  static constexpr std::size_t InitialSize() { return 1073741824u; }
 
   SharedMemory& operator=(const SharedMemory&) = delete;
   SharedMemory& operator=(SharedMemory&&) = delete;

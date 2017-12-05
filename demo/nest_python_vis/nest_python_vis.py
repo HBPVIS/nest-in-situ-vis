@@ -44,7 +44,8 @@ class MainWindow:
         self.window.show()
 
     def VisualizeButtonClicked(self):
-        print("FOO")
+        data = self.receiver.Receive()
+        data.Print()
 
     def Show(self):
         self.window.show()
