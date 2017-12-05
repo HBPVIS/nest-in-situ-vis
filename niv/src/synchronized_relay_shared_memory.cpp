@@ -48,8 +48,10 @@ void SynchronizedRelaySharedMemory::SendUpdate(const conduit::Node& node) {
 }
 
 conduit::Node SynchronizedRelaySharedMemory::Receive() {
+  auto received_data = RelaySharedMemory::Receive();
+  GetSharedMemory()->Clear();
   empty = true;
-  return RelaySharedMemory::Receive();
+  return received_data;
 }
 
 }  // namespace niv

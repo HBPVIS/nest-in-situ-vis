@@ -70,3 +70,21 @@ SCENARIO("data in relay gets updated on sending update",
     }
   }
 }
+
+SCENARIO("Data in relay is cleared on receive",
+         "[niv][niv::SynchronizedRelaySharedMemory]") {
+  GIVEN("A synchronized relay with some data") {
+    niv::SynchronizedRelaySharedMemory relay{
+        std::make_unique<niv::SharedMemorySegment>()};
+    relay.Send(testing::AnyNode());
+
+    WHEN("Data is received") {
+      auto node{relay.Receive()};
+      THEN("the node is not empty") { REQUIRE_FALSE(node.dtype().is_empty()); }
+      WHEN("data is read a second time") {
+        auto node{relay.Receive()};
+        THEN("the node is empty") { REQUIRE(node.dtype().is_empty()); }
+      }
+    }
+  }
+}

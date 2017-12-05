@@ -63,6 +63,11 @@ class NodeStorage {
     return ConstructNode(keep_listening);
   }
 
+  void Clear() {
+    schema_storage_->clear();
+    data_storage_->clear();
+  }
+
   NodeStorage& operator=(const NodeStorage&) = default;
   NodeStorage& operator=(NodeStorage&&) = default;
 
