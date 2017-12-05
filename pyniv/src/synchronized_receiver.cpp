@@ -19,10 +19,11 @@
 // limitations under the License.
 //------------------------------------------------------------------------------
 
+#include "pyniv.hpp"
+
 #include "synchronized_receiver.hpp"
 
 #include "conduit_data.hpp"
-#include "pyniv.hpp"
 
 namespace pyniv {
 
