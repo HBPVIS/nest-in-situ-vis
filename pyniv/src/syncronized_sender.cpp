@@ -20,20 +20,18 @@
 //------------------------------------------------------------------------------
 
 #include "pyniv.hpp"
-
-#include "niv/conduit_receiver.hpp"
-#include "niv/niv.hpp"
-
-#include "conduit_data.hpp"
-#include "conduit_data_sender.hpp"
-#include "synchronized_receiver.hpp"
 #include "synchronized_sender.hpp"
 
-BOOST_PYTHON_MODULE(pyniv) {
-  def("Greet", niv::Greet);
-  pyniv::expose<pyniv::ConduitData>();
-  pyniv::expose<pyniv::ConduitDataSender>();
-  pyniv::expose<niv::ConduitReceiver>();
-  pyniv::expose<pyniv::SynchronizedSender>();
-  pyniv::expose<pyniv::SynchronizedReceiver>();
+namespace pyniv {
+
+void SynchronizedSender::Send(const ConduitData& data) {
+  relay_.Send(data.GetNode());
 }
+
+template <>
+void expose<SynchronizedSender>() {
+  class_<SynchronizedSender, boost::noncopyable>("SynchronizedSender")
+      .def("Send", &SynchronizedSender::Send, args("data"));
+}
+
+}  // namespace pyniv

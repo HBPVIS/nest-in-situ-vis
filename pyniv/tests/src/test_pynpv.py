@@ -58,3 +58,17 @@ def test_pyniv_receive_via_shared_mem_segment_relay():
     s.Send(d)
 
     assert r.Get("V_m") == 42.0
+
+def test_pyniv_receive_via_sync_shared_mem_relay():
+    receiver = pyniv.SynchronizedReceiver()
+
+    data = pyniv.ConduitData()
+    data.Set("V_m", 4.123)
+    
+    sender = pyniv.SynchronizedSender()
+    sender.Send(data)
+
+    received_data = receiver.Receive()
+    assert received_data.Get("V_m") ==4.123
+    
+    

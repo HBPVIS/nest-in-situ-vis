@@ -19,21 +19,33 @@
 // limitations under the License.
 //------------------------------------------------------------------------------
 
-#include "pyniv.hpp"
+#ifndef PYNIV_SRC_SYNCHRONIZED_SENDER_HPP_
+#define PYNIV_SRC_SYNCHRONIZED_SENDER_HPP_
 
-#include "niv/conduit_receiver.hpp"
-#include "niv/niv.hpp"
+#include "niv/shared_memory_access.hpp"
+#include "niv/synchronized_relay_shared_memory.hpp"
 
 #include "conduit_data.hpp"
-#include "conduit_data_sender.hpp"
-#include "synchronized_receiver.hpp"
-#include "synchronized_sender.hpp"
 
-BOOST_PYTHON_MODULE(pyniv) {
-  def("Greet", niv::Greet);
-  pyniv::expose<pyniv::ConduitData>();
-  pyniv::expose<pyniv::ConduitDataSender>();
-  pyniv::expose<niv::ConduitReceiver>();
-  pyniv::expose<pyniv::SynchronizedSender>();
-  pyniv::expose<pyniv::SynchronizedReceiver>();
-}
+namespace pyniv {
+
+class SynchronizedSender {
+ public:
+  SynchronizedSender() = default;
+  SynchronizedSender(const SynchronizedSender&) = delete;
+  SynchronizedSender(SynchronizedSender&&) = delete;
+  ~SynchronizedSender() = default;
+
+  SynchronizedSender& operator=(const SynchronizedSender&) = delete;
+  SynchronizedSender& operator=(SynchronizedSender&&) = delete;
+
+  void Send(const ConduitData& data);
+
+ private:
+  niv::SynchronizedRelaySharedMemory relay_{
+      std::make_unique<niv::SharedMemoryAccess>()};
+};
+
+}  // namespace pyniv
+
+#endif  // PYNIV_SRC_SYNCHRONIZED_SENDER_HPP_

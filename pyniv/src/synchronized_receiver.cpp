@@ -19,21 +19,22 @@
 // limitations under the License.
 //------------------------------------------------------------------------------
 
-#include "pyniv.hpp"
-
-#include "niv/conduit_receiver.hpp"
-#include "niv/niv.hpp"
+#include "synchronized_receiver.hpp"
 
 #include "conduit_data.hpp"
-#include "conduit_data_sender.hpp"
-#include "synchronized_receiver.hpp"
-#include "synchronized_sender.hpp"
+#include "pyniv.hpp"
 
-BOOST_PYTHON_MODULE(pyniv) {
-  def("Greet", niv::Greet);
-  pyniv::expose<pyniv::ConduitData>();
-  pyniv::expose<pyniv::ConduitDataSender>();
-  pyniv::expose<niv::ConduitReceiver>();
-  pyniv::expose<pyniv::SynchronizedSender>();
-  pyniv::expose<pyniv::SynchronizedReceiver>();
+namespace pyniv {
+
+ConduitData SynchronizedReceiver::Receive() {
+  auto node = relay_.Receive();
+  return ConduitData(node);
 }
+
+template <>
+void expose<SynchronizedReceiver>() {
+  class_<SynchronizedReceiver, boost::noncopyable>("SynchronizedReceiver")
+      .def("Receive", &SynchronizedReceiver::Receive);
+}
+
+}  // namespace pyniv
