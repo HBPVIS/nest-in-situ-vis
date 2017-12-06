@@ -35,6 +35,7 @@ add_test_catch(NAME "niv-tests"
   )
 
 set_tests_properties("test_synchronized_relay_shared_memory_mutex" PROPERTIES TIMEOUT 2.0)
+set_tests_properties("test_synchronized_relay_shared_memory_threaded" PROPERTIES TIMEOUT 0.1)
 
 add_test_cpplint(NAME "niv-tests--cpplint"
   ${NIV_TEST_SOURCES}
