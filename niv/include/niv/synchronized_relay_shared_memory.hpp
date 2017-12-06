@@ -39,9 +39,7 @@ class SynchronizedRelaySharedMemory : public RelaySharedMemory {
   class AccessSharedMemory {};
 
   SynchronizedRelaySharedMemory() = delete;
-  explicit SynchronizedRelaySharedMemory(const CreateSharedMemory&);
-  explicit SynchronizedRelaySharedMemory(const AccessSharedMemory&);
-  ~SynchronizedRelaySharedMemory() = default;
+  virtual ~SynchronizedRelaySharedMemory() = default;
   SynchronizedRelaySharedMemory(const SynchronizedRelaySharedMemory&) = delete;
   SynchronizedRelaySharedMemory(SynchronizedRelaySharedMemory&&) = delete;
 
@@ -54,6 +52,10 @@ class SynchronizedRelaySharedMemory : public RelaySharedMemory {
       delete;
 
   bool IsEmpty() const;
+
+ protected:
+  explicit SynchronizedRelaySharedMemory(const CreateSharedMemory&);
+  explicit SynchronizedRelaySharedMemory(const AccessSharedMemory&);
 
  private:
   void SendUpdate(const conduit::Node& node);

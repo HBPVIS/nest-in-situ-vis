@@ -25,18 +25,15 @@
 
 #include "conduit/conduit_node.hpp"
 
-#include "niv/shared_memory_access.hpp"
-#include "niv/shared_memory_segment.hpp"
-#include "niv/synchronized_relay_shared_memory.hpp"
+#include "niv/synchronized_relay_shared_memory_access.hpp"
+#include "niv/synchronized_relay_shared_memory_segment.hpp"
 
 #include "conduit_node_helper.hpp"
 
 SCENARIO("Data gets transported", "[niv][niv::SynchronizedRelaySharedMemory]") {
   GIVEN("a simulation relay, and a visualization relay") {
-    niv::SynchronizedRelaySharedMemory simulation_relay{
-        niv::SynchronizedRelaySharedMemory::CreateSharedMemory()};
-    niv::SynchronizedRelaySharedMemory visualization_relay{
-        niv::SynchronizedRelaySharedMemory::AccessSharedMemory()};
+    niv::SynchronizedRelaySharedMemorySegment visualization_relay;
+    niv::SynchronizedRelaySharedMemoryAccess simulation_relay;
 
     WHEN("a node is sent via the simulation relay") {
       simulation_relay.Send(testing::AnyNode());
@@ -55,8 +52,7 @@ SCENARIO("Data gets transported", "[niv][niv::SynchronizedRelaySharedMemory]") {
 SCENARIO("data in relay gets updated on sending update",
          "[niv][niv::SynchronizedRelaySharedMemory]") {
   GIVEN("a relay storing data") {
-    niv::SynchronizedRelaySharedMemory simulation_relay{
-        niv::SynchronizedRelaySharedMemory::CreateSharedMemory()};
+    niv::SynchronizedRelaySharedMemorySegment simulation_relay;
     simulation_relay.Send(testing::AnyNode());
 
     WHEN("an update gets sent to the relay") {
@@ -74,8 +70,7 @@ SCENARIO("data in relay gets updated on sending update",
 SCENARIO("Data in relay is cleared on receive",
          "[niv][niv::SynchronizedRelaySharedMemory]") {
   GIVEN("A synchronized relay with some data") {
-    niv::SynchronizedRelaySharedMemory relay{
-        niv::SynchronizedRelaySharedMemory::CreateSharedMemory()};
+    niv::SynchronizedRelaySharedMemorySegment relay;
     relay.Send(testing::AnyNode());
 
     WHEN("Data is received") {
@@ -93,10 +88,8 @@ SCENARIO("Data in relay is cleared on receive",
 SCENARIO("Relay's emptyness is passed throug shared memory",
          "[niv][niv::SynchronizedRelaySharedMemory]") {
   GIVEN("a pair of relays") {
-    niv::SynchronizedRelaySharedMemory relay_segment{
-        niv::SynchronizedRelaySharedMemory::CreateSharedMemory()};
-    niv::SynchronizedRelaySharedMemory relay_access{
-        niv::SynchronizedRelaySharedMemory::AccessSharedMemory()};
+    niv::SynchronizedRelaySharedMemorySegment relay_segment;
+    niv::SynchronizedRelaySharedMemoryAccess relay_access;
 
     THEN("both relays are empty") {
       REQUIRE(relay_segment.IsEmpty());

@@ -23,7 +23,7 @@
 #define PYNIV_SRC_SYNCHRONIZED_RECEIVER_HPP_
 
 #include "niv/shared_memory_segment.hpp"
-#include "niv/synchronized_relay_shared_memory.hpp"
+#include "niv/synchronized_relay_shared_memory_segment.hpp"
 
 #include "conduit_data.hpp"
 
@@ -44,8 +44,7 @@ class SynchronizedReceiver {
   void Print() const;
 
  private:
-  niv::SynchronizedRelaySharedMemory relay_{
-      niv::SynchronizedRelaySharedMemory::CreateSharedMemory()};
+  niv::SynchronizedRelaySharedMemorySegment relay_;
 };
 
 }  // namespace pyniv
