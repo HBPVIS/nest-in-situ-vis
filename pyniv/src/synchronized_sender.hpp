@@ -43,7 +43,7 @@ class SynchronizedSender {
 
  private:
   niv::SynchronizedRelaySharedMemory relay_{
-      std::make_unique<niv::SharedMemoryAccess>()};
+      niv::SynchronizedRelaySharedMemory::AccessSharedMemory()};
 };
 
 }  // namespace pyniv

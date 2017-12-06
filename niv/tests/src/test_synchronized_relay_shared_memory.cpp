@@ -34,9 +34,9 @@
 SCENARIO("Data gets transported", "[niv][niv::SynchronizedRelaySharedMemory]") {
   GIVEN("a simulation relay, and a visualization relay") {
     niv::SynchronizedRelaySharedMemory simulation_relay{
-        std::make_unique<niv::SharedMemorySegment>()};
+        niv::SynchronizedRelaySharedMemory::CreateSharedMemory()};
     niv::SynchronizedRelaySharedMemory visualization_relay{
-        std::make_unique<niv::SharedMemoryAccess>()};
+        niv::SynchronizedRelaySharedMemory::AccessSharedMemory()};
 
     WHEN("a node is sent via the simulation relay") {
       simulation_relay.Send(testing::AnyNode());
@@ -56,7 +56,7 @@ SCENARIO("data in relay gets updated on sending update",
          "[niv][niv::SynchronizedRelaySharedMemory]") {
   GIVEN("a relay storing data") {
     niv::SynchronizedRelaySharedMemory simulation_relay{
-        std::make_unique<niv::SharedMemorySegment>()};
+        niv::SynchronizedRelaySharedMemory::CreateSharedMemory()};
     simulation_relay.Send(testing::AnyNode());
 
     WHEN("an update gets sent to the relay") {
@@ -75,7 +75,7 @@ SCENARIO("Data in relay is cleared on receive",
          "[niv][niv::SynchronizedRelaySharedMemory]") {
   GIVEN("A synchronized relay with some data") {
     niv::SynchronizedRelaySharedMemory relay{
-        std::make_unique<niv::SharedMemorySegment>()};
+        niv::SynchronizedRelaySharedMemory::CreateSharedMemory()};
     relay.Send(testing::AnyNode());
 
     WHEN("Data is received") {
@@ -94,9 +94,9 @@ SCENARIO("Relay's emptyness is passed throug shared memory",
          "[niv][niv::SynchronizedRelaySharedMemory]") {
   GIVEN("a pair of relays") {
     niv::SynchronizedRelaySharedMemory relay_segment{
-        std::make_unique<niv::SharedMemorySegment>()};
+        niv::SynchronizedRelaySharedMemory::CreateSharedMemory()};
     niv::SynchronizedRelaySharedMemory relay_access{
-        std::make_unique<niv::SharedMemoryAccess>()};
+        niv::SynchronizedRelaySharedMemory::AccessSharedMemory()};
 
     THEN("both relays are empty") {
       REQUIRE(relay_segment.IsEmpty());

@@ -21,21 +21,81 @@
 
 #include "catch/catch.hpp"
 
-#include "niv/shared_memory_synchronization.hpp"
+#include "niv/shared_memory_synchronization_access.hpp"
+#include "niv/shared_memory_synchronization_object.hpp"
 
 SCENARIO("SharedMemorySynchronization locks and releases properly",
          "[niv][niv::SharedMemorySynchronization]") {
   GIVEN("A SharedMemorySynchronization") {
-    niv::SharedMemorySynchronization sync;
+    niv::SharedMemorySynchronizationObject sync;
     WHEN("scoped lock is acquired") {
       auto lock{sync.ScopedLock()};
       THEN("the mutex cannot be locked a second time") {
-        REQUIRE_FALSE(sync.TryLock());
-        sync.Unlock();
+        const bool lockable = sync.TryLock();
+        REQUIRE_FALSE(lockable);
+        if (lockable) {
+          sync.Unlock();
+        }
       }
     }
     WHEN("The lock is out of scope") {
-      THEN("the mutex can be locked a second time") { REQUIRE(sync.TryLock()); }
+      THEN("the mutex can be locked a second time") {
+        const bool lockable = sync.TryLock();
+        REQUIRE(lockable);
+        if (lockable) {
+          sync.Unlock();
+        }
+      }
+    }
+  }
+}
+
+SCENARIO("SharedMemorySynchronization locks and releases through shared mem",
+         "[niv][niv::SharedMemorySynchronization]") {
+  GIVEN("A pair of shared memory synchronization") {
+    niv::SharedMemorySynchronizationObject sync_object;
+    niv::SharedMemorySynchronizationAccess sync_access;
+
+    WHEN("scoped lock is acquired on the first one") {
+      auto lock = sync_object.ScopedLock();
+      THEN("the second one is locked") {
+        const bool lockable = sync_access.TryLock();
+        REQUIRE_FALSE(lockable);
+        if (lockable) {
+          sync_access.Unlock();
+        }
+      }
+    }
+
+    WHEN("The lock is out of scope") {
+      THEN("the second mutex can be locked") {
+        const bool lockable = sync_access.TryLock();
+        REQUIRE(lockable);
+        if (lockable) {
+          sync_access.Unlock();
+        }
+      }
+    }
+
+    WHEN("scoped lock is acquired on the second one") {
+      auto lock = sync_access.ScopedLock();
+      THEN("the first one is locked") {
+        const bool lockable = sync_object.TryLock();
+        REQUIRE_FALSE(lockable);
+        if (lockable) {
+          sync_object.Unlock();
+        }
+      }
+    }
+
+    WHEN("The lock is out of scope") {
+      THEN("the first mutex can be locked") {
+        const bool lockable = sync_object.TryLock();
+        REQUIRE(lockable);
+        if (lockable) {
+          sync_object.Unlock();
+        }
+      }
     }
   }
 }

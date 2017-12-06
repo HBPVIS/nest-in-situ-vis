@@ -28,6 +28,7 @@
 
 #include "niv/shared_memory_access.hpp"
 #include "niv/shared_memory_segment.hpp"
+#include "niv/shared_memory_synchronization.hpp"
 
 conduit::Node AnyNode() {
   conduit::Node node;
@@ -60,6 +61,21 @@ void Destroy() {
   access.Destroy();
 }
 
+void CreateMutex() {
+  niv::SharedMemorySynchronization::ManagedMutex mutex{
+      boost::interprocess::create_only,
+      niv::SharedMemorySynchronization::MutexName()};
+}
+
+void DestroyMutex() {
+  niv::SharedMemorySynchronization::ManagedMutex mutex{
+      boost::interprocess::open_only,
+      niv::SharedMemorySynchronization::MutexName()};
+  mutex.unlock();
+  niv::SharedMemorySynchronization::ManagedMutex::remove(
+      niv::SharedMemorySynchronization::MutexName());
+}
+
 int Command(char* command) {
   if (std::string(command) == std::string("create")) {
     Create();
@@ -68,6 +84,12 @@ int Command(char* command) {
     Fill();
   } else if (std::string(command) == std::string("destroy")) {
     Destroy();
+    return EXIT_SUCCESS;
+  } else if (std::string(command) == std::string("create_mutex")) {
+    CreateMutex();
+    return EXIT_SUCCESS;
+  } else if (std::string(command) == std::string("destroy_mutex")) {
+    DestroyMutex();
     return EXIT_SUCCESS;
   }
   return EXIT_FAILURE;

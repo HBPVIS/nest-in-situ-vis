@@ -19,34 +19,28 @@
 // limitations under the License.
 //------------------------------------------------------------------------------
 
-#include "niv/shared_memory_synchronization.hpp"
+#ifndef NIV_INCLUDE_NIV_SHARED_MEMORY_SYNCHRONIZATION_OBJECT_HPP_
+#define NIV_INCLUDE_NIV_SHARED_MEMORY_SYNCHRONIZATION_OBJECT_HPP_
 
-SUPPRESS_WARNINGS_BEGIN
-#include "boost/interprocess/sync/named_mutex.hpp"
-#include "boost/interprocess/sync/scoped_lock.hpp"
-SUPPRESS_WARNINGS_END
+#include "niv/shared_memory_synchronization.hpp"
 
 namespace niv {
 
-SharedMemorySynchronization::SharedMemorySynchronization(
-    const SharedMemorySynchronization::Create&)
-    : mutex_{boost::interprocess::create_only, MutexName()} {}
+class SharedMemorySynchronizationObject : public SharedMemorySynchronization {
+ public:
+  SharedMemorySynchronizationObject();
+  SharedMemorySynchronizationObject(const SharedMemorySynchronizationObject&) =
+      delete;
+  SharedMemorySynchronizationObject(SharedMemorySynchronizationObject&&) =
+      delete;
+  ~SharedMemorySynchronizationObject();
 
-SharedMemorySynchronization::SharedMemorySynchronization(
-    const SharedMemorySynchronization::Access&)
-    : mutex_{boost::interprocess::open_only, MutexName()} {}
-
-void SharedMemorySynchronization::Destroy() {
-  ManagedMutex::remove(MutexName());
-}
-
-SharedMemorySynchronization::ManagedScopedLock
-SharedMemorySynchronization::ScopedLock() {
-  return ManagedScopedLock(mutex_);
-}
-
-bool SharedMemorySynchronization::TryLock() { return mutex_.try_lock(); }
-
-void SharedMemorySynchronization::Unlock() { mutex_.unlock(); }
+  SharedMemorySynchronizationObject& operator=(
+      const SharedMemorySynchronizationObject&) = delete;
+  SharedMemorySynchronizationObject& operator=(
+      SharedMemorySynchronizationObject&&) = delete;
+};
 
 }  // namespace niv
+
+#endif  // NIV_INCLUDE_NIV_SHARED_MEMORY_SYNCHRONIZATION_OBJECT_HPP_

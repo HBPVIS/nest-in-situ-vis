@@ -45,7 +45,7 @@ class SynchronizedReceiver {
 
  private:
   niv::SynchronizedRelaySharedMemory relay_{
-      std::make_unique<niv::SharedMemorySegment>()};
+      niv::SynchronizedRelaySharedMemory::CreateSharedMemory()};
 };
 
 }  // namespace pyniv

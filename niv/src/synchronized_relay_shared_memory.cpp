@@ -28,13 +28,24 @@
 #include "conduit/conduit_core.hpp"
 #include "conduit/conduit_schema.hpp"
 
+#include "niv/shared_memory_access.hpp"
+#include "niv/shared_memory_segment.hpp"
+#include "niv/shared_memory_synchronization_access.hpp"
+#include "niv/shared_memory_synchronization_object.hpp"
+
 namespace niv {
 
 SynchronizedRelaySharedMemory::SynchronizedRelaySharedMemory(
-    std::unique_ptr<SharedMemory> shared_memory)
-    : RelaySharedMemory{std::move(shared_memory)} {}
+    const CreateSharedMemory&)
+    : RelaySharedMemory(std::make_unique<SharedMemorySegment>()),
+      synchronization_{std::make_unique<SharedMemorySynchronizationObject>()} {}
+SynchronizedRelaySharedMemory::SynchronizedRelaySharedMemory(
+    const AccessSharedMemory&)
+    : RelaySharedMemory(std::make_unique<SharedMemoryAccess>()),
+      synchronization_{std::make_unique<SharedMemorySynchronizationAccess>()} {}
 
 void SynchronizedRelaySharedMemory::Send(const conduit::Node& node) {
+  auto lock = synchronization_->ScopedLock();
   if (IsEmpty()) {
     RelaySharedMemory::Send(node);
   } else {
@@ -47,6 +58,7 @@ void SynchronizedRelaySharedMemory::SendUpdate(const conduit::Node& node) {
 }
 
 conduit::Node SynchronizedRelaySharedMemory::Receive() {
+  auto lock = synchronization_->ScopedLock();
   auto received_data = RelaySharedMemory::Receive();
   GetSharedMemory()->Clear();
   return received_data;

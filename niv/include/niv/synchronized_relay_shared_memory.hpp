@@ -28,15 +28,19 @@
 #include "conduit/conduit_node.hpp"
 
 #include "niv/relay_shared_memory.hpp"
+#include "niv/shared_memory_synchronization.hpp"
 
 namespace niv {
 
 SUPPRESS_WARNINGS_BEGIN_PADDED
 class SynchronizedRelaySharedMemory : public RelaySharedMemory {
  public:
+  class CreateSharedMemory {};
+  class AccessSharedMemory {};
+
   SynchronizedRelaySharedMemory() = delete;
-  explicit SynchronizedRelaySharedMemory(
-      std::unique_ptr<SharedMemory> shared_memory);
+  explicit SynchronizedRelaySharedMemory(const CreateSharedMemory&);
+  explicit SynchronizedRelaySharedMemory(const AccessSharedMemory&);
   ~SynchronizedRelaySharedMemory() = default;
   SynchronizedRelaySharedMemory(const SynchronizedRelaySharedMemory&) = delete;
   SynchronizedRelaySharedMemory(SynchronizedRelaySharedMemory&&) = delete;
@@ -53,6 +57,8 @@ class SynchronizedRelaySharedMemory : public RelaySharedMemory {
 
  private:
   void SendUpdate(const conduit::Node& node);
+
+  std::unique_ptr<SharedMemorySynchronization> synchronization_;
 };
 SUPPRESS_WARNINGS_END
 

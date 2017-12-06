@@ -22,31 +22,45 @@
 #ifndef NIV_INCLUDE_NIV_SHARED_MEMORY_SYNCHRONIZATION_HPP_
 #define NIV_INCLUDE_NIV_SHARED_MEMORY_SYNCHRONIZATION_HPP_
 
+SUPPRESS_WARNINGS_BEGIN
 #include "boost/interprocess/sync/named_mutex.hpp"
 #include "boost/interprocess/sync/scoped_lock.hpp"
+SUPPRESS_WARNINGS_END
 
 namespace niv {
 
 class SharedMemorySynchronization {
  public:
+  class Create {};
+  class Access {};
+
   using ManagedMutex = boost::interprocess::named_mutex;
   using ManagedScopedLock = boost::interprocess::scoped_lock<ManagedMutex>;
 
-  SharedMemorySynchronization();
+  SharedMemorySynchronization() = delete;
   SharedMemorySynchronization(const SharedMemorySynchronization&) = delete;
   SharedMemorySynchronization(SharedMemorySynchronization&&) = delete;
-  ~SharedMemorySynchronization();
+  virtual ~SharedMemorySynchronization() = default;
 
   SharedMemorySynchronization& operator=(const SharedMemorySynchronization&) =
       delete;
   SharedMemorySynchronization& operator=(SharedMemorySynchronization&&) =
       delete;
 
+  void Destroy();
+
   ManagedScopedLock ScopedLock();
   bool TryLock();
   void Unlock();
 
   static constexpr const char* MutexName() { return "niv-shared-mutex"; }
+
+ protected:
+  explicit SharedMemorySynchronization(
+      const SharedMemorySynchronization::Create&);
+
+  explicit SharedMemorySynchronization(
+      const SharedMemorySynchronization::Access&);
 
  private:
   ManagedMutex mutex_;
