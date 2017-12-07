@@ -21,15 +21,15 @@
 
 #include "catch/catch.hpp"
 
-#include "niv/nest_receiver.hpp"
+#include "niv/synchronized_aggregating_receiver.hpp"
 #include "niv/synchronized_relay_shared_memory_access.hpp"
 
 #include "conduit_node_helper.hpp"
 
-SCENARIO("received data is aggregated in the NestReceiver",
+SCENARIO("received data is aggregated in the SynchronizedAggregatingReceiver",
          "[niv][niv::NestReceiver]") {
-  GIVEN("A NestReceiver and a sending relay") {
-    niv::NestReceiver receiver;
+  GIVEN("A SchnchronizedAggregatingReceiver and a sending relay") {
+    niv::SynchronizedAggregatingReceiver receiver;
     niv::SynchronizedRelaySharedMemoryAccess sender;
 
     WHEN("Data is sent and a receive is triggered") {

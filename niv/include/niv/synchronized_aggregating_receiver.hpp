@@ -19,8 +19,8 @@
 // limitations under the License.
 //------------------------------------------------------------------------------
 
-#ifndef NIV_INCLUDE_NIV_NEST_RECEIVER_HPP_
-#define NIV_INCLUDE_NIV_NEST_RECEIVER_HPP_
+#ifndef NIV_INCLUDE_NIV_SYNCHRONIZED_AGGREGATING_RECEIVER_HPP_
+#define NIV_INCLUDE_NIV_SYNCHRONIZED_AGGREGATING_RECEIVER_HPP_
 
 #include "conduit/conduit_node.hpp"
 
@@ -28,15 +28,18 @@
 
 namespace niv {
 
-class NestReceiver {
+class SynchronizedAggregatingReceiver {
  public:
-  NestReceiver() = default;
-  NestReceiver(const NestReceiver&) = default;
-  NestReceiver(NestReceiver&&) = default;
-  ~NestReceiver() = default;
+  SynchronizedAggregatingReceiver() = default;
+  SynchronizedAggregatingReceiver(const SynchronizedAggregatingReceiver&) =
+      default;
+  SynchronizedAggregatingReceiver(SynchronizedAggregatingReceiver&&) = default;
+  ~SynchronizedAggregatingReceiver() = default;
 
-  NestReceiver& operator=(const NestReceiver&) = default;
-  NestReceiver& operator=(NestReceiver&&) = default;
+  SynchronizedAggregatingReceiver& operator=(
+      const SynchronizedAggregatingReceiver&) = default;
+  SynchronizedAggregatingReceiver& operator=(
+      SynchronizedAggregatingReceiver&&) = default;
 
   const conduit::Node& Receive();
 
@@ -47,4 +50,4 @@ class NestReceiver {
 
 }  // namespace niv
 
-#endif  // NIV_INCLUDE_NIV_NEST_RECEIVER_HPP_
+#endif  // NIV_INCLUDE_NIV_SYNCHRONIZED_AGGREGATING_RECEIVER_HPP_

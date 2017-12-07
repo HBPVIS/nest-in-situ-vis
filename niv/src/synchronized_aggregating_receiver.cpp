@@ -19,13 +19,13 @@
 // limitations under the License.
 //------------------------------------------------------------------------------
 
-#include "niv/nest_receiver.hpp"
+#include "niv/synchronized_aggregating_receiver.hpp"
 
 #include "conduit/conduit_node.hpp"
 
 namespace niv {
 
-const conduit::Node& NestReceiver::Receive() {
+const conduit::Node& SynchronizedAggregatingReceiver::Receive() {
   node_.update(relay_.Receive());
   return node_;
 }
