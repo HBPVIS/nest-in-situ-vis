@@ -27,36 +27,78 @@
 namespace niv {
 
 VisMultimeter::VisMultimeter(const std::string& name,
-                             const std::vector<std::string>& value_names,
-                             const conduit::Node& node)
-    : name_{name}, value_names_(value_names) {
-  node_.set_external(node);
-}
+                             const std::vector<std::string>& attribute_names)
+    : name_{name}, attribute_names_(attribute_names) {}
 
 void VisMultimeter::SetTime(double time) {
+  time_ = time;
+  Update();
+}
+
+const std::vector<double> VisMultimeter::GetAttributeValues(
+    const std::string& attribute_name) const {
+  for (auto attribute_index = 0u; attribute_index < attribute_names_.size();
+       ++attribute_index) {
+    if (attribute_names_[attribute_index] == attribute_name) {
+      return values_[attribute_index];
+    }
+  }
+
+  return std::vector<double>();
+}
+
+void VisMultimeter::Update() {
+  SetTimestepNode();
+  SetValues();
+}
+
+void VisMultimeter::SetTimestepNode() {
   std::stringstream time_stream;
-  time_stream << time;
+  time_stream << time_;
   try {
     timestep_node_ = &node_.fetch_child(name_ + "/" + time_stream.str());
   } catch (...) {
   }
 }
 
-std::vector<double> VisMultimeter::GetAttribute(const std::string& value_name) {
-  std::vector<double> result;
+void VisMultimeter::SetValues() {
+  values_.clear();
+  for (auto attribute_index = 0u; attribute_index < attribute_names_.size();
+       ++attribute_index) {
+    const auto current_values = ExtractValues(attribute_index);
+    values_.push_back(current_values);
+  }
+}
 
-  conduit::Node* attribute_node{nullptr};
+std::vector<double> VisMultimeter::ExtractValues(
+    std::size_t attribute_index) const {
+  const conduit::Node* attribute_node = GetAttributeNode(attribute_index);
+  if (attribute_node == nullptr) {
+    return std::vector<double>();
+  }
+
+  return GetAttributeNodesValues(attribute_node);
+}
+
+const conduit::Node* VisMultimeter::GetAttributeNode(
+    std::size_t attribute_index) const {
+  const conduit::Node* attribute_node{nullptr};
+  const std::string attribute_name{attribute_names_[attribute_index]};
   try {
-    attribute_node = &timestep_node_->fetch_child(value_name);
+    attribute_node = &timestep_node_->fetch_child(attribute_name);
   } catch (...) {
-    return result;
   }
 
+  return attribute_node;
+}
+
+std::vector<double> VisMultimeter::GetAttributeNodesValues(
+    const conduit::Node* attribute_node) const {
+  std::vector<double> values;
   for (auto i = 0u; i < attribute_node->number_of_children(); ++i) {
-    result.push_back(attribute_node->child(i).as_double());
+    values.push_back(attribute_node->child(i).as_double());
   }
-
-  return result;
+  return values;
 }
 
 }  // namespace niv

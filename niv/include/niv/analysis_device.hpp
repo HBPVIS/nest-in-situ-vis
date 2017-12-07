@@ -40,7 +40,7 @@ class AnalysisDevice {
 
   void SetNode(const conduit::Node& node) { node_.set_external(node); }
 
- private:
+ protected:
   conduit::Node node_;
 };
 

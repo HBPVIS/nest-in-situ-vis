@@ -27,14 +27,15 @@
 
 #include "conduit/conduit_node.hpp"
 
+#include "niv/analysis_device.hpp"
+
 namespace niv {
 
-class VisMultimeter {
+class VisMultimeter : public AnalysisDevice {
  public:
   VisMultimeter() = delete;
   explicit VisMultimeter(const std::string& name,
-                         const std::vector<std::string>& value_names,
-                         const conduit::Node& node);
+                         const std::vector<std::string>& attribute_names);
   VisMultimeter(const VisMultimeter&) = delete;
   VisMultimeter(VisMultimeter&&) = delete;
   ~VisMultimeter() = default;
@@ -44,13 +45,24 @@ class VisMultimeter {
 
   void SetTime(double time);
 
-  std::vector<double> GetAttribute(const std::string& value_name);
+  const std::vector<double> GetAttributeValues(
+      const std::string& attribute_name) const;
+
+  void Update() override;
 
  private:
-  std::string name_;
-  std::vector<std::string> value_names_;
-  conduit::Node node_;
-  conduit::Node* timestep_node_{nullptr};
+  void SetTimestepNode();
+  void SetValues();
+  std::vector<double> ExtractValues(std::size_t attribute_index) const;
+  const conduit::Node* GetAttributeNode(std::size_t attribute_index) const;
+  std::vector<double> GetAttributeNodesValues(
+      const conduit::Node* attribute_node) const;
+
+  double time_{0.0};
+  std::string name_{""};
+  std::vector<std::string> attribute_names_;
+  std::vector<std::vector<double>> values_;
+  const conduit::Node* timestep_node_{nullptr};
 };
 
 }  // namespace niv
