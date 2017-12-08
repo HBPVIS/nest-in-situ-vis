@@ -38,10 +38,10 @@ class AnalysisDevice {
 
   virtual void Update() = 0;
 
-  void SetNode(const conduit::Node& node) { node_.set_external(node); }
+  void SetNode(const conduit::Node* node) { node_ = node; }
 
  protected:
-  conduit::Node node_;
+  const conduit::Node* node_;
 };
 
 }  // namespace niv

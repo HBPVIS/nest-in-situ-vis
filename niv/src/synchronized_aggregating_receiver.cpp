@@ -25,9 +25,8 @@
 
 namespace niv {
 
-const conduit::Node& SynchronizedAggregatingReceiver::Receive() {
-  node_.update(relay_.Receive());
-  return node_;
+void SynchronizedAggregatingReceiver::Receive() {
+  node_->update(relay_.Receive());
 }
 
 }  // namespace niv

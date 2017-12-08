@@ -56,7 +56,7 @@ void VisMultimeter::SetTimestepNode() {
   std::stringstream time_stream;
   time_stream << time_;
   try {
-    timestep_node_ = &node_.fetch_child(name_ + "/" + time_stream.str());
+    timestep_node_ = &node_->fetch_child(name_ + "/" + time_stream.str());
   } catch (...) {
   }
 }

@@ -36,12 +36,12 @@ class AnalysisReceiver {
   AnalysisReceiver& operator=(const AnalysisReceiver&) = default;
   AnalysisReceiver& operator=(AnalysisReceiver&&) = default;
 
-  void SetNode(const conduit::Node& node) { node_.set_external(node); }
+  void SetNode(conduit::Node* node) { node_ = node; }
 
   virtual void Receive() = 0;
 
  protected:
-  conduit::Node node_;
+  conduit::Node* node_;
 };
 
 }  // namespace niv

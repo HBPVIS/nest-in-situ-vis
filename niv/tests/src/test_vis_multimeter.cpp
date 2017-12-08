@@ -35,7 +35,7 @@ SCENARIO("a VisMultimeter provides access to data stored in a conduit node",
     const conduit::Node nest_data{testing::AnyNestData()};
     niv::VisMultimeter multimeter(testing::AnyMultimeterName(),
                                   testing::AnyValueNames());
-    multimeter.SetNode(nest_data);
+    multimeter.SetNode(&nest_data);
 
     WHEN("The time step is set") {
       multimeter.SetTime(testing::AnyTime());

@@ -30,20 +30,22 @@ SCENARIO("received data is aggregated in the SynchronizedAggregatingReceiver",
          "[niv][niv::NestReceiver]") {
   GIVEN("A SchnchronizedAggregatingReceiver and a sending relay") {
     niv::SynchronizedAggregatingReceiver receiver;
+    conduit::Node receiving_node;
+    receiver.SetNode(&receiving_node);
     niv::SynchronizedRelaySharedMemoryAccess sender;
 
     WHEN("Data is sent and a receive is triggered") {
       sender.Send(testing::AnyNode());
-      auto received = receiver.Receive();
+      receiver.Receive();
       THEN("it is received correctly") {
-        REQUIRE_THAT(received, Equals(testing::AnyNode()));
+        REQUIRE_THAT(receiving_node, Equals(testing::AnyNode()));
       }
 
       WHEN("an update is sent and a receive is triggered") {
         sender.Send(testing::Update());
-        auto received = receiver.Receive();
+        receiver.Receive();
         THEN("then the data has been updated") {
-          REQUIRE_THAT(received, Equals(testing::UpdatedNode()));
+          REQUIRE_THAT(receiving_node, Equals(testing::UpdatedNode()));
         }
       }
     }

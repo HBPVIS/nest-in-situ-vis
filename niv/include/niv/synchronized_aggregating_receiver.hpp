@@ -24,11 +24,12 @@
 
 #include "conduit/conduit_node.hpp"
 
+#include "niv/analysis_receiver.hpp"
 #include "niv/synchronized_relay_shared_memory_segment.hpp"
 
 namespace niv {
 
-class SynchronizedAggregatingReceiver {
+class SynchronizedAggregatingReceiver : public AnalysisReceiver {
  public:
   SynchronizedAggregatingReceiver() = default;
   SynchronizedAggregatingReceiver(const SynchronizedAggregatingReceiver&) =
@@ -41,11 +42,10 @@ class SynchronizedAggregatingReceiver {
   SynchronizedAggregatingReceiver& operator=(
       SynchronizedAggregatingReceiver&&) = default;
 
-  const conduit::Node& Receive();
+  void Receive() override;
 
  private:
   SynchronizedRelaySharedMemorySegment relay_;
-  conduit::Node node_;
 };
 
 }  // namespace niv

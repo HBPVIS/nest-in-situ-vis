@@ -27,14 +27,14 @@
 namespace niv {
 
 void AnalysisBackend::Connect(niv::AnalysisReceiver* receiver) {
-  receiver->SetNode(node_);
+  receiver->SetNode(&node_);
   receiver_ = receiver;
 }
 
 void AnalysisBackend::Connect(niv::AnalysisDevice* device) {
   auto found = std::find(devices_.begin(), devices_.end(), device);
   if (found == devices_.end()) {
-    device->SetNode(node_);
+    device->SetNode(&node_);
     devices_.push_back(device);
   }
 }
