@@ -29,12 +29,12 @@ namespace niv {
 class AnalysisDevice {
  public:
   AnalysisDevice() = default;
-  AnalysisDevice(const AnalysisDevice&) = delete;
-  AnalysisDevice(AnalysisDevice&&) = delete;
+  AnalysisDevice(const AnalysisDevice&) = default;
+  AnalysisDevice(AnalysisDevice&&) = default;
   virtual ~AnalysisDevice() = default;
 
-  AnalysisDevice& operator=(const AnalysisDevice&) = delete;
-  AnalysisDevice& operator=(AnalysisDevice&&) = delete;
+  AnalysisDevice& operator=(const AnalysisDevice&) = default;
+  AnalysisDevice& operator=(AnalysisDevice&&) = default;
 
   virtual void Update() = 0;
 

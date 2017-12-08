@@ -36,12 +36,12 @@ class VisMultimeter : public AnalysisDevice {
   VisMultimeter() = delete;
   explicit VisMultimeter(const std::string& name,
                          const std::vector<std::string>& attribute_names);
-  VisMultimeter(const VisMultimeter&) = delete;
-  VisMultimeter(VisMultimeter&&) = delete;
+  VisMultimeter(const VisMultimeter&) = default;
+  VisMultimeter(VisMultimeter&&) = default;
   ~VisMultimeter() = default;
 
-  VisMultimeter& operator=(const VisMultimeter&) = delete;
-  VisMultimeter& operator=(VisMultimeter&&) = delete;
+  VisMultimeter& operator=(const VisMultimeter&) = default;
+  VisMultimeter& operator=(VisMultimeter&&) = default;
 
   void SetTime(double time);
 
