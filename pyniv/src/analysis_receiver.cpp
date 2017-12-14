@@ -19,35 +19,18 @@
 // limitations under the License.
 //------------------------------------------------------------------------------
 
-#ifndef NIV_INCLUDE_NIV_SYNCHRONIZED_AGGREGATING_RECEIVER_HPP_
-#define NIV_INCLUDE_NIV_SYNCHRONIZED_AGGREGATING_RECEIVER_HPP_
-
-#include "conduit/conduit_node.hpp"
+#include "analysis_receiver.hpp"
 
 #include "niv/analysis_receiver.hpp"
-#include "niv/synchronized_relay_shared_memory_segment.hpp"
 
-namespace niv {
+#include "pyniv.hpp"
 
-class SynchronizedAggregatingReceiver : public AnalysisReceiver {
- public:
-  SynchronizedAggregatingReceiver() = default;
-  SynchronizedAggregatingReceiver(const SynchronizedAggregatingReceiver&) =
-      default;
-  SynchronizedAggregatingReceiver(SynchronizedAggregatingReceiver&&) = delete;
-  ~SynchronizedAggregatingReceiver() = default;
+namespace pyniv {
 
-  SynchronizedAggregatingReceiver& operator=(
-      const SynchronizedAggregatingReceiver&) = delete;
-  SynchronizedAggregatingReceiver& operator=(
-      SynchronizedAggregatingReceiver&&) = default;
+template <>
+void expose<AnalysisReceiverWrap>() {
+  class_<AnalysisReceiverWrap, noncopyable>("AnalysisReceiver", no_init)
+      .def("Receive", pure_virtual(&niv::AnalysisReceiver::Receive));
+}
 
-  void Receive() override;
-
- private:
-  SynchronizedRelaySharedMemorySegment relay_;
-};
-
-}  // namespace niv
-
-#endif  // NIV_INCLUDE_NIV_SYNCHRONIZED_AGGREGATING_RECEIVER_HPP_
+}  // namespace pyniv

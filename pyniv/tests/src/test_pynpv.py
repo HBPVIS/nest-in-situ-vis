@@ -73,5 +73,7 @@ def test_pyniv_receive_via_sync_shared_mem_relay():
     
 def test_pyniv_backend():
     backend = pyniv.AnalysisBackend()
+    receiver = pyniv.SynchronizedAggregatingReceiver()
     multimeter = pyniv.VisMultimeter("Multimeter A")
+    backend.Connect(receiver)
     backend.Connect(multimeter)
