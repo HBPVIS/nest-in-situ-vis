@@ -34,8 +34,9 @@ namespace niv {
 class VisMultimeter : public AnalysisDevice {
  public:
   VisMultimeter() = delete;
-  explicit VisMultimeter(const std::string& name,
-                         const std::vector<std::string>& attribute_names);
+  explicit VisMultimeter(const std::string& name);
+  VisMultimeter(const std::string& name,
+                const std::vector<std::string>& attribute_names);
   VisMultimeter(const VisMultimeter&) = default;
   VisMultimeter(VisMultimeter&&) = default;
   ~VisMultimeter() = default;

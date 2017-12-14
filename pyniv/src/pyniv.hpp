@@ -27,10 +27,15 @@ SUPPRESS_WARNINGS_BEGIN
 #include "boost/python.hpp"
 SUPPRESS_WARNINGS_END
 
+using boost::noncopyable;
 using boost::python::args;
+using boost::python::bases;
 using boost::python::class_;
 using boost::python::def;
 using boost::python::init;
+using boost::python::no_init;
+using boost::python::pure_virtual;
+using boost::python::wrapper;
 
 namespace pyniv {
 

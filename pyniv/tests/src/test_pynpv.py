@@ -71,4 +71,7 @@ def test_pyniv_receive_via_sync_shared_mem_relay():
     received_data = receiver.Receive()
     assert received_data.Get("V_m") ==4.123
     
-    
+def test_pyniv_backend():
+    backend = pyniv.AnalysisBackend()
+    multimeter = pyniv.VisMultimeter("Multimeter A")
+    backend.Connect(multimeter)

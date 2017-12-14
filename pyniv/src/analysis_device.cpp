@@ -19,27 +19,18 @@
 // limitations under the License.
 //------------------------------------------------------------------------------
 
+#include "analysis_device.hpp"
+
+#include "niv/analysis_device.hpp"
+
 #include "pyniv.hpp"
 
-#include "niv/analysis_backend.hpp"
-#include "niv/conduit_receiver.hpp"
-#include "niv/niv.hpp"
-#include "niv/vis_multimeter.hpp"
+namespace pyniv {
 
-#include "analysis_device.hpp"
-#include "conduit_data.hpp"
-#include "conduit_data_sender.hpp"
-#include "synchronized_receiver.hpp"
-#include "synchronized_sender.hpp"
-
-BOOST_PYTHON_MODULE(pyniv) {
-  def("Greet", niv::Greet);
-  pyniv::expose<niv::AnalysisBackend>();
-  pyniv::expose<pyniv::AnalysisDeviceWrap>();
-  pyniv::expose<pyniv::ConduitData>();
-  pyniv::expose<pyniv::ConduitDataSender>();
-  pyniv::expose<niv::ConduitReceiver>();
-  pyniv::expose<pyniv::SynchronizedSender>();
-  pyniv::expose<pyniv::SynchronizedReceiver>();
-  pyniv::expose<niv::VisMultimeter>();
+template <>
+void expose<AnalysisDeviceWrap>() {
+  class_<AnalysisDeviceWrap, noncopyable>("AnalysisDevice", no_init)
+      .def("Update", pure_virtual(&niv::AnalysisDevice::Update));
 }
+
+}  // namespace pyniv

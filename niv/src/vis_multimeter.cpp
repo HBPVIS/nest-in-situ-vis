@@ -26,6 +26,8 @@
 
 namespace niv {
 
+VisMultimeter::VisMultimeter(const std::string& name) : name_{name} {}
+
 VisMultimeter::VisMultimeter(const std::string& name,
                              const std::vector<std::string>& attribute_names)
     : name_{name}, attribute_names_(attribute_names) {}
