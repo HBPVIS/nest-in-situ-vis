@@ -45,7 +45,8 @@ std::vector<std::size_t> SpikeDetector::GetData(const conduit::Node& node) {
 
 std::vector<std::size_t> SpikeDetector::AsVector(
     const conduit::uint64_array& array) {
-  const std::size_t num_elements = array.number_of_elements();
+  const std::size_t num_elements =
+      static_cast<std::size_t>(array.number_of_elements());
   const auto* begin = reinterpret_cast<std::size_t*>(array.data_ptr());
   const auto* end = begin + num_elements;
   return std::vector<std::size_t>(begin, end);
