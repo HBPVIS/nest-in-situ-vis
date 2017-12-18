@@ -36,7 +36,7 @@ class AnalysisBackend {
   AnalysisBackend() = default;
   AnalysisBackend(const AnalysisBackend&) = delete;
   AnalysisBackend(AnalysisBackend&&) = delete;
-  ~AnalysisBackend() = default;
+  virtual ~AnalysisBackend() = default;
 
   AnalysisBackend& operator=(const AnalysisBackend&) = delete;
   AnalysisBackend& operator=(AnalysisBackend&&) = delete;
@@ -45,7 +45,7 @@ class AnalysisBackend {
   void Connect(niv::AnalysisDevice* device);
   void Receive();
 
- private:
+ protected:
   niv::AnalysisReceiver* receiver_{nullptr};
   std::vector<niv::AnalysisDevice*> devices_;
 
