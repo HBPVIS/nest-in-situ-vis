@@ -78,8 +78,8 @@ SCENARIO("Data in relay is cleared on receive",
       THEN("the node is not empty") { REQUIRE_FALSE(node.dtype().is_empty()); }
 
       WHEN("data is read a second time") {
-        auto node{relay.Receive()};
-        THEN("the node is empty") { REQUIRE(node.dtype().is_empty()); }
+        auto node2{relay.Receive()};
+        THEN("the node is empty") { REQUIRE(node2.dtype().is_empty()); }
       }
     }
   }
