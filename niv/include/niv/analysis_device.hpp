@@ -22,13 +22,16 @@
 #ifndef NIV_INCLUDE_NIV_ANALYSIS_DEVICE_HPP_
 #define NIV_INCLUDE_NIV_ANALYSIS_DEVICE_HPP_
 
+#include <string>
+
 #include "conduit/conduit_node.hpp"
 
 namespace niv {
 
 class AnalysisDevice {
  public:
-  AnalysisDevice() = default;
+  AnalysisDevice() = delete;
+  explicit AnalysisDevice(const std::string& name);
   AnalysisDevice(const AnalysisDevice&) = default;
   AnalysisDevice(AnalysisDevice&&) = default;
   virtual ~AnalysisDevice() = default;
@@ -36,12 +39,21 @@ class AnalysisDevice {
   AnalysisDevice& operator=(const AnalysisDevice&) = default;
   AnalysisDevice& operator=(AnalysisDevice&&) = default;
 
+  virtual void SetTime(double time);
+
   virtual void Update() = 0;
 
   void SetNode(const conduit::Node* node) { node_ = node; }
 
  protected:
+  void SetTimestepNode();
+  const conduit::Node* GetTimestepNode() const;
+
+ private:
   const conduit::Node* node_;
+  const conduit::Node* timestep_node_{nullptr};
+  double time_{0.0};
+  std::string name_{""};
 };
 
 }  // namespace niv

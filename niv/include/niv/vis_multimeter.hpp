@@ -44,26 +44,20 @@ class VisMultimeter : public AnalysisDevice {
   VisMultimeter& operator=(const VisMultimeter&) = default;
   VisMultimeter& operator=(VisMultimeter&&) = default;
 
-  void SetTime(double time);
-
   const std::vector<double> GetAttributeValues(
       const std::string& attribute_name) const;
 
   void Update() override;
 
  private:
-  void SetTimestepNode();
   void SetValues();
   std::vector<double> ExtractValues(std::size_t attribute_index) const;
   const conduit::Node* GetAttributeNode(std::size_t attribute_index) const;
   std::vector<double> GetAttributeNodesValues(
       const conduit::Node* attribute_node) const;
 
-  double time_{0.0};
-  std::string name_{""};
   std::vector<std::string> attribute_names_;
   std::vector<std::vector<double>> values_;
-  const conduit::Node* timestep_node_{nullptr};
 };
 
 }  // namespace niv

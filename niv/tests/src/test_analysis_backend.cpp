@@ -41,6 +41,7 @@ class Receiver : public niv::AnalysisReceiver {
 
 class Device : public niv::AnalysisDevice {
  public:
+  Device() : niv::AnalysisDevice("Device") {}
   void Update() override { ++count_updates_; }
 
   std::size_t GetCountUpdates() const { return count_updates_; }

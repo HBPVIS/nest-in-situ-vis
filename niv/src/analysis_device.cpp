@@ -19,19 +19,35 @@
 // limitations under the License.
 //------------------------------------------------------------------------------
 
-#include "analysis_device.hpp"
-
 #include "niv/analysis_device.hpp"
 
-#include "pyniv.hpp"
+#include <string>
 
-namespace pyniv {
+namespace niv {
 
-template <>
-void expose<AnalysisDeviceWrap>() {
-  class_<AnalysisDeviceWrap, noncopyable>("AnalysisDevice", no_init)
-      .def("SetTime", &niv::AnalysisDevice::SetTime)
-      .def("Update", pure_virtual(&niv::AnalysisDevice::Update));
+AnalysisDevice::AnalysisDevice(const std::string& name) : name_{name} {}
+
+void AnalysisDevice::SetTime(double time) {
+  std::cout << "AnalysisDevice::SetTime(" << time << ")" << std::endl;
+  time_ = time;
 }
 
-}  // namespace pyniv
+void AnalysisDevice::SetTimestepNode() {
+  std::cout << "Enter SetTimestepNode" << std::endl;
+  std::stringstream time_stream;
+  time_stream << time_;
+  try {
+    timestep_node_ = &node_->fetch_child(name_ + "/" + time_stream.str());
+  } catch (...) {
+  }
+  std::cout << "AnalysisDevice::SetTimestepNode" << std::endl;
+  std::cout << "time_ " << time_ << std::endl;
+  std::cout << node_ << std::endl;
+  node_->print();
+}
+
+const conduit::Node* AnalysisDevice::GetTimestepNode() const {
+  return timestep_node_;
+}
+
+}  // namespace niv

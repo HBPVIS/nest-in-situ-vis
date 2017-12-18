@@ -26,15 +26,13 @@
 
 namespace niv {
 
-VisMultimeter::VisMultimeter(const std::string& name) : name_{name} {}
+VisMultimeter::VisMultimeter(const std::string& name) : AnalysisDevice{name} {}
 
 VisMultimeter::VisMultimeter(const std::string& name,
                              const std::vector<std::string>& attribute_names)
-    : name_{name}, attribute_names_(attribute_names) {}
+    : AnalysisDevice{name}, attribute_names_(attribute_names) {}
 
 void VisMultimeter::SetTime(double time) {
-  time_ = time;
-  Update();
 }
 
 const std::vector<double> VisMultimeter::GetAttributeValues(
@@ -52,15 +50,6 @@ const std::vector<double> VisMultimeter::GetAttributeValues(
 void VisMultimeter::Update() {
   SetTimestepNode();
   SetValues();
-}
-
-void VisMultimeter::SetTimestepNode() {
-  std::stringstream time_stream;
-  time_stream << time_;
-  try {
-    timestep_node_ = &node_->fetch_child(name_ + "/" + time_stream.str());
-  } catch (...) {
-  }
 }
 
 void VisMultimeter::SetValues() {
