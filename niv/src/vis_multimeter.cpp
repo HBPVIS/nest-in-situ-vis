@@ -28,23 +28,8 @@ namespace niv {
 
 VisMultimeter::VisMultimeter(const std::string& name) : AnalysisDevice{name} {}
 
-VisMultimeter::VisMultimeter(const std::string& name,
-                             const std::vector<std::string>& attribute_names)
-    : AnalysisDevice{name}, attribute_names_(attribute_names) {}
-
-void VisMultimeter::SetTime(double time) {
-}
-
-const std::vector<double> VisMultimeter::GetAttributeValues(
-    const std::string& attribute_name) const {
-  for (auto attribute_index = 0u; attribute_index < attribute_names_.size();
-       ++attribute_index) {
-    if (attribute_names_[attribute_index] == attribute_name) {
-      return values_[attribute_index];
-    }
-  }
-
-  return std::vector<double>();
+void VisMultimeter::SetAttribute(const std::string& attribute) {
+  attribute_ = attribute;
 }
 
 void VisMultimeter::Update() {
@@ -54,42 +39,16 @@ void VisMultimeter::Update() {
 
 void VisMultimeter::SetValues() {
   values_.clear();
-  for (auto attribute_index = 0u; attribute_index < attribute_names_.size();
-       ++attribute_index) {
-    const auto current_values = ExtractValues(attribute_index);
-    values_.push_back(current_values);
-  }
-}
-
-std::vector<double> VisMultimeter::ExtractValues(
-    std::size_t attribute_index) const {
-  const conduit::Node* attribute_node = GetAttributeNode(attribute_index);
-  if (attribute_node == nullptr) {
-    return std::vector<double>();
-  }
-
-  return GetAttributeNodesValues(attribute_node);
-}
-
-const conduit::Node* VisMultimeter::GetAttributeNode(
-    std::size_t attribute_index) const {
-  const conduit::Node* attribute_node{nullptr};
-  const std::string attribute_name{attribute_names_[attribute_index]};
   try {
-    attribute_node = &timestep_node_->fetch_child(attribute_name);
+    const conduit::Node* attribute_node =
+        &GetTimestepNode()->fetch_child(attribute_);
+    for (auto i = 0u; i < attribute_node->number_of_children(); ++i) {
+      values_.push_back(attribute_node->child(i).as_double());
+    }
   } catch (...) {
   }
-
-  return attribute_node;
 }
 
-std::vector<double> VisMultimeter::GetAttributeNodesValues(
-    const conduit::Node* attribute_node) const {
-  std::vector<double> values;
-  for (auto i = 0u; i < attribute_node->number_of_children(); ++i) {
-    values.push_back(attribute_node->child(i).as_double());
-  }
-  return values;
-}
+const std::vector<double>& VisMultimeter::GetValues() const { return values_; }
 
 }  // namespace niv

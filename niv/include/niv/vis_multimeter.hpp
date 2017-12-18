@@ -35,8 +35,6 @@ class VisMultimeter : public AnalysisDevice {
  public:
   VisMultimeter() = delete;
   explicit VisMultimeter(const std::string& name);
-  VisMultimeter(const std::string& name,
-                const std::vector<std::string>& attribute_names);
   VisMultimeter(const VisMultimeter&) = default;
   VisMultimeter(VisMultimeter&&) = default;
   ~VisMultimeter() = default;
@@ -44,20 +42,17 @@ class VisMultimeter : public AnalysisDevice {
   VisMultimeter& operator=(const VisMultimeter&) = default;
   VisMultimeter& operator=(VisMultimeter&&) = default;
 
-  const std::vector<double> GetAttributeValues(
-      const std::string& attribute_name) const;
+  void SetAttribute(const std::string& attribute);
 
   void Update() override;
 
+  const std::vector<double>& GetValues() const;
+
  private:
   void SetValues();
-  std::vector<double> ExtractValues(std::size_t attribute_index) const;
-  const conduit::Node* GetAttributeNode(std::size_t attribute_index) const;
-  std::vector<double> GetAttributeNodesValues(
-      const conduit::Node* attribute_node) const;
 
-  std::vector<std::string> attribute_names_;
-  std::vector<std::vector<double>> values_;
+  std::vector<double> values_;
+  std::string attribute_{""};
 };
 
 }  // namespace niv

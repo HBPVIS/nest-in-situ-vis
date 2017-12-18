@@ -32,22 +32,25 @@ SCENARIO("a VisMultimeter provides access to data stored in a conduit node",
          "[niv][niv::VisMultimeter]") {
   GIVEN("A VisMultimeter with some data") {
     const conduit::Node nest_data{testing::AnyNestData()};
-    niv::VisMultimeter multimeter(testing::AnyMultimeterName(),
-                                  testing::AnyValueNames());
+    niv::VisMultimeter multimeter(testing::AnyMultimeterName());
     multimeter.SetNode(&nest_data);
 
     WHEN("The time step is set") {
       multimeter.SetTime(testing::AnyTime());
       WHEN("one attribute is queried") {
-        auto result = multimeter.GetAttributeValues(testing::AnyAttribute());
+        multimeter.SetAttribute(testing::AnyValueNames()[0]);
+        multimeter.Update();
+        auto result = multimeter.GetValues();
         THEN("the result is correct") {
           REQUIRE_THAT(result,
                        Catch::Matchers::Equals(testing::AnyAttributesValues()));
         }
       }
       WHEN("another attribute is queried") {
-        auto result =
-            multimeter.GetAttributeValues(testing::AnotherAttribute());
+        multimeter.SetAttribute(testing::AnyValueNames()[1]);
+        multimeter.Update();
+
+        auto result = multimeter.GetValues();
         THEN("the result is correct") {
           REQUIRE_THAT(result, Catch::Matchers::Equals(
                                    testing::AnotherAttributesValues()));
