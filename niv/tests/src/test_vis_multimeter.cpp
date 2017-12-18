@@ -25,9 +25,8 @@
 
 #include "conduit/conduit_node.hpp"
 
+#include "niv/nest_test_data.hpp"
 #include "niv/vis_multimeter.hpp"
-
-#include "nest_data.hpp"
 
 SCENARIO("a VisMultimeter provides access to data stored in a conduit node",
          "[niv][niv::VisMultimeter]") {
@@ -43,7 +42,7 @@ SCENARIO("a VisMultimeter provides access to data stored in a conduit node",
         auto result = multimeter.GetAttributeValues(testing::AnyAttribute());
         THEN("the result is correct") {
           REQUIRE_THAT(result,
-                       Catch::Matchers::Equals(testing::AnyAttributesValues));
+                       Catch::Matchers::Equals(testing::AnyAttributesValues()));
         }
       }
       WHEN("another attribute is queried") {
@@ -51,7 +50,7 @@ SCENARIO("a VisMultimeter provides access to data stored in a conduit node",
             multimeter.GetAttributeValues(testing::AnotherAttribute());
         THEN("the result is correct") {
           REQUIRE_THAT(result, Catch::Matchers::Equals(
-                                   testing::AnotherAttributesValues));
+                                   testing::AnotherAttributesValues()));
         }
       }
     }
