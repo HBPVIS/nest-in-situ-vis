@@ -19,5 +19,21 @@
 # limitations under the License.
 #-------------------------------------------------------------------------------
 
-add_subdirectory(nest_python_vis)
-add_subdirectory(brunel_example)
+set(NEST_PYTHON_VIS_SOURCE nest_python_vis.py)
+set(NEST_SIM_SOURCE nest_sim.py)
+
+if(NOT CMAKE_MAKE_PROGRAM STREQUAL "/usr/bin/xcodebuild")
+  
+file(GENERATE OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/run_vis.sh
+  CONTENT "PYTHONPATH=$<TARGET_FILE_DIR:pyniv>:$<TARGET_FILE_DIR:pytest_utilities> ${PYTHON_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/${NEST_PYTHON_VIS_SOURCE}"
+  )
+
+set(NEST_DIR
+  CACHE PATH "Path to installed nest")
+file(GENERATE OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/run_sim.sh
+  CONTENT
+"source ${NEST_DIR}/bin/nest_vars.sh
+PYTHONPATH=$<TARGET_FILE_DIR:pyniv>:$PYTHONPATH ${PYTHON_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/${NEST_SIM_SOURCE}"
+  )
+
+endif()
