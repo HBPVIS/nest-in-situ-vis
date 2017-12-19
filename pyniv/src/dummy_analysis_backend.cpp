@@ -19,39 +19,27 @@
 // limitations under the License.
 //------------------------------------------------------------------------------
 
-#include "niv/vis_multimeter.hpp"
+#include "dummy_analysis_backend.hpp"
 
-#include <string>
-#include <vector>
+#include "niv/nest_test_data.hpp"
 
-namespace niv {
+#include "pyniv.hpp"
 
-VisMultimeter::VisMultimeter(const std::string& name) : AnalysisDevice{name} {}
+namespace pyniv {
 
-void VisMultimeter::SetAttribute(const std::string& attribute) {
-  attribute_ = attribute;
+DummyAnalysisBackend::DummyAnalysisBackend() { node_ = testing::AnyNestData(); }
+
+void DummyAnalysisBackend::Connect(niv::AnalysisDevice* device) {
+  AnalysisBackend::Connect(device);
 }
 
-void VisMultimeter::Update() {
-  SetTimestepNode();
-  SetValues();
+void DummyAnalysisBackend::Receive() { AnalysisBackend::Receive(); }
+
+template <>
+void expose<pyniv::DummyAnalysisBackend>() {
+  class_<pyniv::DummyAnalysisBackend, noncopyable>("DummyAnalysisBackend")
+      .def("Connect", &DummyAnalysisBackend::Connect)
+      .def("Receive", &DummyAnalysisBackend::Receive);
 }
 
-void VisMultimeter::SetValues() {
-  values_.clear();
-  if (GetTimestepNode() == nullptr) {
-    return;
-  }
-  try {
-    const conduit::Node* attribute_node =
-        &GetTimestepNode()->fetch_child(attribute_);
-    for (auto i = 0u; i < attribute_node->number_of_children(); ++i) {
-      values_.push_back(attribute_node->child(i).as_double());
-    }
-  } catch (...) {
-  }
-}
-
-const std::vector<double>& VisMultimeter::GetValues() const { return values_; }
-
-}  // namespace niv
+}  // namespace pyniv

@@ -19,34 +19,27 @@
 // limitations under the License.
 //------------------------------------------------------------------------------
 
-#include "pyniv.hpp"
+#ifndef NIV_INCLUDE_NIV_DUMMY_ANALYSIS_BACKEND_HPP_
+#define NIV_INCLUDE_NIV_DUMMY_ANALYSIS_BACKEND_HPP_
 
 #include "niv/analysis_backend.hpp"
-#include "niv/conduit_receiver.hpp"
-#include "niv/niv.hpp"
-#include "niv/synchronized_aggregating_receiver.hpp"
 
-#include "analysis_device.hpp"
-#include "analysis_receiver.hpp"
-#include "conduit_data.hpp"
-#include "conduit_data_sender.hpp"
-#include "dummy_analysis_backend.hpp"
-#include "synchronized_receiver.hpp"
-#include "synchronized_sender.hpp"
-#include "vis_multimeter.hpp"
+namespace pyniv {
 
-BOOST_PYTHON_MODULE(pyniv) {
-  boost::python::numpy::initialize();
-  def("Greet", niv::Greet);
-  pyniv::expose<niv::AnalysisBackend>();
-  pyniv::expose<pyniv::AnalysisDeviceWrap>();
-  pyniv::expose<pyniv::AnalysisReceiverWrap>();
-  pyniv::expose<pyniv::ConduitData>();
-  pyniv::expose<pyniv::ConduitDataSender>();
-  pyniv::expose<niv::ConduitReceiver>();
-  pyniv::expose<pyniv::DummyAnalysisBackend>();
-  pyniv::expose<pyniv::SynchronizedSender>();
-  pyniv::expose<niv::SynchronizedAggregatingReceiver>();
-  pyniv::expose<pyniv::SynchronizedReceiver>();
-  pyniv::expose<pyniv::VisMultimeter>();
-}
+class DummyAnalysisBackend : public niv::AnalysisBackend {
+ public:
+  DummyAnalysisBackend();
+  DummyAnalysisBackend(const DummyAnalysisBackend&) = delete;
+  DummyAnalysisBackend(DummyAnalysisBackend&&) = delete;
+  ~DummyAnalysisBackend() = default;
+
+  DummyAnalysisBackend& operator=(const DummyAnalysisBackend&) = delete;
+  DummyAnalysisBackend& operator=(DummyAnalysisBackend&&) = delete;
+
+  void Connect(niv::AnalysisDevice* device);
+  void Receive();
+};
+
+}  // namespace pyniv
+
+#endif  // NIV_INCLUDE_NIV_DUMMY_ANALYSIS_BACKEND_HPP_

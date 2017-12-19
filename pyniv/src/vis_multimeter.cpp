@@ -22,18 +22,43 @@
 #include <string>
 #include <vector>
 
+SUPPRESS_WARNINGS_BEGIN
+#include "boost/python/numpy.hpp"
+SUPPRESS_WARNINGS_END
+
 #include "niv/analysis_device.hpp"
-#include "niv/vis_multimeter.hpp"
 
 #include "pyniv.hpp"
+#include "vis_multimeter.hpp"
 
 namespace pyniv {
 
+VisMultimeter::VisMultimeter(const std::string& name)
+    : niv::VisMultimeter{name},
+      values_{boost::python::numpy::empty(
+          boost::python::make_tuple(1),
+          boost::python::numpy::dtype::get_builtin<double>())} {}
+
+boost::python::numpy::ndarray VisMultimeter::GetValues() {
+  const auto& values{niv::VisMultimeter::GetValues()};
+
+  boost::python::numpy::ndarray values_ = boost::python::numpy::from_data(
+      values.data(), boost::python::numpy::dtype::get_builtin<double>(),
+      boost::python::make_tuple(values.size()),
+      boost::python::make_tuple(sizeof(double)), boost::python::object());
+
+  return values_;
+}
+
+void VisMultimeter::Update() { niv::VisMultimeter::Update(); }
+
 template <>
-void expose<niv::VisMultimeter>() {
-  class_<niv::VisMultimeter, bases<niv::AnalysisDevice>>("VisMultimeter",
-                                                         init<std::string>())
-      .def("Update", &niv::VisMultimeter::Update);
+void expose<pyniv::VisMultimeter>() {
+  class_<pyniv::VisMultimeter, bases<niv::AnalysisDevice>>("VisMultimeter",
+                                                           init<std::string>())
+      .def("GetValues", &pyniv::VisMultimeter::GetValues)
+      .def("SetAttribute", &pyniv::VisMultimeter::SetAttribute)
+      .def("Update", &pyniv::VisMultimeter::Update);
 }
 
 }  // namespace pyniv

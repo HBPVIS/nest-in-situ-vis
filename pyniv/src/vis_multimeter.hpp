@@ -19,39 +19,36 @@
 // limitations under the License.
 //------------------------------------------------------------------------------
 
+#ifndef PYNIV_SRC_VIS_MULTIMETER_HPP_
+#define PYNIV_SRC_VIS_MULTIMETER_HPP_
+
+SUPPRESS_WARNINGS_BEGIN
+#include "boost/python/numpy.hpp"
+SUPPRESS_WARNINGS_END
+
 #include "niv/vis_multimeter.hpp"
 
-#include <string>
-#include <vector>
+namespace pyniv {
 
-namespace niv {
+class VisMultimeter : public niv::VisMultimeter {
+ public:
+  VisMultimeter() = delete;
+  explicit VisMultimeter(const std::string& name);
+  VisMultimeter(const VisMultimeter&) = default;
+  VisMultimeter(VisMultimeter&&) = default;
+  ~VisMultimeter() = default;
 
-VisMultimeter::VisMultimeter(const std::string& name) : AnalysisDevice{name} {}
+  VisMultimeter& operator=(const VisMultimeter&) = default;
+  VisMultimeter& operator=(VisMultimeter&&) = default;
 
-void VisMultimeter::SetAttribute(const std::string& attribute) {
-  attribute_ = attribute;
-}
+  boost::python::numpy::ndarray GetValues();
 
-void VisMultimeter::Update() {
-  SetTimestepNode();
-  SetValues();
-}
+  void Update() override;
 
-void VisMultimeter::SetValues() {
-  values_.clear();
-  if (GetTimestepNode() == nullptr) {
-    return;
-  }
-  try {
-    const conduit::Node* attribute_node =
-        &GetTimestepNode()->fetch_child(attribute_);
-    for (auto i = 0u; i < attribute_node->number_of_children(); ++i) {
-      values_.push_back(attribute_node->child(i).as_double());
-    }
-  } catch (...) {
-  }
-}
+ private:
+  boost::python::numpy::ndarray values_;
+};
 
-const std::vector<double>& VisMultimeter::GetValues() const { return values_; }
+}  // namespace pyniv
 
-}  // namespace niv
+#endif  // PYNIV_SRC_VIS_MULTIMETER_HPP_
