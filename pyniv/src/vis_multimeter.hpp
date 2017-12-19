@@ -41,7 +41,11 @@ class VisMultimeter : public niv::VisMultimeter {
   VisMultimeter& operator=(const VisMultimeter&) = default;
   VisMultimeter& operator=(VisMultimeter&&) = default;
 
+  boost::python::numpy::ndarray GetTimesteps();
   boost::python::numpy::ndarray GetValues();
+
+ private:
+  std::vector<double> timesteps_;
 };
 
 }  // namespace pyniv

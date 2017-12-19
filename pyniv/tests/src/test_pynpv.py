@@ -92,3 +92,10 @@ def test_pyniv_dummy_analysis_backend():
     backend.Receive()
     a = multimeter.GetValues()
     assert (a == [0.0, -0.1, 0.2, -0.3, 0.4, -0.5]).all()
+
+def test_pyniv_dummy_vis_multimeter_timesteps():
+    backend = pyniv.DummyAnalysisBackend();
+    multimeter = pyniv.VisMultimeter("multimeter A")
+    backend.Connect(multimeter)
+    ts = multimeter.GetTimesteps();
+    assert (ts == [0.0]).all()

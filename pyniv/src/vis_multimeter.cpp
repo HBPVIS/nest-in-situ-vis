@@ -45,11 +45,21 @@ boost::python::numpy::ndarray VisMultimeter::GetValues() {
       boost::python::make_tuple(sizeof(double)), boost::python::object());
 }
 
+boost::python::numpy::ndarray VisMultimeter::GetTimesteps() {
+  timesteps_ = niv::VisMultimeter::GetTimesteps();
+
+  return boost::python::numpy::from_data(
+      timesteps_.data(), boost::python::numpy::dtype::get_builtin<double>(),
+      boost::python::make_tuple(timesteps_.size()),
+      boost::python::make_tuple(sizeof(double)), boost::python::object());
+}
+
 template <>
 void expose<pyniv::VisMultimeter>() {
   class_<pyniv::VisMultimeter, bases<niv::AnalysisDevice>>("VisMultimeter",
                                                            init<std::string>())
       .def("GetValues", &pyniv::VisMultimeter::GetValues)
+      .def("GetTimesteps", &pyniv::VisMultimeter::GetTimesteps)
       .def("SetAttribute", &pyniv::VisMultimeter::SetAttribute)
       .def("Update", &pyniv::VisMultimeter::Update);
 }
