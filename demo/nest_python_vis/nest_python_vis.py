@@ -21,6 +21,10 @@
 
 import sys
 
+import matplotlib.pyplot as plt
+import numpy as np
+import seaborn as sns
+
 import pyniv
 
 from PyQt5.QtWidgets import QApplication, QWidget, QLabel, QGridLayout, QPushButton
@@ -43,6 +47,9 @@ class MainWindow:
         
         self.SetupWindow()
 
+        self.fig = plt.figure()
+        self.ax1 = self.fig.add_subplot(1,1,1)
+
     def SetupWindow(self):
         self.visualize_button = QPushButton("Visualize")
         self.visualize_button.clicked.connect(self.VisualizeButtonClicked)
@@ -59,20 +66,35 @@ class MainWindow:
         self.backend.Receive()
         ts_a = self.multimeter_a.GetTimesteps()
         ts_a.sort()
+        plot_ts_a = []
+        plot_vs_a = []
         for t in ts_a:
           self.multimeter_a.SetTime(t)
           self.multimeter_a.Update()
           vs = self.multimeter_a.GetValues()
-          print vs
-
+          if len(vs) > 0:
+            plot_ts_a.append(t)
+            plot_vs_a.append(vs[0])
+        
         ts_b = self.multimeter_b.GetTimesteps()
         ts_b.sort()
+        plot_ts_b = []
+        plot_vs_b = []
         for t in ts_b:
           self.multimeter_b.SetTime(t)
           self.multimeter_b.Update()
           vs = self.multimeter_b.GetValues()
-          print vs
+          if len(vs) > 0:
+            plot_ts_b.append(t)
+            plot_vs_b.append(vs[0])
 
+        self.ax1.clear()
+        self.ax1.plot(plot_ts_a, plot_vs_a)
+        self.ax1.plot(plot_ts_b, plot_vs_b)
+        sns.set_style("darkgrid")
+        plt.show(block=False)
+        self.fig.canvas.draw()
+        
     def Show(self):
         self.window.show()
 
