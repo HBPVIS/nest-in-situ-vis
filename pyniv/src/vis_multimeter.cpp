@@ -34,23 +34,16 @@ SUPPRESS_WARNINGS_END
 namespace pyniv {
 
 VisMultimeter::VisMultimeter(const std::string& name)
-    : niv::VisMultimeter{name},
-      values_{boost::python::numpy::empty(
-          boost::python::make_tuple(1),
-          boost::python::numpy::dtype::get_builtin<double>())} {}
+    : niv::VisMultimeter{name} {}
 
 boost::python::numpy::ndarray VisMultimeter::GetValues() {
   const auto& values{niv::VisMultimeter::GetValues()};
 
-  boost::python::numpy::ndarray values_ = boost::python::numpy::from_data(
+  return boost::python::numpy::from_data(
       values.data(), boost::python::numpy::dtype::get_builtin<double>(),
       boost::python::make_tuple(values.size()),
       boost::python::make_tuple(sizeof(double)), boost::python::object());
-
-  return values_;
 }
-
-void VisMultimeter::Update() { niv::VisMultimeter::Update(); }
 
 template <>
 void expose<pyniv::VisMultimeter>() {

@@ -42,11 +42,6 @@ class VisMultimeter : public niv::VisMultimeter {
   VisMultimeter& operator=(VisMultimeter&&) = default;
 
   boost::python::numpy::ndarray GetValues();
-
-  void Update() override;
-
- private:
-  boost::python::numpy::ndarray values_;
 };
 
 }  // namespace pyniv
