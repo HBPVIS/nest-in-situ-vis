@@ -28,7 +28,19 @@ from PyQt5.QtCore import QTimer
 
 class MainWindow:
     def __init__(self):
-        self.receiver = pyniv.SynchronizedReceiver()
+        self.receiver = pyniv.SynchronizedAggregatingReceiver()
+        
+        self.multimeter_a = pyniv.VisMultimeter("multimeter A")
+        self.multimeter_a.SetAttribute("V_m")
+
+        self.multimeter_b = pyniv.VisMultimeter("multimeter B")
+        self.multimeter_b.SetAttribute("V_m")
+
+        self.backend = pyniv.AnalysisBackend();
+        self.backend.Connect(self.receiver);
+        self.backend.Connect(self.multimeter_a);
+        self.backend.Connect(self.multimeter_b);
+        
         self.SetupWindow()
 
     def SetupWindow(self):
@@ -44,8 +56,22 @@ class MainWindow:
         self.window.show()
 
     def VisualizeButtonClicked(self):
-        data = self.receiver.Receive()
-        data.Print()
+        self.backend.Receive()
+        ts_a = self.multimeter_a.GetTimesteps()
+        ts_a.sort()
+        for t in ts_a:
+          self.multimeter_a.SetTime(t)
+          self.multimeter_a.Update()
+          vs = self.multimeter_a.GetValues()
+          print vs
+
+        ts_b = self.multimeter_b.GetTimesteps()
+        ts_b.sort()
+        for t in ts_b:
+          self.multimeter_b.SetTime(t)
+          self.multimeter_b.Update()
+          vs = self.multimeter_b.GetValues()
+          print vs
 
     def Show(self):
         self.window.show()

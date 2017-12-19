@@ -52,23 +52,15 @@ std::vector<double> AnalysisDevice::GetTimesteps() const {
   return timesteps;
 }
 
-void AnalysisDevice::SetTime(double time) {
-  std::cout << "AnalysisDevice::SetTime(" << time << ")" << std::endl;
-  time_ = time;
-}
+void AnalysisDevice::SetTime(double time) { time_ = time; }
 
 void AnalysisDevice::SetTimestepNode() {
-  std::cout << "Enter SetTimestepNode" << std::endl;
   std::stringstream time_stream;
   time_stream << time_;
   try {
     timestep_node_ = &node_->fetch_child(name_ + "/" + time_stream.str());
   } catch (...) {
   }
-  std::cout << "AnalysisDevice::SetTimestepNode" << std::endl;
-  std::cout << "time_ " << time_ << std::endl;
-  std::cout << node_ << std::endl;
-  node_->print();
 }
 
 const conduit::Node* AnalysisDevice::GetTimestepNode() const {
