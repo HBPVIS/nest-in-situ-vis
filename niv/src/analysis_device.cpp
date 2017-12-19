@@ -21,11 +21,36 @@
 
 #include "niv/analysis_device.hpp"
 
+#include <cstdlib>
+
 #include <string>
+#include <vector>
 
 namespace niv {
 
 AnalysisDevice::AnalysisDevice(const std::string& name) : name_{name} {}
+
+std::vector<double> AnalysisDevice::GetTimesteps() const {
+  std::vector<double> timesteps;
+
+  const conduit::Node* device_node{nullptr};
+  try {
+    device_node = &node_->fetch_child(name_);
+  } catch (...) {
+    return std::vector<double>();
+  }
+
+  const std::string device_node_path{device_node->path()};
+  for (auto i = 0u; i < device_node->number_of_children(); ++i) {
+    const conduit::Node& curr_child{device_node->child(i)};
+    const std::string child_path{curr_child.path()};
+    const std::string child_local_path{
+        child_path.substr(device_node_path.size() + 1,
+                          child_path.size() - device_node_path.size() - 1)};
+    timesteps.push_back(std::strtof(child_local_path.c_str(), nullptr));
+  }
+  return timesteps;
+}
 
 void AnalysisDevice::SetTime(double time) {
   std::cout << "AnalysisDevice::SetTime(" << time << ")" << std::endl;

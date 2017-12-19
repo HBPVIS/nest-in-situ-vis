@@ -19,46 +19,43 @@
 // limitations under the License.
 //------------------------------------------------------------------------------
 
-#ifndef NIV_INCLUDE_NIV_ANALYSIS_DEVICE_HPP_
-#define NIV_INCLUDE_NIV_ANALYSIS_DEVICE_HPP_
-
 #include <string>
 #include <vector>
 
-#include "conduit/conduit_node.hpp"
+#include "catch/catch.hpp"
 
-namespace niv {
+#include "niv/analysis_device.hpp"
+#include "niv/nest_test_data.hpp"
 
-class AnalysisDevice {
+namespace {
+
+class Device : public niv::AnalysisDevice {
  public:
-  AnalysisDevice() = delete;
-  explicit AnalysisDevice(const std::string& name);
-  AnalysisDevice(const AnalysisDevice&) = default;
-  AnalysisDevice(AnalysisDevice&&) = default;
-  virtual ~AnalysisDevice() = default;
+  explicit Device(const std::string& name) : niv::AnalysisDevice(name) {}
+  Device(const Device&) = delete;
+  Device(Device&&) = delete;
+  ~Device() = default;
 
-  AnalysisDevice& operator=(const AnalysisDevice&) = default;
-  AnalysisDevice& operator=(AnalysisDevice&&) = default;
+  Device& operator=(const Device&) = delete;
+  Device& operator=(Device&&) = delete;
 
-  std::vector<double> GetTimesteps() const;
-
-  virtual void SetTime(double time);
-
-  virtual void Update() = 0;
-
-  void SetNode(const conduit::Node* node) { node_ = node; }
-
- protected:
-  void SetTimestepNode();
-  const conduit::Node* GetTimestepNode() const;
-
- private:
-  const conduit::Node* node_;
-  const conduit::Node* timestep_node_{nullptr};
-  double time_{0.0};
-  std::string name_{""};
+  void Update() override {}
 };
 
-}  // namespace niv
+}  // namespace
 
-#endif  // NIV_INCLUDE_NIV_ANALYSIS_DEVICE_HPP_
+SCENARIO("The AnalysisDevice can list its timesteps",
+         "[niv][niv::AnalysisDevice]") {
+  GIVEN("An analysis device accessing a node") {
+    conduit::Node any_data{testing::AnyNestData()};
+    ::Device device("multimeter A");
+    device.SetNode(&any_data);
+    WHEN("The device is asked for the timesteps") {
+      auto timesteps(device.GetTimesteps());
+      THEN("the list of timesteps is correct") {
+        REQUIRE_THAT(timesteps,
+                     Catch::Matchers::Equals(std::vector<double>{0}));
+      }
+    }
+  }
+}
