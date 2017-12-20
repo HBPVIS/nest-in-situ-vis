@@ -53,31 +53,39 @@ class Simulation:
 
 
 class MainWindow:
-    def __init__(self):
+    def __init__(self, screen_resolution):
+        self.screen_resolution = screen_resolution
         self.SetupWindow()
         self.simulation = Simulation()
 
     def SetupWindow(self):
-        self.simulate_button = QPushButton("nest.Simulate(100)")
+        self.simulate_button = QPushButton("nest.Simulate(1000)")
         self.simulate_button.clicked.connect(self.SimulateButtonClicked)
 
     def SimulateButtonClicked(self):
         self.simulate_button.setEnabled(False)
         QApplication.processEvents()
 
-        self.simulation.Simulate(100)
+        self.simulation.Simulate(1000)
 
         QApplication.processEvents()
         self.simulate_button.setEnabled(True)
 
     def Show(self):
         self.simulate_button.show()
+        button_geometry = self.simulate_button.geometry()
+        self.simulate_button.setGeometry(
+            self.screen_resolution.width() - button_geometry.width(),
+            self.screen_resolution.height() - button_geometry.height(),
+            button_geometry.width(),
+            button_geometry.height())
 
 
 def main(argv):
     app = QApplication(argv)
+    screen_resolution = app.desktop().screenGeometry()
 
-    w = MainWindow()
+    w = MainWindow(screen_resolution)
     w.Show()
 
     return app.exec_()

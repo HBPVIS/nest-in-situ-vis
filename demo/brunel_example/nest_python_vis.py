@@ -51,21 +51,15 @@ class MainWindow:
         self.visualize_button = QPushButton("Visualize")
         self.visualize_button.clicked.connect(self.VisualizeButtonClicked)
 
-        self.layout = QGridLayout()
- 
-        self.layout.addWidget(self.visualize_button, 0, 0, 1, 1)
-
-        self.window = QWidget()
-        self.window.setLayout(self.layout)
-        self.window.show()
-
     def SetupUpdateTimer(self):
         self.update_timer = QTimer()
         self.update_timer.timeout.connect(self.Visualize)
 
     def SetupPlot(self):
+        sns.set_style("darkgrid")
         self.fig = plt.figure()
         self.ax1 = self.fig.add_subplot(1,1,1)
+
 
     def VisualizeButtonClicked(self):
         self.visualize_button.setEnabled(False)
@@ -73,7 +67,12 @@ class MainWindow:
         self.Visualize()
         
     def Show(self):
-        self.window.show()
+        self.visualize_button.show()
+        button_geometry = self.visualize_button.geometry()
+        self.visualize_button.setGeometry(
+            0, 0,
+            button_geometry.width(),
+            button_geometry.height())
 
     def Visualize(self):
         self.backend.Receive()
@@ -105,6 +104,10 @@ class MainWindow:
         self.ax1.clear()
         for i in range(0, len(values)):
             self.ax1.plot(ts, values[i])
+        self.ax1.set_title("Brunel Example")
+        self.ax1.set_xlabel("Time")
+        self.ax1.set_ylabel("V_m")
+
         plt.show(block=False)
         self.fig.canvas.draw()
         
