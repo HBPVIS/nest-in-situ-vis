@@ -23,9 +23,9 @@
 
 #include "conduit/conduit_node.hpp"
 
-#include "niv/analysis_backend.hpp"
-#include "niv/analysis_device.hpp"
-#include "niv/analysis_receiver.hpp"
+#include "niv/consumer/analysis_backend.hpp"
+#include "niv/consumer/analysis_device.hpp"
+#include "niv/consumer/analysis_receiver.hpp"
 
 namespace {
 

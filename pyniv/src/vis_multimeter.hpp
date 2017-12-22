@@ -26,7 +26,7 @@ SUPPRESS_WARNINGS_BEGIN
 #include "boost/python/numpy.hpp"
 SUPPRESS_WARNINGS_END
 
-#include "niv/vis_multimeter.hpp"
+#include "niv/consumer/vis_multimeter.hpp"
 
 namespace pyniv {
 

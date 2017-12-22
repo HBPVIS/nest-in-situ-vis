@@ -21,9 +21,9 @@
 
 #include "pyniv.hpp"
 
-#include "niv/analysis_backend.hpp"
+#include "niv/consumer/analysis_backend.hpp"
+#include "niv/consumer/synchronized_aggregating_receiver.hpp"
 #include "niv/niv.hpp"
-#include "niv/synchronized_aggregating_receiver.hpp"
 
 #include "analysis_device.hpp"
 #include "analysis_receiver.hpp"

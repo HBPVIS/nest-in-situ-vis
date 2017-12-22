@@ -19,35 +19,31 @@
 // limitations under the License.
 //------------------------------------------------------------------------------
 
-#ifndef NIV_INCLUDE_NIV_SYNCHRONIZED_AGGREGATING_RECEIVER_HPP_
-#define NIV_INCLUDE_NIV_SYNCHRONIZED_AGGREGATING_RECEIVER_HPP_
+#ifndef NIV_INCLUDE_NIV_CONSUMER_ANALYSIS_RECEIVER_HPP_
+#define NIV_INCLUDE_NIV_CONSUMER_ANALYSIS_RECEIVER_HPP_
 
 #include "conduit/conduit_node.hpp"
 
-#include "niv/analysis_receiver.hpp"
-#include "niv/synchronized_relay_shared_memory_segment.hpp"
-
 namespace niv {
 
-class SynchronizedAggregatingReceiver : public AnalysisReceiver {
+class AnalysisReceiver {
  public:
-  SynchronizedAggregatingReceiver() = default;
-  SynchronizedAggregatingReceiver(const SynchronizedAggregatingReceiver&) =
-      default;
-  SynchronizedAggregatingReceiver(SynchronizedAggregatingReceiver&&) = delete;
-  ~SynchronizedAggregatingReceiver() = default;
+  AnalysisReceiver() = default;
+  AnalysisReceiver(const AnalysisReceiver&) = default;
+  AnalysisReceiver(AnalysisReceiver&&) = default;
+  virtual ~AnalysisReceiver() = default;
 
-  SynchronizedAggregatingReceiver& operator=(
-      const SynchronizedAggregatingReceiver&) = delete;
-  SynchronizedAggregatingReceiver& operator=(
-      SynchronizedAggregatingReceiver&&) = default;
+  AnalysisReceiver& operator=(const AnalysisReceiver&) = default;
+  AnalysisReceiver& operator=(AnalysisReceiver&&) = default;
 
-  void Receive() override;
+  void SetNode(conduit::Node* node) { node_ = node; }
 
- private:
-  SynchronizedRelaySharedMemorySegment relay_;
+  virtual void Receive() = 0;
+
+ protected:
+  conduit::Node* node_;
 };
 
 }  // namespace niv
 
-#endif  // NIV_INCLUDE_NIV_SYNCHRONIZED_AGGREGATING_RECEIVER_HPP_
+#endif  // NIV_INCLUDE_NIV_CONSUMER_ANALYSIS_RECEIVER_HPP_

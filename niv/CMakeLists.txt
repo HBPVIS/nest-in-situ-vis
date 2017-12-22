@@ -19,9 +19,9 @@
 # limitations under the License.
 #-------------------------------------------------------------------------------
 
-file(GLOB NIV_SOURCES src/*.cpp)
-file(GLOB NIV_HEADERS src/*.hpp)
-file(GLOB NIV_API_HEADERS include/niv/*.hpp)
+file(GLOB NIV_SOURCES src/*.cpp src/**/*.cpp)
+file(GLOB NIV_HEADERS src/*.hpp src/**/*.hpp)
+file(GLOB NIV_API_HEADERS include/niv/*.hpp include/niv/**/*.hpp)
 
 add_library(niv
   ${NIV_SOURCES}

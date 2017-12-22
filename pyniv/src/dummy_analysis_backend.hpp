@@ -22,7 +22,7 @@
 #ifndef NIV_INCLUDE_NIV_DUMMY_ANALYSIS_BACKEND_HPP_
 #define NIV_INCLUDE_NIV_DUMMY_ANALYSIS_BACKEND_HPP_
 
-#include "niv/analysis_backend.hpp"
+#include "niv/consumer/analysis_backend.hpp"
 
 namespace pyniv {
 

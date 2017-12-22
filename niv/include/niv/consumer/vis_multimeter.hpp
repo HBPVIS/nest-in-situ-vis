@@ -19,46 +19,42 @@
 // limitations under the License.
 //------------------------------------------------------------------------------
 
-#ifndef NIV_INCLUDE_NIV_ANALYSIS_DEVICE_HPP_
-#define NIV_INCLUDE_NIV_ANALYSIS_DEVICE_HPP_
+#ifndef NIV_INCLUDE_NIV_CONSUMER_VIS_MULTIMETER_HPP_
+#define NIV_INCLUDE_NIV_CONSUMER_VIS_MULTIMETER_HPP_
 
 #include <string>
 #include <vector>
 
 #include "conduit/conduit_node.hpp"
 
+#include "niv/consumer/analysis_device.hpp"
+
 namespace niv {
 
-class AnalysisDevice {
+class VisMultimeter : public AnalysisDevice {
  public:
-  AnalysisDevice() = delete;
-  explicit AnalysisDevice(const std::string& name);
-  AnalysisDevice(const AnalysisDevice&) = default;
-  AnalysisDevice(AnalysisDevice&&) = default;
-  virtual ~AnalysisDevice() = default;
+  VisMultimeter() = delete;
+  explicit VisMultimeter(const std::string& name);
+  VisMultimeter(const VisMultimeter&) = default;
+  VisMultimeter(VisMultimeter&&) = default;
+  ~VisMultimeter() = default;
 
-  AnalysisDevice& operator=(const AnalysisDevice&) = default;
-  AnalysisDevice& operator=(AnalysisDevice&&) = default;
+  VisMultimeter& operator=(const VisMultimeter&) = default;
+  VisMultimeter& operator=(VisMultimeter&&) = default;
 
-  std::vector<double> GetTimesteps() const;
+  void SetAttribute(const std::string& attribute);
 
-  virtual void SetTime(double time);
+  void Update() override;
 
-  virtual void Update() = 0;
-
-  void SetNode(const conduit::Node* node) { node_ = node; }
-
- protected:
-  void SetTimestepNode();
-  const conduit::Node* GetTimestepNode() const;
+  const std::vector<double>& GetValues() const;
 
  private:
-  const conduit::Node* node_;
-  const conduit::Node* timestep_node_{nullptr};
-  double time_{0.0};
-  std::string name_{""};
+  void SetValues();
+
+  std::vector<double> values_;
+  std::string attribute_{""};
 };
 
 }  // namespace niv
 
-#endif  // NIV_INCLUDE_NIV_ANALYSIS_DEVICE_HPP_
+#endif  // NIV_INCLUDE_NIV_CONSUMER_VIS_MULTIMETER_HPP_

@@ -24,7 +24,7 @@
 
 #include "catch/catch.hpp"
 
-#include "niv/analysis_device.hpp"
+#include "niv/consumer/analysis_device.hpp"
 #include "niv/nest_test_data.hpp"
 
 namespace {

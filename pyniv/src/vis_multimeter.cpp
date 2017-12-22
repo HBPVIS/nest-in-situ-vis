@@ -26,7 +26,7 @@ SUPPRESS_WARNINGS_BEGIN
 #include "boost/python/numpy.hpp"
 SUPPRESS_WARNINGS_END
 
-#include "niv/analysis_device.hpp"
+#include "niv/consumer/analysis_device.hpp"
 
 #include "pyniv.hpp"
 #include "vis_multimeter.hpp"

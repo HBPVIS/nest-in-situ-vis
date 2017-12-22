@@ -25,8 +25,8 @@
 
 #include "conduit/conduit_node.hpp"
 
+#include "niv/consumer/vis_multimeter.hpp"
 #include "niv/nest_test_data.hpp"
-#include "niv/vis_multimeter.hpp"
 
 SCENARIO("a VisMultimeter provides access to data stored in a conduit node",
          "[niv][niv::VisMultimeter]") {

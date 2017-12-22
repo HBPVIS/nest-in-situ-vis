@@ -19,7 +19,7 @@
 // limitations under the License.
 //------------------------------------------------------------------------------
 
-#include "niv/analysis_device.hpp"
+#include "niv/consumer/analysis_device.hpp"
 
 #include <cstdlib>
 

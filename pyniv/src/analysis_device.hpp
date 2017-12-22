@@ -22,7 +22,7 @@
 #ifndef PYNIV_SRC_ANALYSIS_DEVICE_HPP_
 #define PYNIV_SRC_ANALYSIS_DEVICE_HPP_
 
-#include "niv/analysis_device.hpp"
+#include "niv/consumer/analysis_device.hpp"
 
 #include "pyniv.hpp"
 

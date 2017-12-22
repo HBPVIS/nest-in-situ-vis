@@ -22,7 +22,7 @@
 #ifndef PYNIV_SRC_ANALYSIS_RECEIVER_HPP_
 #define PYNIV_SRC_ANALYSIS_RECEIVER_HPP_
 
-#include "niv/analysis_receiver.hpp"
+#include "niv/consumer/analysis_receiver.hpp"
 
 #include "pyniv.hpp"
 

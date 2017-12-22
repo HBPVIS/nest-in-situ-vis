@@ -19,34 +19,39 @@
 // limitations under the License.
 //------------------------------------------------------------------------------
 
-#include <algorithm>
+#ifndef NIV_INCLUDE_NIV_CONSUMER_ANALYSIS_BACKEND_HPP_
+#define NIV_INCLUDE_NIV_CONSUMER_ANALYSIS_BACKEND_HPP_
 
-#include "niv/analysis_backend.hpp"
-#include "niv/analysis_receiver.hpp"
+#include <vector>
+
+#include "conduit/conduit_node.hpp"
+
+#include "niv/consumer/analysis_device.hpp"
+#include "niv/consumer/analysis_receiver.hpp"
 
 namespace niv {
 
-void AnalysisBackend::Connect(niv::AnalysisReceiver* receiver) {
-  receiver->SetNode(&node_);
-  receiver_ = receiver;
-}
+class AnalysisBackend {
+ public:
+  AnalysisBackend() = default;
+  AnalysisBackend(const AnalysisBackend&) = delete;
+  AnalysisBackend(AnalysisBackend&&) = delete;
+  virtual ~AnalysisBackend() = default;
 
-void AnalysisBackend::Connect(niv::AnalysisDevice* device) {
-  auto found = std::find(devices_.begin(), devices_.end(), device);
-  if (found == devices_.end()) {
-    device->SetNode(&node_);
-    devices_.push_back(device);
-  }
-}
+  AnalysisBackend& operator=(const AnalysisBackend&) = delete;
+  AnalysisBackend& operator=(AnalysisBackend&&) = delete;
 
-void AnalysisBackend::Receive() {
-  if (receiver_ != nullptr) {
-    receiver_->Receive();
-  }
+  void Connect(niv::AnalysisReceiver* receiver);
+  void Connect(niv::AnalysisDevice* device);
+  void Receive();
 
-  for (auto device : devices_) {
-    device->Update();
-  }
-}
+ protected:
+  niv::AnalysisReceiver* receiver_{nullptr};
+  std::vector<niv::AnalysisDevice*> devices_;
+
+  conduit::Node node_;
+};
 
 }  // namespace niv
+
+#endif  // NIV_INCLUDE_NIV_CONSUMER_ANALYSIS_BACKEND_HPP_

@@ -21,7 +21,7 @@
 
 #include "analysis_device.hpp"
 
-#include "niv/analysis_device.hpp"
+#include "niv/consumer/analysis_device.hpp"
 
 #include "pyniv.hpp"
 

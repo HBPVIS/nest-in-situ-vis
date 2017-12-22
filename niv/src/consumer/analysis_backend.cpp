@@ -19,14 +19,35 @@
 // limitations under the License.
 //------------------------------------------------------------------------------
 
-#include "niv/synchronized_aggregating_receiver.hpp"
+#include "niv/consumer/analysis_backend.hpp"
 
-#include "conduit/conduit_node.hpp"
+#include <algorithm>
+
+#include "niv/consumer/analysis_receiver.hpp"
 
 namespace niv {
 
-void SynchronizedAggregatingReceiver::Receive() {
-  node_->update(relay_.Receive());
+void AnalysisBackend::Connect(niv::AnalysisReceiver* receiver) {
+  receiver->SetNode(&node_);
+  receiver_ = receiver;
+}
+
+void AnalysisBackend::Connect(niv::AnalysisDevice* device) {
+  auto found = std::find(devices_.begin(), devices_.end(), device);
+  if (found == devices_.end()) {
+    device->SetNode(&node_);
+    devices_.push_back(device);
+  }
+}
+
+void AnalysisBackend::Receive() {
+  if (receiver_ != nullptr) {
+    receiver_->Receive();
+  }
+
+  for (auto device : devices_) {
+    device->Update();
+  }
 }
 
 }  // namespace niv

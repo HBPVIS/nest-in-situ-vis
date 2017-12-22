@@ -21,7 +21,7 @@
 
 #include "analysis_receiver.hpp"
 
-#include "niv/analysis_receiver.hpp"
+#include "niv/consumer/analysis_receiver.hpp"
 
 #include "pyniv.hpp"
 

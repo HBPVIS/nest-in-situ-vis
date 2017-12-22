@@ -19,39 +19,14 @@
 // limitations under the License.
 //------------------------------------------------------------------------------
 
-#ifndef NIV_INCLUDE_NIV_ANALYSIS_BACKEND_HPP_
-#define NIV_INCLUDE_NIV_ANALYSIS_BACKEND_HPP_
-
-#include <vector>
+#include "niv/consumer/synchronized_aggregating_receiver.hpp"
 
 #include "conduit/conduit_node.hpp"
 
-#include "niv/analysis_device.hpp"
-#include "niv/analysis_receiver.hpp"
-
 namespace niv {
 
-class AnalysisBackend {
- public:
-  AnalysisBackend() = default;
-  AnalysisBackend(const AnalysisBackend&) = delete;
-  AnalysisBackend(AnalysisBackend&&) = delete;
-  virtual ~AnalysisBackend() = default;
-
-  AnalysisBackend& operator=(const AnalysisBackend&) = delete;
-  AnalysisBackend& operator=(AnalysisBackend&&) = delete;
-
-  void Connect(niv::AnalysisReceiver* receiver);
-  void Connect(niv::AnalysisDevice* device);
-  void Receive();
-
- protected:
-  niv::AnalysisReceiver* receiver_{nullptr};
-  std::vector<niv::AnalysisDevice*> devices_;
-
-  conduit::Node node_;
-};
+void SynchronizedAggregatingReceiver::Receive() {
+  node_->update(relay_.Receive());
+}
 
 }  // namespace niv
-
-#endif  // NIV_INCLUDE_NIV_ANALYSIS_BACKEND_HPP_

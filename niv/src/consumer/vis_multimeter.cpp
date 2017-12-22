@@ -19,7 +19,7 @@
 // limitations under the License.
 //------------------------------------------------------------------------------
 
-#include "niv/vis_multimeter.hpp"
+#include "niv/consumer/vis_multimeter.hpp"
 
 #include <string>
 #include <vector>

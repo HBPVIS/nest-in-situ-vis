@@ -19,8 +19,8 @@
 // limitations under the License.
 //------------------------------------------------------------------------------
 
-#include "niv/analysis_backend.hpp"
-#include "niv/analysis_device.hpp"
+#include "niv/consumer/analysis_backend.hpp"
+#include "niv/consumer/analysis_device.hpp"
 
 #include "pyniv.hpp"
 

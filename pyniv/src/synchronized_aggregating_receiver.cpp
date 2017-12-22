@@ -19,8 +19,8 @@
 // limitations under the License.
 //------------------------------------------------------------------------------
 
-#include "niv/synchronized_aggregating_receiver.hpp"
-#include "niv/analysis_receiver.hpp"
+#include "niv/consumer/synchronized_aggregating_receiver.hpp"
+#include "niv/consumer/analysis_receiver.hpp"
 
 #include "pyniv.hpp"
 

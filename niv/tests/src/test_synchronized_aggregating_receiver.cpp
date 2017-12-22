@@ -21,7 +21,7 @@
 
 #include "catch/catch.hpp"
 
-#include "niv/synchronized_aggregating_receiver.hpp"
+#include "niv/consumer/synchronized_aggregating_receiver.hpp"
 #include "niv/synchronized_relay_shared_memory_access.hpp"
 
 #include "conduit_node_helper.hpp"
