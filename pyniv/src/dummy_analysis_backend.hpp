@@ -36,7 +36,7 @@ class DummyAnalysisBackend : public niv::AnalysisBackend {
   DummyAnalysisBackend& operator=(const DummyAnalysisBackend&) = delete;
   DummyAnalysisBackend& operator=(DummyAnalysisBackend&&) = delete;
 
-  void Connect(niv::AnalysisDevice* device);
+  void Connect(niv::consumer::Device* device);
   void Receive();
 };
 

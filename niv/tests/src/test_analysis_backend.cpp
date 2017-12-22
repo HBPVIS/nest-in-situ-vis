@@ -24,8 +24,8 @@
 #include "conduit/conduit_node.hpp"
 
 #include "niv/consumer/analysis_backend.hpp"
-#include "niv/consumer/analysis_device.hpp"
 #include "niv/consumer/analysis_receiver.hpp"
+#include "niv/consumer/device.hpp"
 
 namespace {
 
@@ -39,9 +39,9 @@ class Receiver : public niv::AnalysisReceiver {
   std::size_t count_receives_{0u};
 };
 
-class Device : public niv::AnalysisDevice {
+class Device : public niv::consumer::Device {
  public:
-  Device() : niv::AnalysisDevice("Device") {}
+  Device() : niv::consumer::Device("Device") {}
   void Update() override { ++count_updates_; }
 
   std::size_t GetCountUpdates() const { return count_updates_; }

@@ -24,14 +24,14 @@
 
 #include "catch/catch.hpp"
 
-#include "niv/consumer/analysis_device.hpp"
+#include "niv/consumer/device.hpp"
 #include "niv/nest_test_data.hpp"
 
 namespace {
 
-class Device : public niv::AnalysisDevice {
+class Device : public niv::consumer::Device {
  public:
-  explicit Device(const std::string& name) : niv::AnalysisDevice(name) {}
+  explicit Device(const std::string& name) : niv::consumer::Device(name) {}
   Device(const Device&) = delete;
   Device(Device&&) = delete;
   ~Device() = default;

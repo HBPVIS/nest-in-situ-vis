@@ -20,7 +20,7 @@
 //------------------------------------------------------------------------------
 
 #include "niv/consumer/analysis_backend.hpp"
-#include "niv/consumer/analysis_device.hpp"
+#include "niv/consumer/device.hpp"
 
 #include "pyniv.hpp"
 
@@ -33,7 +33,7 @@ void expose<niv::AnalysisBackend>() {
            static_cast<void (niv::AnalysisBackend::*)(niv::AnalysisReceiver*)>(
                &niv::AnalysisBackend::Connect))
       .def("Connect",
-           static_cast<void (niv::AnalysisBackend::*)(niv::AnalysisDevice*)>(
+           static_cast<void (niv::AnalysisBackend::*)(niv::consumer::Device*)>(
                &niv::AnalysisBackend::Connect))
       .def("Receive", &niv::AnalysisBackend::Receive);
 }

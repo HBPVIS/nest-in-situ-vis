@@ -19,7 +19,7 @@
 // limitations under the License.
 //------------------------------------------------------------------------------
 
-#include "niv/consumer/analysis_device.hpp"
+#include "niv/consumer/device.hpp"
 
 #include <cstdlib>
 
@@ -27,10 +27,11 @@
 #include <vector>
 
 namespace niv {
+namespace consumer {
 
-AnalysisDevice::AnalysisDevice(const std::string& name) : name_{name} {}
+Device::Device(const std::string& name) : name_{name} {}
 
-std::vector<double> AnalysisDevice::GetTimesteps() const {
+std::vector<double> Device::GetTimesteps() const {
   std::vector<double> timesteps;
 
   const conduit::Node* device_node{nullptr};
@@ -52,9 +53,9 @@ std::vector<double> AnalysisDevice::GetTimesteps() const {
   return timesteps;
 }
 
-void AnalysisDevice::SetTime(double time) { time_ = time; }
+void Device::SetTime(double time) { time_ = time; }
 
-void AnalysisDevice::SetTimestepNode() {
+void Device::SetTimestepNode() {
   std::stringstream time_stream;
   time_stream << time_;
   try {
@@ -63,8 +64,7 @@ void AnalysisDevice::SetTimestepNode() {
   }
 }
 
-const conduit::Node* AnalysisDevice::GetTimestepNode() const {
-  return timestep_node_;
-}
+const conduit::Node* Device::GetTimestepNode() const { return timestep_node_; }
 
+}  // namespace consumer
 }  // namespace niv

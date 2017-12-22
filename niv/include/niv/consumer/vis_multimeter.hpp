@@ -27,11 +27,11 @@
 
 #include "conduit/conduit_node.hpp"
 
-#include "niv/consumer/analysis_device.hpp"
+#include "niv/consumer/device.hpp"
 
 namespace niv {
 
-class VisMultimeter : public AnalysisDevice {
+class VisMultimeter : public consumer::Device {
  public:
   VisMultimeter() = delete;
   explicit VisMultimeter(const std::string& name);

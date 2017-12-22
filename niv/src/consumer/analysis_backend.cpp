@@ -32,7 +32,7 @@ void AnalysisBackend::Connect(niv::AnalysisReceiver* receiver) {
   receiver_ = receiver;
 }
 
-void AnalysisBackend::Connect(niv::AnalysisDevice* device) {
+void AnalysisBackend::Connect(niv::consumer::Device* device) {
   auto found = std::find(devices_.begin(), devices_.end(), device);
   if (found == devices_.end()) {
     device->SetNode(&node_);

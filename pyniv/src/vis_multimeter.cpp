@@ -26,7 +26,7 @@ SUPPRESS_WARNINGS_BEGIN
 #include "boost/python/numpy.hpp"
 SUPPRESS_WARNINGS_END
 
-#include "niv/consumer/analysis_device.hpp"
+#include "niv/consumer/device.hpp"
 
 #include "pyniv.hpp"
 #include "vis_multimeter.hpp"
@@ -56,8 +56,8 @@ boost::python::numpy::ndarray VisMultimeter::GetTimesteps() {
 
 template <>
 void expose<pyniv::VisMultimeter>() {
-  class_<pyniv::VisMultimeter, bases<niv::AnalysisDevice>>("VisMultimeter",
-                                                           init<std::string>())
+  class_<pyniv::VisMultimeter, bases<niv::consumer::Device>>(
+      "VisMultimeter", init<std::string>())
       .def("GetValues", &pyniv::VisMultimeter::GetValues)
       .def("GetTimesteps", &pyniv::VisMultimeter::GetTimesteps)
       .def("SetAttribute", &pyniv::VisMultimeter::SetAttribute)

@@ -21,7 +21,7 @@
 
 #include "analysis_device.hpp"
 
-#include "niv/consumer/analysis_device.hpp"
+#include "niv/consumer/device.hpp"
 
 #include "pyniv.hpp"
 
@@ -30,8 +30,8 @@ namespace pyniv {
 template <>
 void expose<AnalysisDeviceWrap>() {
   class_<AnalysisDeviceWrap, noncopyable>("AnalysisDevice", no_init)
-      .def("SetTime", &niv::AnalysisDevice::SetTime)
-      .def("Update", pure_virtual(&niv::AnalysisDevice::Update));
+      .def("SetTime", &niv::consumer::Device::SetTime)
+      .def("Update", pure_virtual(&niv::consumer::Device::Update));
 }
 
 }  // namespace pyniv

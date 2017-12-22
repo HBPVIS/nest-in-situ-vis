@@ -26,8 +26,8 @@
 
 #include "conduit/conduit_node.hpp"
 
-#include "niv/consumer/analysis_device.hpp"
 #include "niv/consumer/analysis_receiver.hpp"
+#include "niv/consumer/device.hpp"
 
 namespace niv {
 
@@ -42,12 +42,12 @@ class AnalysisBackend {
   AnalysisBackend& operator=(AnalysisBackend&&) = delete;
 
   void Connect(niv::AnalysisReceiver* receiver);
-  void Connect(niv::AnalysisDevice* device);
+  void Connect(niv::consumer::Device* device);
   void Receive();
 
  protected:
   niv::AnalysisReceiver* receiver_{nullptr};
-  std::vector<niv::AnalysisDevice*> devices_;
+  std::vector<niv::consumer::Device*> devices_;
 
   conduit::Node node_;
 };

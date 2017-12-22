@@ -22,13 +22,14 @@
 #ifndef PYNIV_SRC_ANALYSIS_DEVICE_HPP_
 #define PYNIV_SRC_ANALYSIS_DEVICE_HPP_
 
-#include "niv/consumer/analysis_device.hpp"
+#include "niv/consumer/device.hpp"
 
 #include "pyniv.hpp"
 
 namespace pyniv {
 
-struct AnalysisDeviceWrap : niv::AnalysisDevice, wrapper<niv::AnalysisDevice> {
+struct AnalysisDeviceWrap : niv::consumer::Device,
+                            wrapper<niv::consumer::Device> {
   void Update() { this->Update(); }
 };
 

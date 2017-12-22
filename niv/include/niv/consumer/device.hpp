@@ -19,8 +19,8 @@
 // limitations under the License.
 //------------------------------------------------------------------------------
 
-#ifndef NIV_INCLUDE_NIV_CONSUMER_ANALYSIS_DEVICE_HPP_
-#define NIV_INCLUDE_NIV_CONSUMER_ANALYSIS_DEVICE_HPP_
+#ifndef NIV_INCLUDE_NIV_CONSUMER_DEVICE_HPP_
+#define NIV_INCLUDE_NIV_CONSUMER_DEVICE_HPP_
 
 #include <string>
 #include <vector>
@@ -28,17 +28,18 @@
 #include "conduit/conduit_node.hpp"
 
 namespace niv {
+namespace consumer {
 
-class AnalysisDevice {
+class Device {
  public:
-  AnalysisDevice() = delete;
-  explicit AnalysisDevice(const std::string& name);
-  AnalysisDevice(const AnalysisDevice&) = default;
-  AnalysisDevice(AnalysisDevice&&) = default;
-  virtual ~AnalysisDevice() = default;
+  Device() = delete;
+  explicit Device(const std::string& name);
+  Device(const Device&) = default;
+  Device(Device&&) = default;
+  virtual ~Device() = default;
 
-  AnalysisDevice& operator=(const AnalysisDevice&) = default;
-  AnalysisDevice& operator=(AnalysisDevice&&) = default;
+  Device& operator=(const Device&) = default;
+  Device& operator=(Device&&) = default;
 
   std::vector<double> GetTimesteps() const;
 
@@ -59,6 +60,7 @@ class AnalysisDevice {
   std::string name_{""};
 };
 
+}  // namespace consumer
 }  // namespace niv
 
-#endif  // NIV_INCLUDE_NIV_CONSUMER_ANALYSIS_DEVICE_HPP_
+#endif  // NIV_INCLUDE_NIV_CONSUMER_DEVICE_HPP_

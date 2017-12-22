@@ -26,7 +26,8 @@
 
 namespace niv {
 
-VisMultimeter::VisMultimeter(const std::string& name) : AnalysisDevice{name} {}
+VisMultimeter::VisMultimeter(const std::string& name)
+    : consumer::Device{name} {}
 
 void VisMultimeter::SetAttribute(const std::string& attribute) {
   attribute_ = attribute;

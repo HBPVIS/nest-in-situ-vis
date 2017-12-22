@@ -29,7 +29,7 @@ namespace pyniv {
 
 DummyAnalysisBackend::DummyAnalysisBackend() { node_ = testing::AnyNestData(); }
 
-void DummyAnalysisBackend::Connect(niv::AnalysisDevice* device) {
+void DummyAnalysisBackend::Connect(niv::consumer::Device* device) {
   AnalysisBackend::Connect(device);
 }
 
