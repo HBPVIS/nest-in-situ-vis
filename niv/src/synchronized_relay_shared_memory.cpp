@@ -37,17 +37,17 @@ namespace niv {
 
 SynchronizedRelaySharedMemory::SynchronizedRelaySharedMemory(
     const CreateSharedMemory&)
-    : RelaySharedMemory(std::make_unique<SharedMemorySegment>()),
+    : shared_memory_{std::make_unique<SharedMemorySegment>()},
       synchronization_{std::make_unique<SharedMemorySynchronizationObject>()} {}
 SynchronizedRelaySharedMemory::SynchronizedRelaySharedMemory(
     const AccessSharedMemory&)
-    : RelaySharedMemory(std::make_unique<SharedMemoryAccess>()),
+    : shared_memory_{std::make_unique<SharedMemoryAccess>()},
       synchronization_{std::make_unique<SharedMemorySynchronizationAccess>()} {}
 
 void SynchronizedRelaySharedMemory::Send(const conduit::Node& node) {
   auto lock = synchronization_->ScopedLock();
   if (IsEmpty()) {
-    RelaySharedMemory::Send(node);
+    shared_memory_->Store(node);
   } else {
     SendUpdate(node);
   }
@@ -59,7 +59,7 @@ void SynchronizedRelaySharedMemory::SendUpdate(const conduit::Node& node) {
 
 conduit::Node SynchronizedRelaySharedMemory::Receive() {
   auto lock = synchronization_->ScopedLock();
-  auto received_data = RelaySharedMemory::Receive();
+  auto received_data = shared_memory_->Read();
   GetSharedMemory()->Clear();
   return received_data;
 }

@@ -43,22 +43,6 @@ def test_cout_capture(capsys):
 def test_pyniv_greet():
     assert pyniv.Greet() == "G'day!"
 
-def test_pyniv_receive_via_shared_mem_segment_relay():
-    r = pyniv.ConduitReceiver()
-
-    d = pyniv.ConduitData()
-    s = pyniv.ConduitDataSender()
-    s.Send(d)
-
-    r.Start()
-
-    assert r.Get("V_m") == 1.2
-
-    d.Set("V_m", 42.0)
-    s.Send(d)
-
-    assert r.Get("V_m") == 42.0
-
 def test_pyniv_receive_via_sync_shared_mem_relay():
     receiver = pyniv.SynchronizedReceiver()
 
