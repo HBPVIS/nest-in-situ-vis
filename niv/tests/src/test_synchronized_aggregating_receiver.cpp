@@ -21,7 +21,7 @@
 
 #include "catch/catch.hpp"
 
-#include "niv/consumer/synchronized_aggregating_receiver.hpp"
+#include "niv/consumer/receiver.hpp"
 #include "niv/synchronized_relay_shared_memory_access.hpp"
 
 #include "conduit_node_helper.hpp"
@@ -29,7 +29,7 @@
 SCENARIO("received data is aggregated in the SynchronizedAggregatingReceiver",
          "[niv][niv::NestReceiver]") {
   GIVEN("A SchnchronizedAggregatingReceiver and a sending relay") {
-    niv::SynchronizedAggregatingReceiver receiver;
+    niv::consumer::Receiver receiver;
     conduit::Node receiving_node;
     receiver.SetNode(&receiving_node);
     niv::SynchronizedRelaySharedMemoryAccess sender;

@@ -24,24 +24,27 @@
 
 #include "conduit/conduit_node.hpp"
 
+#include "niv/synchronized_relay_shared_memory_segment.hpp"
+
 namespace niv {
 namespace consumer {
 
 class Receiver {
  public:
   Receiver() = default;
-  Receiver(const Receiver&) = default;
+  Receiver(const Receiver&) = delete;
   Receiver(Receiver&&) = default;
   virtual ~Receiver() = default;
 
-  Receiver& operator=(const Receiver&) = default;
+  Receiver& operator=(const Receiver&) = delete;
   Receiver& operator=(Receiver&&) = default;
 
   void SetNode(conduit::Node* node) { node_ = node; }
 
-  virtual void Receive() = 0;
+  virtual void Receive();
 
- protected:
+ private:
+  SynchronizedRelaySharedMemorySegment relay_;
   conduit::Node* node_;
 };
 

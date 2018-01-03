@@ -22,7 +22,7 @@
 #include "pyniv.hpp"
 
 #include "niv/consumer/backend.hpp"
-#include "niv/consumer/synchronized_aggregating_receiver.hpp"
+#include "niv/consumer/receiver.hpp"
 #include "niv/niv.hpp"
 
 #include "analysis_device.hpp"
@@ -42,7 +42,7 @@ BOOST_PYTHON_MODULE(pyniv) {
   pyniv::expose<pyniv::ConduitData>();
   pyniv::expose<pyniv::DummyAnalysisBackend>();
   pyniv::expose<pyniv::SynchronizedSender>();
-  pyniv::expose<niv::SynchronizedAggregatingReceiver>();
+  pyniv::expose<niv::consumer::Receiver>();
   pyniv::expose<pyniv::SynchronizedReceiver>();
   pyniv::expose<pyniv::VisMultimeter>();
 }

@@ -19,7 +19,6 @@
 // limitations under the License.
 //------------------------------------------------------------------------------
 
-#include "niv/consumer/synchronized_aggregating_receiver.hpp"
 #include "niv/consumer/receiver.hpp"
 
 #include "pyniv.hpp"
@@ -27,10 +26,10 @@
 namespace pyniv {
 
 template <>
-void expose<niv::SynchronizedAggregatingReceiver>() {
-  class_<niv::SynchronizedAggregatingReceiver, bases<niv::consumer::Receiver>,
-         boost::noncopyable>("SynchronizedAggregatingReceiver")
-      .def("Receive", &niv::SynchronizedAggregatingReceiver::Receive);
+void expose<niv::consumer::Receiver>() {
+  class_<niv::consumer::Receiver, boost::noncopyable>(
+      "SynchronizedAggregatingReceiver")
+      .def("Receive", &niv::consumer::Receiver::Receive);
 }
 
 }  // namespace pyniv

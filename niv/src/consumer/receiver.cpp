@@ -19,14 +19,12 @@
 // limitations under the License.
 //------------------------------------------------------------------------------
 
-#include "niv/consumer/synchronized_aggregating_receiver.hpp"
-
-#include "conduit/conduit_node.hpp"
+#include "niv/consumer/receiver.hpp"
 
 namespace niv {
+namespace consumer {
 
-void SynchronizedAggregatingReceiver::Receive() {
-  node_->update(relay_.Receive());
-}
+void Receiver::Receive() { node_->update(relay_.Receive()); }
 
+}  // namespace consumer
 }  // namespace niv
