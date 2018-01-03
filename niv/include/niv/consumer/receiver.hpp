@@ -19,22 +19,23 @@
 // limitations under the License.
 //------------------------------------------------------------------------------
 
-#ifndef NIV_INCLUDE_NIV_CONSUMER_ANALYSIS_RECEIVER_HPP_
-#define NIV_INCLUDE_NIV_CONSUMER_ANALYSIS_RECEIVER_HPP_
+#ifndef NIV_INCLUDE_NIV_CONSUMER_RECEIVER_HPP_
+#define NIV_INCLUDE_NIV_CONSUMER_RECEIVER_HPP_
 
 #include "conduit/conduit_node.hpp"
 
 namespace niv {
+namespace consumer {
 
-class AnalysisReceiver {
+class Receiver {
  public:
-  AnalysisReceiver() = default;
-  AnalysisReceiver(const AnalysisReceiver&) = default;
-  AnalysisReceiver(AnalysisReceiver&&) = default;
-  virtual ~AnalysisReceiver() = default;
+  Receiver() = default;
+  Receiver(const Receiver&) = default;
+  Receiver(Receiver&&) = default;
+  virtual ~Receiver() = default;
 
-  AnalysisReceiver& operator=(const AnalysisReceiver&) = default;
-  AnalysisReceiver& operator=(AnalysisReceiver&&) = default;
+  Receiver& operator=(const Receiver&) = default;
+  Receiver& operator=(Receiver&&) = default;
 
   void SetNode(conduit::Node* node) { node_ = node; }
 
@@ -44,6 +45,7 @@ class AnalysisReceiver {
   conduit::Node* node_;
 };
 
+}  // namespace consumer
 }  // namespace niv
 
-#endif  // NIV_INCLUDE_NIV_CONSUMER_ANALYSIS_RECEIVER_HPP_
+#endif  // NIV_INCLUDE_NIV_CONSUMER_RECEIVER_HPP_

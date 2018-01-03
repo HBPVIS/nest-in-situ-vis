@@ -23,13 +23,13 @@
 
 #include "conduit/conduit_node.hpp"
 
-#include "niv/consumer/analysis_receiver.hpp"
 #include "niv/consumer/backend.hpp"
 #include "niv/consumer/device.hpp"
+#include "niv/consumer/receiver.hpp"
 
 namespace {
 
-class Receiver : public niv::AnalysisReceiver {
+class Receiver : public niv::consumer::Receiver {
  public:
   void Receive() override { ++count_receives_; }
 

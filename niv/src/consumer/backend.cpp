@@ -23,11 +23,11 @@
 
 #include <algorithm>
 
-#include "niv/consumer/analysis_receiver.hpp"
+#include "niv/consumer/receiver.hpp"
 
 namespace niv {
 
-void consumer::Backend::Connect(niv::AnalysisReceiver* receiver) {
+void consumer::Backend::Connect(niv::consumer::Receiver* receiver) {
   receiver->SetNode(&node_);
   receiver_ = receiver;
 }

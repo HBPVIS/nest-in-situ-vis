@@ -21,7 +21,7 @@
 
 #include "analysis_receiver.hpp"
 
-#include "niv/consumer/analysis_receiver.hpp"
+#include "niv/consumer/receiver.hpp"
 
 #include "pyniv.hpp"
 
@@ -30,7 +30,7 @@ namespace pyniv {
 template <>
 void expose<AnalysisReceiverWrap>() {
   class_<AnalysisReceiverWrap, noncopyable>("AnalysisReceiver", no_init)
-      .def("Receive", pure_virtual(&niv::AnalysisReceiver::Receive));
+      .def("Receive", pure_virtual(&niv::consumer::Receiver::Receive));
 }
 
 }  // namespace pyniv

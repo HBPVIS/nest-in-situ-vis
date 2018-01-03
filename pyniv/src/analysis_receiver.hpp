@@ -22,14 +22,14 @@
 #ifndef PYNIV_SRC_ANALYSIS_RECEIVER_HPP_
 #define PYNIV_SRC_ANALYSIS_RECEIVER_HPP_
 
-#include "niv/consumer/analysis_receiver.hpp"
+#include "niv/consumer/receiver.hpp"
 
 #include "pyniv.hpp"
 
 namespace pyniv {
 
-struct AnalysisReceiverWrap : niv::AnalysisReceiver,
-                              wrapper<niv::AnalysisReceiver> {
+struct AnalysisReceiverWrap : niv::consumer::Receiver,
+                              wrapper<niv::consumer::Receiver> {
   void Receive() { this->Receive(); }
 };
 

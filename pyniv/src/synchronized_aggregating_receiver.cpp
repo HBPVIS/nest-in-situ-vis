@@ -20,7 +20,7 @@
 //------------------------------------------------------------------------------
 
 #include "niv/consumer/synchronized_aggregating_receiver.hpp"
-#include "niv/consumer/analysis_receiver.hpp"
+#include "niv/consumer/receiver.hpp"
 
 #include "pyniv.hpp"
 
@@ -28,7 +28,7 @@ namespace pyniv {
 
 template <>
 void expose<niv::SynchronizedAggregatingReceiver>() {
-  class_<niv::SynchronizedAggregatingReceiver, bases<niv::AnalysisReceiver>,
+  class_<niv::SynchronizedAggregatingReceiver, bases<niv::consumer::Receiver>,
          boost::noncopyable>("SynchronizedAggregatingReceiver")
       .def("Receive", &niv::SynchronizedAggregatingReceiver::Receive);
 }

@@ -24,12 +24,12 @@
 
 #include "conduit/conduit_node.hpp"
 
-#include "niv/consumer/analysis_receiver.hpp"
+#include "niv/consumer/receiver.hpp"
 #include "niv/synchronized_relay_shared_memory_segment.hpp"
 
 namespace niv {
 
-class SynchronizedAggregatingReceiver : public AnalysisReceiver {
+class SynchronizedAggregatingReceiver : public consumer::Receiver {
  public:
   SynchronizedAggregatingReceiver() = default;
   SynchronizedAggregatingReceiver(const SynchronizedAggregatingReceiver&) =
