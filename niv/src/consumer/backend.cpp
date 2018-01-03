@@ -19,7 +19,7 @@
 // limitations under the License.
 //------------------------------------------------------------------------------
 
-#include "niv/consumer/analysis_backend.hpp"
+#include "niv/consumer/backend.hpp"
 
 #include <algorithm>
 
@@ -27,12 +27,12 @@
 
 namespace niv {
 
-void AnalysisBackend::Connect(niv::AnalysisReceiver* receiver) {
+void consumer::Backend::Connect(niv::AnalysisReceiver* receiver) {
   receiver->SetNode(&node_);
   receiver_ = receiver;
 }
 
-void AnalysisBackend::Connect(niv::consumer::Device* device) {
+void consumer::Backend::Connect(niv::consumer::Device* device) {
   auto found = std::find(devices_.begin(), devices_.end(), device);
   if (found == devices_.end()) {
     device->SetNode(&node_);
@@ -40,7 +40,7 @@ void AnalysisBackend::Connect(niv::consumer::Device* device) {
   }
 }
 
-void AnalysisBackend::Receive() {
+void consumer::Backend::Receive() {
   if (receiver_ != nullptr) {
     receiver_->Receive();
   }

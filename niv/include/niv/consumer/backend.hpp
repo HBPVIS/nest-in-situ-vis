@@ -19,8 +19,8 @@
 // limitations under the License.
 //------------------------------------------------------------------------------
 
-#ifndef NIV_INCLUDE_NIV_CONSUMER_ANALYSIS_BACKEND_HPP_
-#define NIV_INCLUDE_NIV_CONSUMER_ANALYSIS_BACKEND_HPP_
+#ifndef NIV_INCLUDE_NIV_CONSUMER_BACKEND_HPP_
+#define NIV_INCLUDE_NIV_CONSUMER_BACKEND_HPP_
 
 #include <vector>
 
@@ -30,16 +30,17 @@
 #include "niv/consumer/device.hpp"
 
 namespace niv {
+namespace consumer {
 
-class AnalysisBackend {
+class Backend {
  public:
-  AnalysisBackend() = default;
-  AnalysisBackend(const AnalysisBackend&) = delete;
-  AnalysisBackend(AnalysisBackend&&) = delete;
-  virtual ~AnalysisBackend() = default;
+  Backend() = default;
+  Backend(const Backend&) = delete;
+  Backend(Backend&&) = delete;
+  virtual ~Backend() = default;
 
-  AnalysisBackend& operator=(const AnalysisBackend&) = delete;
-  AnalysisBackend& operator=(AnalysisBackend&&) = delete;
+  Backend& operator=(const Backend&) = delete;
+  Backend& operator=(Backend&&) = delete;
 
   void Connect(niv::AnalysisReceiver* receiver);
   void Connect(niv::consumer::Device* device);
@@ -52,6 +53,7 @@ class AnalysisBackend {
   conduit::Node node_;
 };
 
+}  // namespace consumer
 }  // namespace niv
 
-#endif  // NIV_INCLUDE_NIV_CONSUMER_ANALYSIS_BACKEND_HPP_
+#endif  // NIV_INCLUDE_NIV_CONSUMER_BACKEND_HPP_

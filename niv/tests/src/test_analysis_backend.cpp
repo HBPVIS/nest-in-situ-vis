@@ -23,8 +23,8 @@
 
 #include "conduit/conduit_node.hpp"
 
-#include "niv/consumer/analysis_backend.hpp"
 #include "niv/consumer/analysis_receiver.hpp"
+#include "niv/consumer/backend.hpp"
 #include "niv/consumer/device.hpp"
 
 namespace {
@@ -55,7 +55,7 @@ class Device : public niv::consumer::Device {
 SCENARIO("An analysis backend feeds data into the connected devices",
          "[niv][niv::AnalysisBackend]") {
   GIVEN("An analysis backend") {
-    niv::AnalysisBackend backend;
+    niv::consumer::Backend backend;
 
     WHEN("a receiver is connected") {
       ::Receiver receiver;

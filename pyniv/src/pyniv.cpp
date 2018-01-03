@@ -21,7 +21,7 @@
 
 #include "pyniv.hpp"
 
-#include "niv/consumer/analysis_backend.hpp"
+#include "niv/consumer/backend.hpp"
 #include "niv/consumer/synchronized_aggregating_receiver.hpp"
 #include "niv/niv.hpp"
 
@@ -36,7 +36,7 @@
 BOOST_PYTHON_MODULE(pyniv) {
   boost::python::numpy::initialize();
   def("Greet", niv::Greet);
-  pyniv::expose<niv::AnalysisBackend>();
+  pyniv::expose<niv::consumer::Backend>();
   pyniv::expose<pyniv::AnalysisDeviceWrap>();
   pyniv::expose<pyniv::AnalysisReceiverWrap>();
   pyniv::expose<pyniv::ConduitData>();

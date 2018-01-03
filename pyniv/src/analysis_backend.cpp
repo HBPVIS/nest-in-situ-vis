@@ -19,7 +19,7 @@
 // limitations under the License.
 //------------------------------------------------------------------------------
 
-#include "niv/consumer/analysis_backend.hpp"
+#include "niv/consumer/backend.hpp"
 #include "niv/consumer/device.hpp"
 
 #include "pyniv.hpp"
@@ -27,15 +27,17 @@
 namespace pyniv {
 
 template <>
-void expose<niv::AnalysisBackend>() {
-  class_<niv::AnalysisBackend, noncopyable>("AnalysisBackend")
-      .def("Connect",
-           static_cast<void (niv::AnalysisBackend::*)(niv::AnalysisReceiver*)>(
-               &niv::AnalysisBackend::Connect))
-      .def("Connect",
-           static_cast<void (niv::AnalysisBackend::*)(niv::consumer::Device*)>(
-               &niv::AnalysisBackend::Connect))
-      .def("Receive", &niv::AnalysisBackend::Receive);
+void expose<niv::consumer::Backend>() {
+  class_<niv::consumer::Backend, noncopyable>("AnalysisBackend")
+      .def(
+          "Connect",
+          static_cast<void (niv::consumer::Backend::*)(niv::AnalysisReceiver*)>(
+              &niv::consumer::Backend::Connect))
+      .def(
+          "Connect",
+          static_cast<void (niv::consumer::Backend::*)(niv::consumer::Device*)>(
+              &niv::consumer::Backend::Connect))
+      .def("Receive", &niv::consumer::Backend::Receive);
 }
 
 }  // namespace pyniv

@@ -30,10 +30,10 @@ namespace pyniv {
 DummyAnalysisBackend::DummyAnalysisBackend() { node_ = testing::AnyNestData(); }
 
 void DummyAnalysisBackend::Connect(niv::consumer::Device* device) {
-  AnalysisBackend::Connect(device);
+  niv::consumer::Backend::Connect(device);
 }
 
-void DummyAnalysisBackend::Receive() { AnalysisBackend::Receive(); }
+void DummyAnalysisBackend::Receive() { niv::consumer::Backend::Receive(); }
 
 template <>
 void expose<pyniv::DummyAnalysisBackend>() {

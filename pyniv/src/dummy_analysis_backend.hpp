@@ -22,11 +22,11 @@
 #ifndef NIV_INCLUDE_NIV_DUMMY_ANALYSIS_BACKEND_HPP_
 #define NIV_INCLUDE_NIV_DUMMY_ANALYSIS_BACKEND_HPP_
 
-#include "niv/consumer/analysis_backend.hpp"
+#include "niv/consumer/backend.hpp"
 
 namespace pyniv {
 
-class DummyAnalysisBackend : public niv::AnalysisBackend {
+class DummyAnalysisBackend : public niv::consumer::Backend {
  public:
   DummyAnalysisBackend();
   DummyAnalysisBackend(const DummyAnalysisBackend&) = delete;
