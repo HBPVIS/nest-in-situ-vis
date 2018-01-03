@@ -29,7 +29,7 @@
 #include "niv/nest_test_data.hpp"
 
 SCENARIO("a Multimeter provides access to data stored in a conduit node",
-         "[niv][niv::Multimeter]") {
+         "[niv][niv::consumer][niv::consumer::Multimeter]") {
   GIVEN("A Multimeter with some data") {
     const conduit::Node nest_data{testing::AnyNestData()};
     niv::consumer::Multimeter multimeter(testing::AnyMultimeterName());

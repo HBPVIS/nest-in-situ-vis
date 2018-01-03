@@ -19,34 +19,42 @@
 // limitations under the License.
 //------------------------------------------------------------------------------
 
+#include <string>
+#include <vector>
+
 #include "catch/catch.hpp"
 
-#include "niv/consumer/receiver.hpp"
-#include "niv/synchronized_relay_shared_memory_access.hpp"
+#include "niv/consumer/device.hpp"
+#include "niv/nest_test_data.hpp"
 
-#include "conduit_node_helper.hpp"
+namespace {
 
-SCENARIO("received data is aggregated in the SynchronizedAggregatingReceiver",
-         "[niv][niv::NestReceiver]") {
-  GIVEN("A SchnchronizedAggregatingReceiver and a sending relay") {
-    niv::consumer::Receiver receiver;
-    conduit::Node receiving_node;
-    receiver.SetNode(&receiving_node);
-    niv::SynchronizedRelaySharedMemoryAccess sender;
+class Device : public niv::consumer::Device {
+ public:
+  explicit Device(const std::string& name) : niv::consumer::Device(name) {}
+  Device(const Device&) = delete;
+  Device(Device&&) = delete;
+  ~Device() = default;
 
-    WHEN("Data is sent and a receive is triggered") {
-      sender.Send(testing::AnyNode());
-      receiver.Receive();
-      THEN("it is received correctly") {
-        REQUIRE_THAT(receiving_node, Equals(testing::AnyNode()));
-      }
+  Device& operator=(const Device&) = delete;
+  Device& operator=(Device&&) = delete;
 
-      WHEN("an update is sent and a receive is triggered") {
-        sender.Send(testing::Update());
-        receiver.Receive();
-        THEN("then the data has been updated") {
-          REQUIRE_THAT(receiving_node, Equals(testing::UpdatedNode()));
-        }
+  void Update() override {}
+};
+
+}  // namespace
+
+SCENARIO("A consumer::Device can list its timesteps",
+         "[niv][niv::consumer][niv::consumer::Device]") {
+  GIVEN("A device accessing a node") {
+    conduit::Node any_data{testing::AnyNestData()};
+    ::Device device("multimeter A");
+    device.SetNode(&any_data);
+    WHEN("The device is asked for the timesteps") {
+      auto timesteps(device.GetTimesteps());
+      THEN("the list of timesteps is correct") {
+        REQUIRE_THAT(timesteps,
+                     Catch::Matchers::Equals(std::vector<double>{0}));
       }
     }
   }

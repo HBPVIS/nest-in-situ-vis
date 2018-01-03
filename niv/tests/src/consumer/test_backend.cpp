@@ -52,9 +52,9 @@ class Device : public niv::consumer::Device {
 
 }  // namespace
 
-SCENARIO("An analysis backend feeds data into the connected devices",
-         "[niv][niv::AnalysisBackend]") {
-  GIVEN("An analysis backend") {
+SCENARIO("A consumer::Backend feeds data into the connected devices",
+         "[niv][niv::consumer][niv::consumer::Backend]") {
+  GIVEN("A backend") {
     niv::consumer::Backend backend;
 
     WHEN("a receiver is connected") {
