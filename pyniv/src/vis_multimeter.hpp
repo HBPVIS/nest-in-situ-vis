@@ -26,11 +26,11 @@ SUPPRESS_WARNINGS_BEGIN
 #include "boost/python/numpy.hpp"
 SUPPRESS_WARNINGS_END
 
-#include "niv/consumer/vis_multimeter.hpp"
+#include "niv/consumer/multimeter.hpp"
 
 namespace pyniv {
 
-class VisMultimeter : public niv::VisMultimeter {
+class VisMultimeter : public niv::consumer::Multimeter {
  public:
   VisMultimeter() = delete;
   explicit VisMultimeter(const std::string& name);

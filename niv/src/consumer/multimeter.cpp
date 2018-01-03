@@ -19,26 +19,26 @@
 // limitations under the License.
 //------------------------------------------------------------------------------
 
-#include "niv/consumer/vis_multimeter.hpp"
+#include "niv/consumer/multimeter.hpp"
 
 #include <string>
 #include <vector>
 
 namespace niv {
+namespace consumer {
 
-VisMultimeter::VisMultimeter(const std::string& name)
-    : consumer::Device{name} {}
+Multimeter::Multimeter(const std::string& name) : consumer::Device{name} {}
 
-void VisMultimeter::SetAttribute(const std::string& attribute) {
+void Multimeter::SetAttribute(const std::string& attribute) {
   attribute_ = attribute;
 }
 
-void VisMultimeter::Update() {
+void Multimeter::Update() {
   SetTimestepNode();
   SetValues();
 }
 
-void VisMultimeter::SetValues() {
+void Multimeter::SetValues() {
   values_.clear();
   if (GetTimestepNode() == nullptr) {
     return;
@@ -53,6 +53,7 @@ void VisMultimeter::SetValues() {
   }
 }
 
-const std::vector<double>& VisMultimeter::GetValues() const { return values_; }
+const std::vector<double>& Multimeter::GetValues() const { return values_; }
 
+}  // namespace consumer
 }  // namespace niv

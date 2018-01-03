@@ -19,8 +19,8 @@
 // limitations under the License.
 //------------------------------------------------------------------------------
 
-#ifndef NIV_INCLUDE_NIV_CONSUMER_VIS_MULTIMETER_HPP_
-#define NIV_INCLUDE_NIV_CONSUMER_VIS_MULTIMETER_HPP_
+#ifndef NIV_INCLUDE_NIV_CONSUMER_MULTIMETER_HPP_
+#define NIV_INCLUDE_NIV_CONSUMER_MULTIMETER_HPP_
 
 #include <string>
 #include <vector>
@@ -30,17 +30,18 @@
 #include "niv/consumer/device.hpp"
 
 namespace niv {
+namespace consumer {
 
-class VisMultimeter : public consumer::Device {
+class Multimeter : public consumer::Device {
  public:
-  VisMultimeter() = delete;
-  explicit VisMultimeter(const std::string& name);
-  VisMultimeter(const VisMultimeter&) = default;
-  VisMultimeter(VisMultimeter&&) = default;
-  ~VisMultimeter() = default;
+  Multimeter() = delete;
+  explicit Multimeter(const std::string& name);
+  Multimeter(const Multimeter&) = default;
+  Multimeter(Multimeter&&) = default;
+  ~Multimeter() = default;
 
-  VisMultimeter& operator=(const VisMultimeter&) = default;
-  VisMultimeter& operator=(VisMultimeter&&) = default;
+  Multimeter& operator=(const Multimeter&) = default;
+  Multimeter& operator=(Multimeter&&) = default;
 
   void SetAttribute(const std::string& attribute);
 
@@ -55,6 +56,7 @@ class VisMultimeter : public consumer::Device {
   std::string attribute_{""};
 };
 
+}  // namespace consumer
 }  // namespace niv
 
-#endif  // NIV_INCLUDE_NIV_CONSUMER_VIS_MULTIMETER_HPP_
+#endif  // NIV_INCLUDE_NIV_CONSUMER_MULTIMETER_HPP_

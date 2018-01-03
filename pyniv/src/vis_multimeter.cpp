@@ -34,10 +34,10 @@ SUPPRESS_WARNINGS_END
 namespace pyniv {
 
 VisMultimeter::VisMultimeter(const std::string& name)
-    : niv::VisMultimeter{name} {}
+    : niv::consumer::Multimeter{name} {}
 
 boost::python::numpy::ndarray VisMultimeter::GetValues() {
-  const auto& values{niv::VisMultimeter::GetValues()};
+  const auto& values{niv::consumer::Multimeter::GetValues()};
 
   return boost::python::numpy::from_data(
       values.data(), boost::python::numpy::dtype::get_builtin<double>(),
@@ -46,7 +46,7 @@ boost::python::numpy::ndarray VisMultimeter::GetValues() {
 }
 
 boost::python::numpy::ndarray VisMultimeter::GetTimesteps() {
-  timesteps_ = niv::VisMultimeter::GetTimesteps();
+  timesteps_ = niv::consumer::Multimeter::GetTimesteps();
 
   return boost::python::numpy::from_data(
       timesteps_.data(), boost::python::numpy::dtype::get_builtin<double>(),
