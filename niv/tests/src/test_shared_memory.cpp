@@ -23,6 +23,7 @@
 
 #include "conduit/conduit_node.hpp"
 
+#include "niv/shared_memory.hpp"
 #include "niv/shared_memory_access.hpp"
 #include "niv/shared_memory_segment.hpp"
 
@@ -111,5 +112,32 @@ SCENARIO("data can be updated in shared memory",
         REQUIRE_THAT(segment.Read(), Equals(testing::UpdatedNode()));
       }
     }
+  }
+}
+
+SCENARIO("Shared memory provides correct reference counts",
+         "[niv][niv::SharedMemory]") {
+  GIVEN("a shared memory segment") {
+    niv::SharedMemory segment{niv::SharedMemory::Create()};
+    THEN("the reference count is correct") {
+      REQUIRE(segment.GetReferenceCount() == 0);
+    }
+
+    WHEN("a shared memory access is created in a new scope") {
+      {  // new scope
+        niv::SharedMemory access{niv::SharedMemory::Access()};
+        THEN("the reference count is correct") {
+          REQUIRE(segment.GetReferenceCount() == 1);
+          REQUIRE(access.GetReferenceCount() == 1);
+        }
+      }
+      WHEN("that shared memory access gets out of scope") {
+        THEN("the reference count is correct") {
+          REQUIRE(segment.GetReferenceCount() == 0);
+        }
+      }
+    }
+
+    segment.Destroy();
   }
 }
