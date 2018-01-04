@@ -19,7 +19,7 @@
 // limitations under the License.
 //------------------------------------------------------------------------------
 
-#include "niv/synchronized_relay_shared_memory.hpp"
+#include "niv/relay_shared_memory.hpp"
 
 #include <memory>
 #include <utility>
@@ -33,7 +33,7 @@
 
 namespace niv {
 
-SynchronizedRelaySharedMemory::SynchronizedRelaySharedMemory() {
+RelaySharedMemory::RelaySharedMemory() {
   try {
     shared_memory_ = std::make_unique<SharedMemory>(SharedMemory::Create());
     synchronization_ = std::make_unique<SharedMemorySynchronization>(
@@ -45,27 +45,25 @@ SynchronizedRelaySharedMemory::SynchronizedRelaySharedMemory() {
   }
 }
 
-SynchronizedRelaySharedMemory::SynchronizedRelaySharedMemory(
-    const CreateSharedMemory&)
+RelaySharedMemory::RelaySharedMemory(const CreateSharedMemory&)
     : shared_memory_{std::make_unique<SharedMemory>(
           niv::SharedMemory::Create())},
       synchronization_{std::make_unique<SharedMemorySynchronization>(
           niv::SharedMemorySynchronization::Create())} {}
 
-SynchronizedRelaySharedMemory::SynchronizedRelaySharedMemory(
-    const AccessSharedMemory&)
+RelaySharedMemory::RelaySharedMemory(const AccessSharedMemory&)
     : shared_memory_{std::make_unique<SharedMemory>(SharedMemory::Access())},
       synchronization_{std::make_unique<SharedMemorySynchronization>(
           SharedMemorySynchronization::Access())} {}
 
-SynchronizedRelaySharedMemory::~SynchronizedRelaySharedMemory() {
+RelaySharedMemory::~RelaySharedMemory() {
   if (shared_memory_->GetReferenceCount() == 0) {
     shared_memory_->Destroy();
     synchronization_->Destroy();
   }
 }
 
-void SynchronizedRelaySharedMemory::Send(const conduit::Node& node) {
+void RelaySharedMemory::Send(const conduit::Node& node) {
   auto lock = synchronization_->ScopedLock();
   if (IsEmpty()) {
     shared_memory_->Store(node);
@@ -74,19 +72,17 @@ void SynchronizedRelaySharedMemory::Send(const conduit::Node& node) {
   }
 }
 
-void SynchronizedRelaySharedMemory::SendUpdate(const conduit::Node& node) {
+void RelaySharedMemory::SendUpdate(const conduit::Node& node) {
   GetSharedMemory()->Update(node);
 }
 
-conduit::Node SynchronizedRelaySharedMemory::Receive() {
+conduit::Node RelaySharedMemory::Receive() {
   auto lock = synchronization_->ScopedLock();
   auto received_data = shared_memory_->Read();
   GetSharedMemory()->Clear();
   return received_data;
 }
 
-bool SynchronizedRelaySharedMemory::IsEmpty() const {
-  return GetSharedMemory()->IsEmpty();
-}
+bool RelaySharedMemory::IsEmpty() const { return GetSharedMemory()->IsEmpty(); }
 
 }  // namespace niv

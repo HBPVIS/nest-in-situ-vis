@@ -25,13 +25,13 @@
 
 #include "catch/catch.hpp"
 
-#include "niv/synchronized_relay_shared_memory.hpp"
+#include "niv/relay_shared_memory.hpp"
 
 #include "conduit_node_helper.hpp"
 
 namespace {
 
-void Send(niv::SynchronizedRelaySharedMemory* relay) {
+void Send(niv::RelaySharedMemory* relay) {
   std::random_device random_seed;
   std::mt19937 generator(random_seed());
   std::uniform_int_distribution<> distribution(1, 4);  // define the range
@@ -43,7 +43,7 @@ void Send(niv::SynchronizedRelaySharedMemory* relay) {
   }
 }
 
-void Receive(niv::SynchronizedRelaySharedMemory* relay) {
+void Receive(niv::RelaySharedMemory* relay) {
   std::random_device random_seed;
   std::mt19937 generator(random_seed());
   std::uniform_int_distribution<> distribution(3, 6);  // define the range
@@ -62,8 +62,8 @@ constexpr bool we_reach_this_before_timeout = true;
 SCENARIO("Synchronization across separate threads does not accidently block",
          "[niv][niv::SynchronizedRelaySharedMemory]") {
   GIVEN("A pair of sync relays") {
-    niv::SynchronizedRelaySharedMemory relay_segment;
-    niv::SynchronizedRelaySharedMemory relay_access;
+    niv::RelaySharedMemory relay_segment;
+    niv::RelaySharedMemory relay_access;
 
     WHEN("These send and receive in separate threads") {
       std::thread sender(::Send, &relay_access);

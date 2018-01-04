@@ -19,8 +19,8 @@
 // limitations under the License.
 //------------------------------------------------------------------------------
 
-#ifndef NIV_INCLUDE_NIV_SYNCHRONIZED_RELAY_SHARED_MEMORY_HPP_
-#define NIV_INCLUDE_NIV_SYNCHRONIZED_RELAY_SHARED_MEMORY_HPP_
+#ifndef NIV_INCLUDE_NIV_RELAY_SHARED_MEMORY_HPP_
+#define NIV_INCLUDE_NIV_RELAY_SHARED_MEMORY_HPP_
 
 #include <memory>
 #include <vector>
@@ -33,29 +33,27 @@
 namespace niv {
 
 SUPPRESS_WARNINGS_BEGIN_PADDED
-class SynchronizedRelaySharedMemory {
+class RelaySharedMemory {
  public:
   class CreateSharedMemory {};
   class AccessSharedMemory {};
 
-  SynchronizedRelaySharedMemory();
-  virtual ~SynchronizedRelaySharedMemory();
-  SynchronizedRelaySharedMemory(const SynchronizedRelaySharedMemory&) = delete;
-  SynchronizedRelaySharedMemory(SynchronizedRelaySharedMemory&&) = delete;
+  RelaySharedMemory();
+  virtual ~RelaySharedMemory();
+  RelaySharedMemory(const RelaySharedMemory&) = delete;
+  RelaySharedMemory(RelaySharedMemory&&) = delete;
 
   void Send(const conduit::Node& node);
   conduit::Node Receive();
 
-  SynchronizedRelaySharedMemory& operator=(
-      const SynchronizedRelaySharedMemory&) = delete;
-  SynchronizedRelaySharedMemory& operator=(SynchronizedRelaySharedMemory&&) =
-      delete;
+  RelaySharedMemory& operator=(const RelaySharedMemory&) = delete;
+  RelaySharedMemory& operator=(RelaySharedMemory&&) = delete;
 
   bool IsEmpty() const;
 
  protected:
-  explicit SynchronizedRelaySharedMemory(const CreateSharedMemory&);
-  explicit SynchronizedRelaySharedMemory(const AccessSharedMemory&);
+  explicit RelaySharedMemory(const CreateSharedMemory&);
+  explicit RelaySharedMemory(const AccessSharedMemory&);
   SharedMemory* GetSharedMemory() { return shared_memory_.get(); }
   const SharedMemory* GetSharedMemory() const { return shared_memory_.get(); }
 
@@ -69,4 +67,4 @@ SUPPRESS_WARNINGS_END
 
 }  // namespace niv
 
-#endif  // NIV_INCLUDE_NIV_SYNCHRONIZED_RELAY_SHARED_MEMORY_HPP_
+#endif  // NIV_INCLUDE_NIV_RELAY_SHARED_MEMORY_HPP_
