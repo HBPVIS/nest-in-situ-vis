@@ -24,7 +24,7 @@
 
 #include "conduit/conduit_node.hpp"
 
-#include "niv/synchronized_relay_shared_memory_segment.hpp"
+#include "niv/synchronized_relay_shared_memory.hpp"
 
 namespace niv {
 namespace consumer {
@@ -44,7 +44,7 @@ class Receiver {
   virtual void Receive();
 
  private:
-  SynchronizedRelaySharedMemorySegment relay_;
+  SynchronizedRelaySharedMemory relay_;
   conduit::Node* node_;
 };
 

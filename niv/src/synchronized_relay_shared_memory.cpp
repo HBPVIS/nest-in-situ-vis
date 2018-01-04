@@ -28,21 +28,42 @@
 #include "conduit/conduit_core.hpp"
 #include "conduit/conduit_schema.hpp"
 
-#include "niv/shared_memory_access.hpp"
-#include "niv/shared_memory_segment.hpp"
-#include "niv/shared_memory_synchronization_access.hpp"
-#include "niv/shared_memory_synchronization_object.hpp"
+#include "niv/shared_memory.hpp"
+#include "niv/shared_memory_synchronization.hpp"
 
 namespace niv {
 
+SynchronizedRelaySharedMemory::SynchronizedRelaySharedMemory() {
+  try {
+    shared_memory_ = std::make_unique<SharedMemory>(SharedMemory::Create());
+    synchronization_ = std::make_unique<SharedMemorySynchronization>(
+        SharedMemorySynchronization::Create());
+  } catch (...) {
+    shared_memory_ = std::make_unique<SharedMemory>(SharedMemory::Access());
+    synchronization_ = std::make_unique<SharedMemorySynchronization>(
+        SharedMemorySynchronization::Access());
+  }
+}
+
 SynchronizedRelaySharedMemory::SynchronizedRelaySharedMemory(
     const CreateSharedMemory&)
-    : shared_memory_{std::make_unique<SharedMemorySegment>()},
-      synchronization_{std::make_unique<SharedMemorySynchronizationObject>()} {}
+    : shared_memory_{std::make_unique<SharedMemory>(
+          niv::SharedMemory::Create())},
+      synchronization_{std::make_unique<SharedMemorySynchronization>(
+          niv::SharedMemorySynchronization::Create())} {}
+
 SynchronizedRelaySharedMemory::SynchronizedRelaySharedMemory(
     const AccessSharedMemory&)
-    : shared_memory_{std::make_unique<SharedMemoryAccess>()},
-      synchronization_{std::make_unique<SharedMemorySynchronizationAccess>()} {}
+    : shared_memory_{std::make_unique<SharedMemory>(SharedMemory::Access())},
+      synchronization_{std::make_unique<SharedMemorySynchronization>(
+          SharedMemorySynchronization::Access())} {}
+
+SynchronizedRelaySharedMemory::~SynchronizedRelaySharedMemory() {
+  if (shared_memory_->GetReferenceCount() == 0) {
+    shared_memory_->Destroy();
+    synchronization_->Destroy();
+  }
+}
 
 void SynchronizedRelaySharedMemory::Send(const conduit::Node& node) {
   auto lock = synchronization_->ScopedLock();

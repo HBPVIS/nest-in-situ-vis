@@ -38,8 +38,8 @@ class SynchronizedRelaySharedMemory {
   class CreateSharedMemory {};
   class AccessSharedMemory {};
 
-  SynchronizedRelaySharedMemory() = delete;
-  virtual ~SynchronizedRelaySharedMemory() = default;
+  SynchronizedRelaySharedMemory();
+  virtual ~SynchronizedRelaySharedMemory();
   SynchronizedRelaySharedMemory(const SynchronizedRelaySharedMemory&) = delete;
   SynchronizedRelaySharedMemory(SynchronizedRelaySharedMemory&&) = delete;
 

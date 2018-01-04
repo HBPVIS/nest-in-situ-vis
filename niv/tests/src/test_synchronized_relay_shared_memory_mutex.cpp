@@ -23,16 +23,15 @@
 
 #include "catch/catch.hpp"
 
-#include "niv/synchronized_relay_shared_memory_access.hpp"
-#include "niv/synchronized_relay_shared_memory_segment.hpp"
+#include "niv/synchronized_relay_shared_memory.hpp"
 
 #include "conduit_node_helper.hpp"
 
 SCENARIO("Mutex does not stall multiple sends/receives",
          "[niv][niv::SynchronizedRelaySharedMemory]") {
   GIVEN("a pair of relays") {
-    niv::SynchronizedRelaySharedMemorySegment relay_segment;
-    niv::SynchronizedRelaySharedMemoryAccess relay_access;
+    niv::SynchronizedRelaySharedMemory relay_segment;
+    niv::SynchronizedRelaySharedMemory relay_access;
 
     THEN("send, receive works") {
       relay_segment.Send(testing::AnyNode());
