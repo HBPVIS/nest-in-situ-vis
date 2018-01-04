@@ -60,7 +60,7 @@ constexpr bool we_reach_this_before_timeout = true;
 }  // namespace
 
 SCENARIO("Synchronization across separate threads does not accidently block",
-         "[niv][niv::SynchronizedRelaySharedMemory]") {
+         "[niv][niv::RelaySharedMemory]") {
   GIVEN("A pair of sync relays") {
     niv::RelaySharedMemory relay_segment;
     niv::RelaySharedMemory relay_access;

@@ -28,7 +28,7 @@
 #include "conduit_node_helper.hpp"
 
 SCENARIO("Mutex does not stall multiple sends/receives",
-         "[niv][niv::SynchronizedRelaySharedMemory]") {
+         "[niv][niv::RelaySharedMemory]") {
   GIVEN("a pair of relays") {
     niv::RelaySharedMemory relay_segment;
     niv::RelaySharedMemory relay_access;

@@ -30,7 +30,7 @@
 
 #include "conduit_node_helper.hpp"
 
-SCENARIO("Data gets transported", "[niv][niv::SynchronizedRelaySharedMemory]") {
+SCENARIO("Data gets transported", "[niv][niv::RelaySharedMemory]") {
   GIVEN("a simulation relay, and a visualization relay") {
     niv::RelaySharedMemory visualization_relay;
     niv::RelaySharedMemory simulation_relay;
@@ -50,7 +50,7 @@ SCENARIO("Data gets transported", "[niv][niv::SynchronizedRelaySharedMemory]") {
 }
 
 SCENARIO("data in relay gets updated on sending update",
-         "[niv][niv::SynchronizedRelaySharedMemory]") {
+         "[niv][niv::RelaySharedMemory]") {
   GIVEN("a relay storing data") {
     niv::RelaySharedMemory simulation_relay;
     simulation_relay.Send(testing::AnyNode());
@@ -68,7 +68,7 @@ SCENARIO("data in relay gets updated on sending update",
 }
 
 SCENARIO("Data in relay is cleared on receive",
-         "[niv][niv::SynchronizedRelaySharedMemory]") {
+         "[niv][niv::RelaySharedMemory]") {
   GIVEN("A synchronized relay with some data") {
     niv::RelaySharedMemory relay;
     relay.Send(testing::AnyNode());
@@ -86,7 +86,7 @@ SCENARIO("Data in relay is cleared on receive",
 }
 
 SCENARIO("Relay's emptyness is passed throug shared memory",
-         "[niv][niv::SynchronizedRelaySharedMemory]") {
+         "[niv][niv::RelaySharedMemory]") {
   GIVEN("a pair of relays") {
     niv::RelaySharedMemory relay_segment;
     niv::RelaySharedMemory relay_access;
@@ -115,7 +115,7 @@ SCENARIO("Relay's emptyness is passed throug shared memory",
 }
 
 SCENARIO("ordered destruction of relays is properly reflectes by shared memory",
-         "[niv][niv::SynchronizedRelaySharedMemory]") {
+         "[niv][niv::RelaySharedMemory]") {
   GIVEN("no relay") {
     THEN("accessing shared throws an exception") {
       REQUIRE_THROWS_WITH(niv::SharedMemory(niv::SharedMemory::Access()),
@@ -155,7 +155,7 @@ SCENARIO("ordered destruction of relays is properly reflectes by shared memory",
 
 SCENARIO(
     "unorderd destruction of relays is properly reflected by shared memory",
-    "[niv][niv::SynchronizedRelaySharedMemory]") {
+    "[niv][niv::RelaySharedMemory]") {
   GIVEN("two relays") {
     auto relay1 = std::make_unique<niv::RelaySharedMemory>();
     auto relay2 = std::make_unique<niv::RelaySharedMemory>();

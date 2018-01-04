@@ -39,6 +39,10 @@ endfunction()
 
 function(ADD_TEST_CATCH_INTERNAL_
     NAME SOURCES HEADERS INCLUDE_DIRECTORIES LINK_LIBRARIES PATH_TO_ADD)
+  STRING(REGEX REPLACE
+    "^__" ""
+    NAME "${NAME}"
+    )
   add_executable(${NAME} ${SOURCES} ${HEADERS})
   target_include_directories(${NAME} PRIVATE ${INCLUDE_DIRECTORIES})
   target_link_libraries(${NAME} ${LINK_LIBRARIES})
@@ -83,8 +87,17 @@ function(ADD_TEST_CATCH)
 
   # add test for each test source file
   foreach(TEST_SOURCE_FILE ${ADD_TEST_CATCH_SOURCES})
+    get_filename_component(TEST_SUBDIR ${TEST_SOURCE_FILE} DIRECTORY)
+    STRING(REGEX REPLACE
+      "^${CMAKE_CURRENT_SOURCE_DIR}" ""
+      TEST_SUBDIR "${TEST_SUBDIR}"
+      )
+    STRING(REGEX REPLACE
+      "[/|\\]" "__"
+      TEST_SUBDIR "${TEST_SUBDIR}"
+      )
     get_filename_component(TEST_NAME ${TEST_SOURCE_FILE} NAME_WE)
-    ADD_TEST_CATCH_INTERNAL_("${TEST_NAME}"
+    ADD_TEST_CATCH_INTERNAL_("${TEST_SUBDIR}__${TEST_NAME}"
       "${TEST_SOURCE_FILE}"
       ""
       "${ADD_TEST_CATCH_INCLUDE_DIRECTORIES}"
