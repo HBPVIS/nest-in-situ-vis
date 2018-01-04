@@ -26,27 +26,31 @@
 
 #include "conduit/conduit_node.hpp"
 
-#include "niv/shared_memory_access.hpp"
-#include "niv/shared_memory_segment.hpp"
+#include "niv/shared_memory.hpp"
 
 #include "conduit_node_helper.hpp"
 
 SCENARIO("Shared memory access", "[niv][niv::SharedMemoryAccess]") {
   GIVEN("No shared memory segment") {
     THEN("Creating a shared memory access throws an exception.") {
-      REQUIRE_THROWS_WITH([]() { niv::SharedMemoryAccess segment_access; }(),
-                          "No such file or directory");
+      REQUIRE_THROWS_WITH(
+          []() {
+            niv::SharedMemory segment_access{niv::SharedMemory::Access()};
+          }(),
+          "No such file or directory");
     }
   }
 
   GIVEN("A shared memory segment") {
-    niv::SharedMemorySegment segment;
+    niv::SharedMemory segment{niv::SharedMemory::Create()};
 
     WHEN("I create shared memory access") {
       THEN("It does not throw an exception") {
-        REQUIRE_NOTHROW([]() { niv::SharedMemoryAccess segment_access; }());
+        REQUIRE_NOTHROW([]() {
+          niv::SharedMemory segment_access{niv::SharedMemory::Access()};
+        }());
       }
-      niv::SharedMemoryAccess segment_access;
+      niv::SharedMemory segment_access{niv::SharedMemory::Access()};
 
       WHEN("data is sotred in the shared memory access") {
         segment_access.Store(testing::AnyNode());
@@ -56,5 +60,6 @@ SCENARIO("Shared memory access", "[niv][niv::SharedMemoryAccess]") {
         }
       }
     }
+    segment.Destroy();
   }
 }

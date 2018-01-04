@@ -22,7 +22,6 @@
 #ifndef PYNIV_SRC_SYNCHRONIZED_RECEIVER_HPP_
 #define PYNIV_SRC_SYNCHRONIZED_RECEIVER_HPP_
 
-#include "niv/shared_memory_segment.hpp"
 #include "niv/synchronized_relay_shared_memory_segment.hpp"
 
 #include "conduit_data.hpp"

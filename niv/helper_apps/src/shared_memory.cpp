@@ -26,8 +26,7 @@
 #include "conduit/conduit_node.hpp"
 #include "conduit/conduit_schema.hpp"
 
-#include "niv/shared_memory_access.hpp"
-#include "niv/shared_memory_segment.hpp"
+#include "niv/shared_memory.hpp"
 #include "niv/shared_memory_synchronization.hpp"
 
 conduit::Node AnyNode() {
@@ -47,17 +46,17 @@ void FillWithData(niv::SharedMemory* shared_memory) {
 }
 
 void Create() {
-  niv::SharedMemorySegment segment;
+  niv::SharedMemory segment{niv::SharedMemory::Create()};
   FillWithData(&segment);
 }
 
 void Fill() {
-  niv::SharedMemoryAccess access;
+  niv::SharedMemory access{niv::SharedMemory::Access()};
   FillWithData(&access);
 }
 
 void Destroy() {
-  niv::SharedMemoryAccess access;
+  niv::SharedMemory access{niv::SharedMemory::Access()};
   access.Destroy();
 }
 

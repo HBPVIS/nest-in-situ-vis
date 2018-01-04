@@ -38,6 +38,10 @@ class SharedMemorySynchronization {
   using ManagedScopedLock = boost::interprocess::scoped_lock<ManagedMutex>;
 
   SharedMemorySynchronization() = delete;
+  explicit SharedMemorySynchronization(
+      const SharedMemorySynchronization::Create&);
+  explicit SharedMemorySynchronization(
+      const SharedMemorySynchronization::Access&);
   SharedMemorySynchronization(const SharedMemorySynchronization&) = delete;
   SharedMemorySynchronization(SharedMemorySynchronization&&) = delete;
   virtual ~SharedMemorySynchronization() = default;
@@ -54,13 +58,6 @@ class SharedMemorySynchronization {
   void Unlock();
 
   static constexpr const char* MutexName() { return "niv-shared-mutex"; }
-
- protected:
-  explicit SharedMemorySynchronization(
-      const SharedMemorySynchronization::Create&);
-
-  explicit SharedMemorySynchronization(
-      const SharedMemorySynchronization::Access&);
 
  private:
   ManagedMutex mutex_;

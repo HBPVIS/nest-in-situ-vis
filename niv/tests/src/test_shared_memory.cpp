@@ -24,8 +24,6 @@
 #include "conduit/conduit_node.hpp"
 
 #include "niv/shared_memory.hpp"
-#include "niv/shared_memory_access.hpp"
-#include "niv/shared_memory_segment.hpp"
 
 #include "conduit_node_helper.hpp"
 
@@ -33,8 +31,8 @@ SCENARIO("storing and retrieving conduit nodes to/from shared memory",
          "[niv][niv:SharedMemory][niv:SharedMemorySegment][niv:"
          "SharedMemoryAccess]") {
   GIVEN("a shared memory segment and access") {
-    niv::SharedMemorySegment shared_memory_segment;
-    niv::SharedMemoryAccess shared_memory_access;
+    niv::SharedMemory shared_memory_segment{niv::SharedMemory::Create()};
+    niv::SharedMemory shared_memory_access{niv::SharedMemory::Access()};
 
     WHEN("a node is stored in the shared memory segment") {
       shared_memory_segment.Store(testing::AnyNode());
@@ -71,6 +69,7 @@ SCENARIO("storing and retrieving conduit nodes to/from shared memory",
         }
       }
     }
+    shared_memory_segment.Destroy();
   }
 }
 
@@ -78,8 +77,8 @@ SCENARIO("Overwriting data in shared memory",
          "[niv][niv::SharedMemory][niv::SharedMemorySegment][niv::"
          "SharedMemoryAccess") {
   GIVEN("A shared memory segment + access, with some data in it") {
-    niv::SharedMemorySegment shared_memory_segment;
-    niv::SharedMemoryAccess shared_memory_access;
+    niv::SharedMemory shared_memory_segment{niv::SharedMemory::Create()};
+    niv::SharedMemory shared_memory_access{niv::SharedMemory::Access()};
     shared_memory_segment.Store(testing::AnyNode());
     WHEN("when new data is stored in the segment") {
       shared_memory_segment.Store(testing::ADifferentNode());
@@ -90,6 +89,7 @@ SCENARIO("Overwriting data in shared memory",
         }
       }
     }
+    shared_memory_segment.Destroy();
   }
 }
 
@@ -99,8 +99,8 @@ SCENARIO("data can be updated in shared memory",
   std::cout << "SCENARIO(\"data can be updated in shared memory\")"
             << std::endl;
   GIVEN("a shared memory segment with data in it, and shared memory access") {
-    niv::SharedMemorySegment segment;
-    niv::SharedMemoryAccess segment_access;
+    niv::SharedMemory segment{niv::SharedMemory::Create()};
+    niv::SharedMemory segment_access{niv::SharedMemory::Access()};
     segment.Store(testing::AnyNode());
 
     WHEN("the data in the shared memory is updated") {
@@ -112,6 +112,7 @@ SCENARIO("data can be updated in shared memory",
         REQUIRE_THAT(segment.Read(), Equals(testing::UpdatedNode()));
       }
     }
+    segment.Destroy();
   }
 }
 

@@ -26,13 +26,13 @@
 
 #include "conduit/conduit_node.hpp"
 
-#include "niv/shared_memory_segment.hpp"
+#include "niv/shared_memory.hpp"
 
 #include "conduit_node_helper.hpp"
 
 SCENARIO("Shared memory creation", "[niv][niv::SharedMemorySegment]") {
   GIVEN("A shared memory segment") {
-    niv::SharedMemorySegment segment;
+    niv::SharedMemory segment{niv::SharedMemory::Create()};
     WHEN("I ask it for its free size") {
       auto free_size_after_creation = segment.GetFreeSize();
       THEN("it is > 0") { REQUIRE(free_size_after_creation > 0); }
@@ -57,17 +57,22 @@ SCENARIO("Shared memory creation", "[niv][niv::SharedMemorySegment]") {
 
     WHEN("I request a second shared memory segment") {
       THEN("It throws an exception") {
-        REQUIRE_THROWS_WITH([]() { niv::SharedMemorySegment segment2; }(),
-                            "File exists");
+        REQUIRE_THROWS_WITH(
+            []() {
+              niv::SharedMemory segment2{niv::SharedMemory::Create()};
+              segment2.Destroy();
+            }(),
+            "File exists");
       }
     }
+    segment.Destroy();
   }
 }
 
 SCENARIO("write updated node to shared memory segment",
          "[niv][niv::SharedMemorySegment]") {
   GIVEN("a shared memory segment with some data") {
-    niv::SharedMemorySegment segment;
+    niv::SharedMemory segment{niv::SharedMemory::Create()};
     segment.Store(testing::AnyNode());
     WHEN("a larger node is stored") {
       segment.Store(testing::UpdatedNode());
@@ -78,5 +83,6 @@ SCENARIO("write updated node to shared memory segment",
         }
       }
     }
+    segment.Destroy();
   }
 }
