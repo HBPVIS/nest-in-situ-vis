@@ -19,10 +19,10 @@
 // limitations under the License.
 //------------------------------------------------------------------------------
 
+#include "pyniv.hpp"
+
 #include "niv/consumer/backend.hpp"
 #include "niv/consumer/device.hpp"
-
-#include "pyniv.hpp"
 
 namespace pyniv {
 

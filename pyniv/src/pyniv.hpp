@@ -24,6 +24,9 @@
 
 SUPPRESS_WARNINGS_BEGIN
 #pragma GCC diagnostic ignored "-Wdeprecated-declarations"
+#if __GNUC__ >= 7
+#pragma GCC diagnostic ignored "-Wregister"
+#endif
 #include "boost/python.hpp"
 SUPPRESS_WARNINGS_END
 

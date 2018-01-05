@@ -27,7 +27,7 @@ if(NOT PYTHON_EXECUTABLE)
         CMake will not generate the project without it. ")
 endif()
 
-find_file(CPPLINT_COMMAND cpplint.py
+find_file(CPPLINT_COMMAND cpplint.py cpplint
   PATHS $ENV{PATH} $ENV{CPPLINT_DIR}
 )
 if(NOT CPPLINT_COMMAND)

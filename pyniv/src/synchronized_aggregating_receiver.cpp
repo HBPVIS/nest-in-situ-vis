@@ -19,9 +19,9 @@
 // limitations under the License.
 //------------------------------------------------------------------------------
 
-#include "niv/consumer/receiver.hpp"
-
 #include "pyniv.hpp"
+
+#include "niv/consumer/receiver.hpp"
 
 namespace pyniv {
 

@@ -22,6 +22,7 @@
 #ifndef NIV_INCLUDE_NIV_SHARED_MEMORY_HPP_
 #define NIV_INCLUDE_NIV_SHARED_MEMORY_HPP_
 
+#include <memory>
 #include <string>
 #include <utility>
 #include <vector>

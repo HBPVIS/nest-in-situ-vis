@@ -71,7 +71,8 @@
 #define SUPPRESS_WARNINGS_BEGIN                                              \
   _Pragma("GCC diagnostic push") _Pragma("GCC diagnostic ignored \"-Wall\"") \
       _Pragma("GCC diagnostic ignored \"-Wextra\"")                          \
-          _Pragma("GCC diagnostic ignored \"-Wdeprecated-declarations\"")
+          _Pragma("GCC diagnostic ignored \"-Wunused-local-typedefs\"")      \
+              _Pragma("GCC diagnostic ignored \"-Wdeprecated-declarations\"")
 #define SUPPRESS_WARNINGS_BEGIN_PADDED
 #define SUPPRESS_WARNINGS_END _Pragma("GCC diagnostic pop")
 
