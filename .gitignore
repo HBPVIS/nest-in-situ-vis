@@ -1,3 +1,4 @@
 build*
 BUILD*
 .dir-locals.el
+*.pyc
