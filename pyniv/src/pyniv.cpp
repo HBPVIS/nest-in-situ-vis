@@ -28,7 +28,7 @@
 #include "analysis_device.hpp"
 #include "conduit_data.hpp"
 #include "dummy_analysis_backend.hpp"
-#include "vis_multimeter.hpp"
+#include "multimeter.hpp"
 
 BOOST_PYTHON_MODULE(pyniv) {
   boost::python::numpy::initialize();
@@ -38,5 +38,5 @@ BOOST_PYTHON_MODULE(pyniv) {
   pyniv::expose<pyniv::ConduitData>();
   pyniv::expose<pyniv::DummyAnalysisBackend>();
   pyniv::expose<niv::consumer::Receiver>();
-  pyniv::expose<pyniv::VisMultimeter>();
+  pyniv::expose<pyniv::consumer::Multimeter>();
 }

@@ -19,8 +19,8 @@
 // limitations under the License.
 //------------------------------------------------------------------------------
 
-#ifndef PYNIV_SRC_VIS_MULTIMETER_HPP_
-#define PYNIV_SRC_VIS_MULTIMETER_HPP_
+#ifndef PYNIV_SRC_CONSUMER_MULTIMETER_HPP_
+#define PYNIV_SRC_CONSUMER_MULTIMETER_HPP_
 
 SUPPRESS_WARNINGS_BEGIN
 #include "boost/python/numpy.hpp"
@@ -29,17 +29,18 @@ SUPPRESS_WARNINGS_END
 #include "niv/consumer/multimeter.hpp"
 
 namespace pyniv {
+namespace consumer {
 
-class VisMultimeter : public niv::consumer::Multimeter {
+class Multimeter : public niv::consumer::Multimeter {
  public:
-  VisMultimeter() = delete;
-  explicit VisMultimeter(const std::string& name);
-  VisMultimeter(const VisMultimeter&) = default;
-  VisMultimeter(VisMultimeter&&) = default;
-  ~VisMultimeter() = default;
+  Multimeter() = delete;
+  explicit Multimeter(const std::string& name);
+  Multimeter(const Multimeter&) = default;
+  Multimeter(Multimeter&&) = default;
+  ~Multimeter() = default;
 
-  VisMultimeter& operator=(const VisMultimeter&) = default;
-  VisMultimeter& operator=(VisMultimeter&&) = default;
+  Multimeter& operator=(const Multimeter&) = default;
+  Multimeter& operator=(Multimeter&&) = default;
 
   boost::python::numpy::ndarray GetTimesteps();
   boost::python::numpy::ndarray GetValues();
@@ -48,6 +49,7 @@ class VisMultimeter : public niv::consumer::Multimeter {
   std::vector<double> timesteps_;
 };
 
+}  // namespace consumer
 }  // namespace pyniv
 
-#endif  // PYNIV_SRC_VIS_MULTIMETER_HPP_
+#endif  // PYNIV_SRC_CONSUMER_MULTIMETER_HPP_

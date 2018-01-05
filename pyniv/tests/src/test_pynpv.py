@@ -45,8 +45,8 @@ def test_pyniv_greet():
 
 def test_pyniv_backend():
     backend = pyniv.AnalysisBackend()
-    multimeter = pyniv.VisMultimeter("Multimeter A")
     receiver = pyniv.Receiver()
+    multimeter = pyniv.ConsumerMultimeter("Multimeter A")
     backend.Connect(receiver)
     backend.Connect(multimeter)
     multimeter.SetTime(0.0)
@@ -57,7 +57,7 @@ def test_pyniv_backend():
 
 def test_pyniv_dummy_analysis_backend():
     backend = pyniv.DummyAnalysisBackend();
-    multimeter = pyniv.VisMultimeter("multimeter A")
+    multimeter = pyniv.ConsumerMultimeter("multimeter A")
     multimeter.SetAttribute("V_m")
     backend.Connect(multimeter)
     multimeter.SetTime(0.0)
@@ -67,7 +67,7 @@ def test_pyniv_dummy_analysis_backend():
 
 def test_pyniv_dummy_vis_multimeter_timesteps():
     backend = pyniv.DummyAnalysisBackend();
-    multimeter = pyniv.VisMultimeter("multimeter A")
+    multimeter = pyniv.ConsumerMultimeter("multimeter A")
     backend.Connect(multimeter)
     ts = multimeter.GetTimesteps();
     assert (ts == [0.0]).all()

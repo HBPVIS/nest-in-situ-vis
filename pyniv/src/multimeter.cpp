@@ -21,8 +21,8 @@
 
 #include "pyniv.hpp"
 
-#include <string> // NOLINT
-#include <vector> // NOLINT
+#include <string>  // NOLINT
+#include <vector>  // NOLINT
 
 SUPPRESS_WARNINGS_BEGIN
 #include "boost/python/numpy.hpp"
@@ -30,14 +30,15 @@ SUPPRESS_WARNINGS_END
 
 #include "niv/consumer/device.hpp"
 
-#include "vis_multimeter.hpp"
+#include "multimeter.hpp"
 
 namespace pyniv {
+namespace consumer {
 
-VisMultimeter::VisMultimeter(const std::string& name)
+Multimeter::Multimeter(const std::string& name)
     : niv::consumer::Multimeter{name} {}
 
-boost::python::numpy::ndarray VisMultimeter::GetValues() {
+boost::python::numpy::ndarray Multimeter::GetValues() {
   const auto& values{niv::consumer::Multimeter::GetValues()};
 
   return boost::python::numpy::from_data(
@@ -46,7 +47,7 @@ boost::python::numpy::ndarray VisMultimeter::GetValues() {
       boost::python::make_tuple(sizeof(double)), boost::python::object());
 }
 
-boost::python::numpy::ndarray VisMultimeter::GetTimesteps() {
+boost::python::numpy::ndarray Multimeter::GetTimesteps() {
   timesteps_ = niv::consumer::Multimeter::GetTimesteps();
 
   return boost::python::numpy::from_data(
@@ -55,14 +56,16 @@ boost::python::numpy::ndarray VisMultimeter::GetTimesteps() {
       boost::python::make_tuple(sizeof(double)), boost::python::object());
 }
 
+}  // namespace consumer
+
 template <>
-void expose<pyniv::VisMultimeter>() {
-  class_<pyniv::VisMultimeter, bases<niv::consumer::Device>>(
-      "VisMultimeter", init<std::string>())
-      .def("GetValues", &pyniv::VisMultimeter::GetValues)
-      .def("GetTimesteps", &pyniv::VisMultimeter::GetTimesteps)
-      .def("SetAttribute", &pyniv::VisMultimeter::SetAttribute)
-      .def("Update", &pyniv::VisMultimeter::Update);
+void expose<pyniv::consumer::Multimeter>() {
+  class_<pyniv::consumer::Multimeter, bases<niv::consumer::Device>>(
+      "ConsumerMultimeter", init<std::string>())
+      .def("GetValues", &pyniv::consumer::Multimeter::GetValues)
+      .def("GetTimesteps", &pyniv::consumer::Multimeter::GetTimesteps)
+      .def("SetAttribute", &pyniv::consumer::Multimeter::SetAttribute)
+      .def("Update", &pyniv::consumer::Multimeter::Update);
 }
 
 }  // namespace pyniv
