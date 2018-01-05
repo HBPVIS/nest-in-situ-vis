@@ -29,6 +29,7 @@
 #include "niv/producer/recorder.hpp"
 
 namespace niv {
+namespace producer {
 
 class SpikeDetector final : public Recorder {
  public:
@@ -50,6 +51,7 @@ class SpikeDetector final : public Recorder {
   std::vector<std::size_t> AsVector(const conduit::uint64_array& array);
 };
 
+}  // namespace producer
 }  // namespace niv
 
 #endif  // NIV_INCLUDE_NIV_PRODUCER_SPIKE_DETECTOR_HPP_

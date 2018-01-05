@@ -26,6 +26,7 @@
 #include "niv/producer/recorder.hpp"
 
 namespace niv {
+namespace producer {
 
 Recorder::Recorder(const std::string& name, conduit::Node* node)
     : node_(node), name_(name) {}
@@ -46,4 +47,5 @@ conduit::Node& Recorder::GetTimestepNode() {
   return *timestep_node_;
 }
 
+}  // namespace producer
 }  // namespace niv

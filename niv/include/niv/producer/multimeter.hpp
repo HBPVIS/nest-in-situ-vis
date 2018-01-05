@@ -30,6 +30,7 @@
 #include "niv/producer/recorder.hpp"
 
 namespace niv {
+namespace producer {
 
 class Multimeter final : public Recorder {
  public:
@@ -56,6 +57,7 @@ class Multimeter final : public Recorder {
   std::vector<std::string> value_names_;
 };
 
+}  // namespace producer
 }  // namespace niv
 
 #endif  // NIV_INCLUDE_NIV_PRODUCER_MULTIMETER_HPP_

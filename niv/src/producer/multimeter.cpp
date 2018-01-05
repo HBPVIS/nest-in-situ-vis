@@ -26,6 +26,7 @@
 #include "niv/producer/multimeter.hpp"
 
 namespace niv {
+namespace producer {
 
 Multimeter::Multimeter(const std::string& name,
                        const std::vector<std::string>& value_names,
@@ -59,4 +60,5 @@ std::unique_ptr<Multimeter> Multimeter::New(
   return std::make_unique<Multimeter>(name, value_names, node);
 }
 
+}  // namespace producer
 }  // namespace niv

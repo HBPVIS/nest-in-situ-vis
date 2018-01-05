@@ -26,6 +26,7 @@
 #include "niv/producer/spike_detector.hpp"
 
 namespace niv {
+namespace producer {
 
 SpikeDetector::SpikeDetector(const std::string& name, conduit::Node* node)
     : Recorder{name, node} {}
@@ -57,4 +58,5 @@ std::unique_ptr<SpikeDetector> SpikeDetector::New(const std::string& name,
   return std::make_unique<SpikeDetector>(name, node);
 }
 
+}  // namespace producer
 }  // namespace niv

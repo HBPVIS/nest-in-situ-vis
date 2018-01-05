@@ -37,6 +37,7 @@ DataArray<uint64>::~DataArray();
 }  // namespace conduit
 
 namespace niv {
+namespace producer {
 
 class Recorder {
  public:
@@ -63,6 +64,7 @@ class Recorder {
   std::string name_{"recorder"};
 };
 
+}  // namespace producer
 }  // namespace niv
 
 #endif  // NIV_INCLUDE_NIV_PRODUCER_RECORDER_HPP_

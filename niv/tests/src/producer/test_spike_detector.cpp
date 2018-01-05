@@ -31,8 +31,8 @@
 SCENARIO("A unique spike detector ptr can be constructed via its factory",
          "[niv][niv::SpikeDetector]") {
   WHEN("a new spike detector is constructed") {
-    std::unique_ptr<niv::SpikeDetector> spike_detector{
-        niv::SpikeDetector::New("name", nullptr)};
+    std::unique_ptr<niv::producer::SpikeDetector> spike_detector{
+        niv::producer::SpikeDetector::New("name", nullptr)};
     THEN("a pointer was obtained") { REQUIRE(spike_detector.get() != nullptr); }
   }
 }
@@ -47,7 +47,7 @@ SCENARIO("A spike detector records to a conduit node",
 
   GIVEN("a conduit node and a spike detector") {
     conduit::Node node;
-    niv::SpikeDetector spike_detector(any_name, &node);
+    niv::producer::SpikeDetector spike_detector(any_name, &node);
 
     WHEN("setting the recording time") {
       spike_detector.SetRecordingTime(any_time);

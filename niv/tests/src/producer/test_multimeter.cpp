@@ -32,8 +32,9 @@
 SCENARIO("A unique multimeter ptr can be constructed via its factory",
          "[niv][niv::Multimeter]") {
   WHEN("a new multimeter is constructed") {
-    std::unique_ptr<niv::Multimeter> multimeter{
-        niv::Multimeter::New("name", std::vector<std::string>(), nullptr)};
+    std::unique_ptr<niv::producer::Multimeter> multimeter{
+        niv::producer::Multimeter::New("name", std::vector<std::string>(),
+                                       nullptr)};
     THEN("a pointer was obtained") { REQUIRE(multimeter.get() != nullptr); }
   }
 }
@@ -49,7 +50,7 @@ SCENARIO("A multimeter records to a conduit node", "[niv][niv::Multimeter]") {
 
   GIVEN("a conduit node and a multimeter") {
     conduit::Node node;
-    niv::Multimeter multimeter(any_name, any_value_names, &node);
+    niv::producer::Multimeter multimeter(any_name, any_value_names, &node);
 
     WHEN("setting the recording time") {
       multimeter.SetRecordingTime(any_time);
