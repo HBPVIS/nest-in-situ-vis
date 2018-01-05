@@ -1,7 +1,7 @@
 //------------------------------------------------------------------------------
 // nest in situ vis
 //
-// Copyright (c) 2017 RWTH Aachen University, Germany,
+// Copyright (c) 2017-2018 RWTH Aachen University, Germany,
 // Virtual Reality & Immersive Visualisation Group.
 //------------------------------------------------------------------------------
 //                                 License
@@ -197,3 +197,64 @@ SCENARIO(
     }
   }
 }
+
+SCENARIO(
+    "node changes are not yet reflected by nodes using external data "
+    "(conduit's #240)",
+    "[conduit]") {
+  INFO(
+      "This test's failing indicates that conduit's #240 might be addressed. \n"
+      "On failure: \n"
+      "* Nodes referring to others via external might reflect changes. \n"
+      "* Update niv's code to utilize this")
+  GIVEN("a node and one referring to it") {
+    conduit::Node original_node;
+    conduit::Node referring_node;
+
+    WHEN("the refering node uses the original one as external data") {
+      referring_node.set_external(original_node);
+
+      WHEN("the original node is changed") {
+        original_node["A"] = 3.1415;
+
+        THEN("the change is visible in the referring node") {
+          REQUIRE_THAT(referring_node, !Equals(original_node));
+          REQUIRE(referring_node.dtype().is_empty());
+        }
+      }
+
+      WHEN("the referring node is changed") {
+        referring_node["B"] = 4.123;
+
+        THEN("the change is visible in the original node") {
+          REQUIRE_THAT(original_node, !Equals(referring_node));
+          REQUIRE(original_node.dtype().is_empty());
+        }
+      }
+
+      WHEN("the original node is updated") {
+        conduit::Node update;
+        update["A"] = 3.1415;
+        original_node.update(update);
+
+        THEN("the change is visible in the referring node") {
+          REQUIRE_THAT(referring_node, !Equals(original_node));
+          REQUIRE(referring_node.dtype().is_empty());
+        }
+      }
+
+      WHEN("the referring node is updated") {
+        conduit::Node update;
+        update["B"] = 4.123;
+        referring_node.update(update);
+
+        THEN("the change is visible in the original node") {
+          REQUIRE_THAT(original_node, !Equals(referring_node));
+          REQUIRE(original_node.dtype().is_empty());
+        }
+      }
+    }
+  }
+}
+
+SCENARIO("node updates ", "[]") {}

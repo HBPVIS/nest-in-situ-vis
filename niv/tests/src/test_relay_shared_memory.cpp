@@ -1,7 +1,7 @@
 //------------------------------------------------------------------------------
 // nest in situ vis
 //
-// Copyright (c) 2017 RWTH Aachen University, Germany,
+// Copyright (c) 2017-2018 RWTH Aachen University, Germany,
 // Virtual Reality & Immersive Visualisation Group.
 //------------------------------------------------------------------------------
 //                                 License
@@ -26,93 +26,151 @@
 #include "conduit/conduit_node.hpp"
 
 #include "niv/relay_shared_memory.hpp"
-#include "niv/shared_memory_access.hpp"
-#include "niv/shared_memory_segment.hpp"
+#include "niv/shared_memory.hpp"
 
 #include "conduit_node_helper.hpp"
 
-SCENARIO("Communicate a conduit node from shared mem segment to access",
-         "[niv][nvi::RelaySharedMemory]") {
-  GIVEN(
-      "A conduit node with some data, a sending shared memory segment relay, a "
-      "receiving shared memory access relay, and a receiving node") {
-    niv::RelaySharedMemory sending_relay{
-        std::make_unique<niv::SharedMemorySegment>()};
-    niv::RelaySharedMemory receiving_relay{
-        std::make_unique<niv::SharedMemoryAccess>()};
+SCENARIO("Data gets transported", "[niv][niv::RelaySharedMemory]") {
+  GIVEN("a simulation relay, and a visualization relay") {
+    niv::RelaySharedMemory visualization_relay;
+    niv::RelaySharedMemory simulation_relay;
 
-    WHEN("I send the data via the sending relay") {
-      sending_relay.Send(testing::AnyNode());
+    WHEN("a node is sent via the simulation relay") {
+      simulation_relay.Send(testing::AnyNode());
 
-      THEN("I receive the data on the receiving relay") {
-        REQUIRE_THAT(receiving_relay.Receive(), Equals(testing::AnyNode()));
-      }
+      WHEN("data is received via the visualization relay") {
+        conduit::Node received_node{visualization_relay.Receive()};
 
-      WHEN("I change the values and send again") {
-        sending_relay.Send(testing::AnotherNode());
-
-        THEN("I receive the data on the receiving relay") {
-          REQUIRE_THAT(receiving_relay.Receive(),
-                       Equals(testing::AnotherNode()));
-        }
-      }
-
-      WHEN("I listen to the data on the receiving relay") {
-        conduit::Node listening_node{receiving_relay.Listen()};
-        THEN("I receive the data on the receiving relay") {
-          REQUIRE_THAT(listening_node, Equals(testing::AnyNode()));
-        }
-
-        WHEN("I change the values and send again") {
-          sending_relay.Send(testing::AnotherNode());
-
-          THEN("I receive the data on the receiving relay") {
-            REQUIRE_THAT(listening_node, Equals(testing::AnotherNode()));
-          }
+        THEN("received data matches original data") {
+          REQUIRE_THAT(received_node, Equals(testing::AnyNode()));
         }
       }
     }
   }
 }
 
-SCENARIO("Communicate a conduit node from shared mem access to segment",
-         "[niv][nvi::RelaySharedMemory]") {
-  GIVEN(
-      "A conduit node with some data, a sending shared memory access relay, a "
-      "receiving shared memory segment relay, and a receiving node") {
-    niv::RelaySharedMemory receiving_relay{
-        std::make_unique<niv::SharedMemorySegment>()};
-    niv::RelaySharedMemory sending_relay{
-        std::make_unique<niv::SharedMemoryAccess>()};
+SCENARIO("data in relay gets updated on sending update",
+         "[niv][niv::RelaySharedMemory]") {
+  GIVEN("a relay storing data") {
+    niv::RelaySharedMemory simulation_relay;
+    simulation_relay.Send(testing::AnyNode());
 
-    WHEN("I send the data via the sending relay") {
-      sending_relay.Send(testing::AnyNode());
-
-      THEN("I receive the data on the receiving relay") {
-        REQUIRE_THAT(receiving_relay.Receive(), Equals(testing::AnyNode()));
-      }
-
-      WHEN("I change the values and send again") {
-        sending_relay.Send(testing::AnotherNode());
-
-        THEN("I receive the data on the receiving relay") {
-          REQUIRE_THAT(receiving_relay.Receive(),
-                       Equals(testing::AnotherNode()));
+    WHEN("an update gets sent to the relay") {
+      simulation_relay.Send(testing::Update());
+      WHEN("the node is received from the relay") {
+        conduit::Node received_node{simulation_relay.Receive()};
+        THEN("the received node includes the update") {
+          REQUIRE_THAT(received_node, Equals(testing::UpdatedNode()));
         }
       }
+    }
+  }
+}
 
-      WHEN("I listen to the data on the receiving relay") {
-        conduit::Node listening_node{receiving_relay.Listen()};
-        THEN("I receive the data on the receiving relay") {
-          REQUIRE_THAT(listening_node, Equals(testing::AnyNode()));
+SCENARIO("Data in relay is cleared on receive",
+         "[niv][niv::RelaySharedMemory]") {
+  GIVEN("A synchronized relay with some data") {
+    niv::RelaySharedMemory relay;
+    relay.Send(testing::AnyNode());
+
+    WHEN("Data is received") {
+      auto node{relay.Receive()};
+      THEN("the node is not empty") { REQUIRE_FALSE(node.dtype().is_empty()); }
+
+      WHEN("data is read a second time") {
+        auto node2{relay.Receive()};
+        THEN("the node is empty") { REQUIRE(node2.dtype().is_empty()); }
+      }
+    }
+  }
+}
+
+SCENARIO("Relay's emptyness is passed throug shared memory",
+         "[niv][niv::RelaySharedMemory]") {
+  GIVEN("a pair of relays") {
+    niv::RelaySharedMemory relay_segment;
+    niv::RelaySharedMemory relay_access;
+
+    THEN("both relays are empty") {
+      REQUIRE(relay_segment.IsEmpty());
+      REQUIRE(relay_access.IsEmpty());
+    }
+
+    WHEN("Data is sent") {
+      relay_segment.Send(testing::AnyNode());
+      THEN("both relays are not empty.") {
+        REQUIRE_FALSE(relay_segment.IsEmpty());
+        REQUIRE_FALSE(relay_access.IsEmpty());
+      }
+
+      WHEN("Data is received") {
+        relay_access.Receive();
+        THEN("both relays are empty again.") {
+          REQUIRE(relay_segment.IsEmpty());
+          REQUIRE(relay_access.IsEmpty());
         }
+      }
+    }
+  }
+}
 
-        WHEN("I change the values and send again") {
-          sending_relay.Send(testing::AnotherNode());
+SCENARIO("ordered destruction of relays is properly reflectes by shared memory",
+         "[niv][niv::RelaySharedMemory]") {
+  GIVEN("no relay") {
+    THEN("accessing shared throws an exception") {
+      REQUIRE_THROWS_WITH(niv::SharedMemory(niv::SharedMemory::Access()),
+                          "No such file or directory");
+    }
+  }
 
-          THEN("I receive the data on the receiving relay") {
-            REQUIRE_THAT(listening_node, Equals(testing::AnotherNode()));
-          }
+  GIVEN("a relay in a new scope") {
+    {  // new scope
+      niv::RelaySharedMemory relay;
+      THEN("accessing shared memory does not throw") {
+        REQUIRE_NOTHROW(niv::SharedMemory(niv::SharedMemory::Access()));
+      }
+
+      THEN("creating a second relay does not throw") {
+        REQUIRE_NOTHROW(niv::RelaySharedMemory());
+      }
+
+      WHEN("a second relay gets out of scope") {
+        {  // new scope
+          niv::RelaySharedMemory relay2;
+        }
+        THEN("accessing shared memory does not throw") {
+          REQUIRE_NOTHROW(niv::SharedMemory(niv::SharedMemory::Access()));
+        }
+      }
+    }
+
+    WHEN("the first relay is out of scope") {
+      THEN("accessing shared memory throws an exception") {
+        REQUIRE_THROWS_WITH(niv::SharedMemory(niv::SharedMemory::Access()),
+                            "No such file or directory");
+      }
+    }
+  }
+}
+
+SCENARIO(
+    "unorderd destruction of relays is properly reflected by shared memory",
+    "[niv][niv::RelaySharedMemory]") {
+  GIVEN("two relays") {
+    auto relay1 = std::make_unique<niv::RelaySharedMemory>();
+    auto relay2 = std::make_unique<niv::RelaySharedMemory>();
+
+    WHEN("deleting the first relay") {
+      relay1.reset();
+      THEN("accessing shared memory does not throw") {
+        REQUIRE_NOTHROW(niv::SharedMemory(niv::SharedMemory::Access()));
+      }
+
+      WHEN("deleting the second relay") {
+        relay2.reset();
+        THEN("accessing shared memory throws an exception") {
+          REQUIRE_THROWS_WITH(niv::SharedMemory(niv::SharedMemory::Access()),
+                              "No such file or directory");
         }
       }
     }

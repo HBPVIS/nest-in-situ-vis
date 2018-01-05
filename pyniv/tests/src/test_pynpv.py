@@ -1,7 +1,7 @@
 #-------------------------------------------------------------------------------
 # nest in situ vis
 #
-# Copyright (c) 2017 RWTH Aachen University, Germany,
+# Copyright (c) 2017-2018 RWTH Aachen University, Germany,
 # Virtual Reality & Immersive Visualisation Group.
 #-------------------------------------------------------------------------------
 #                                  License
@@ -43,22 +43,6 @@ def test_cout_capture(capsys):
 def test_pyniv_greet():
     assert pyniv.Greet() == "G'day!"
 
-def test_pyniv_receive_via_shared_mem_segment_relay():
-    r = pyniv.ConduitReceiver()
-
-    d = pyniv.ConduitData()
-    s = pyniv.ConduitDataSender()
-    s.Send(d)
-
-    r.Start()
-
-    assert r.Get("V_m") == 1.2
-
-    d.Set("V_m", 42.0)
-    s.Send(d)
-
-    assert r.Get("V_m") == 42.0
-
 def test_pyniv_receive_via_sync_shared_mem_relay():
     receiver = pyniv.SynchronizedReceiver()
 
@@ -70,5 +54,32 @@ def test_pyniv_receive_via_sync_shared_mem_relay():
 
     received_data = receiver.Receive()
     assert received_data.Get("V_m") ==4.123
-    
-    
+
+def test_pyniv_backend():
+    backend = pyniv.AnalysisBackend()
+    receiver = pyniv.SynchronizedAggregatingReceiver()
+    multimeter = pyniv.VisMultimeter("Multimeter A")
+    backend.Connect(receiver)
+    backend.Connect(multimeter)
+    multimeter.SetTime(0.0)
+    multimeter.SetAttribute("A")
+    backend.Receive()
+    a = multimeter.GetValues()
+    assert len(a) == 0
+
+def test_pyniv_dummy_analysis_backend():
+    backend = pyniv.DummyAnalysisBackend();
+    multimeter = pyniv.VisMultimeter("multimeter A")
+    multimeter.SetAttribute("V_m")
+    backend.Connect(multimeter)
+    multimeter.SetTime(0.0)
+    backend.Receive()
+    a = multimeter.GetValues()
+    assert (a == [0.0, -0.1, 0.2, -0.3, 0.4, -0.5]).all()
+
+def test_pyniv_dummy_vis_multimeter_timesteps():
+    backend = pyniv.DummyAnalysisBackend();
+    multimeter = pyniv.VisMultimeter("multimeter A")
+    backend.Connect(multimeter)
+    ts = multimeter.GetTimesteps();
+    assert (ts == [0.0]).all()

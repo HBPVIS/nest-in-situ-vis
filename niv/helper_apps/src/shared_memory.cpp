@@ -1,7 +1,7 @@
 //------------------------------------------------------------------------------
 // nest in situ vis
 //
-// Copyright (c) 2017 RWTH Aachen University, Germany,
+// Copyright (c) 2017-2018 RWTH Aachen University, Germany,
 // Virtual Reality & Immersive Visualisation Group.
 //------------------------------------------------------------------------------
 //                                 License
@@ -26,8 +26,8 @@
 #include "conduit/conduit_node.hpp"
 #include "conduit/conduit_schema.hpp"
 
-#include "niv/shared_memory_access.hpp"
-#include "niv/shared_memory_segment.hpp"
+#include "niv/shared_memory.hpp"
+#include "niv/shared_memory_synchronization.hpp"
 
 conduit::Node AnyNode() {
   conduit::Node node;
@@ -46,18 +46,33 @@ void FillWithData(niv::SharedMemory* shared_memory) {
 }
 
 void Create() {
-  niv::SharedMemorySegment segment;
+  niv::SharedMemory segment{niv::SharedMemory::Create()};
   FillWithData(&segment);
 }
 
 void Fill() {
-  niv::SharedMemoryAccess access;
+  niv::SharedMemory access{niv::SharedMemory::Access()};
   FillWithData(&access);
 }
 
 void Destroy() {
-  niv::SharedMemoryAccess access;
+  niv::SharedMemory access{niv::SharedMemory::Access()};
   access.Destroy();
+}
+
+void CreateMutex() {
+  niv::SharedMemorySynchronization::ManagedMutex mutex{
+      boost::interprocess::create_only,
+      niv::SharedMemorySynchronization::MutexName()};
+}
+
+void DestroyMutex() {
+  niv::SharedMemorySynchronization::ManagedMutex mutex{
+      boost::interprocess::open_only,
+      niv::SharedMemorySynchronization::MutexName()};
+  mutex.unlock();
+  niv::SharedMemorySynchronization::ManagedMutex::remove(
+      niv::SharedMemorySynchronization::MutexName());
 }
 
 int Command(char* command) {
@@ -68,6 +83,12 @@ int Command(char* command) {
     Fill();
   } else if (std::string(command) == std::string("destroy")) {
     Destroy();
+    return EXIT_SUCCESS;
+  } else if (std::string(command) == std::string("create_mutex")) {
+    CreateMutex();
+    return EXIT_SUCCESS;
+  } else if (std::string(command) == std::string("destroy_mutex")) {
+    DestroyMutex();
     return EXIT_SUCCESS;
   }
   return EXIT_FAILURE;

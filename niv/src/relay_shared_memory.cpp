@@ -1,7 +1,7 @@
 //------------------------------------------------------------------------------
 // nest in situ vis
 //
-// Copyright (c) 2017 RWTH Aachen University, Germany,
+// Copyright (c) 2017-2018 RWTH Aachen University, Germany,
 // Virtual Reality & Immersive Visualisation Group.
 //------------------------------------------------------------------------------
 //                                 License
@@ -23,21 +23,66 @@
 
 #include <memory>
 #include <utility>
+#include <vector>
 
-#include "niv/shared_memory_segment.hpp"
+#include "conduit/conduit_core.hpp"
+#include "conduit/conduit_schema.hpp"
+
+#include "niv/shared_memory.hpp"
+#include "niv/shared_memory_synchronization.hpp"
 
 namespace niv {
 
-RelaySharedMemory::RelaySharedMemory(
-    std::unique_ptr<SharedMemory> shared_memory)
-    : shared_memory_{std::move(shared_memory)} {}
-
-void RelaySharedMemory::Send(const conduit::Node& node) {
-  shared_memory_->Store(node);
+RelaySharedMemory::RelaySharedMemory() {
+  try {
+    shared_memory_ = std::make_unique<SharedMemory>(SharedMemory::Create());
+    synchronization_ = std::make_unique<SharedMemorySynchronization>(
+        SharedMemorySynchronization::Create());
+  } catch (...) {
+    shared_memory_ = std::make_unique<SharedMemory>(SharedMemory::Access());
+    synchronization_ = std::make_unique<SharedMemorySynchronization>(
+        SharedMemorySynchronization::Access());
+  }
 }
 
-conduit::Node RelaySharedMemory::Receive() { return shared_memory_->Read(); }
+RelaySharedMemory::RelaySharedMemory(const CreateSharedMemory&)
+    : shared_memory_{std::make_unique<SharedMemory>(
+          niv::SharedMemory::Create())},
+      synchronization_{std::make_unique<SharedMemorySynchronization>(
+          niv::SharedMemorySynchronization::Create())} {}
 
-conduit::Node RelaySharedMemory::Listen() { return shared_memory_->Listen(); }
+RelaySharedMemory::RelaySharedMemory(const AccessSharedMemory&)
+    : shared_memory_{std::make_unique<SharedMemory>(SharedMemory::Access())},
+      synchronization_{std::make_unique<SharedMemorySynchronization>(
+          SharedMemorySynchronization::Access())} {}
+
+RelaySharedMemory::~RelaySharedMemory() {
+  if (shared_memory_->GetReferenceCount() == 0) {
+    shared_memory_->Destroy();
+    synchronization_->Destroy();
+  }
+}
+
+void RelaySharedMemory::Send(const conduit::Node& node) {
+  auto lock = synchronization_->ScopedLock();
+  if (IsEmpty()) {
+    shared_memory_->Store(node);
+  } else {
+    SendUpdate(node);
+  }
+}
+
+void RelaySharedMemory::SendUpdate(const conduit::Node& node) {
+  GetSharedMemory()->Update(node);
+}
+
+conduit::Node RelaySharedMemory::Receive() {
+  auto lock = synchronization_->ScopedLock();
+  auto received_data = shared_memory_->Read();
+  GetSharedMemory()->Clear();
+  return received_data;
+}
+
+bool RelaySharedMemory::IsEmpty() const { return GetSharedMemory()->IsEmpty(); }
 
 }  // namespace niv

@@ -1,7 +1,7 @@
 //------------------------------------------------------------------------------
 // nest in situ vis
 //
-// Copyright (c) 2017 RWTH Aachen University, Germany,
+// Copyright (c) 2017-2018 RWTH Aachen University, Germany,
 // Virtual Reality & Immersive Visualisation Group.
 //------------------------------------------------------------------------------
 //                                 License
@@ -52,9 +52,11 @@ class SharedMemory {
   using SchemaStorage = std::vector<char, Allocator<char>>;
 
   SharedMemory() = delete;
+  explicit SharedMemory(const Create&);
+  explicit SharedMemory(const Access&);
   SharedMemory(const SharedMemory&) = delete;
   SharedMemory(SharedMemory&&) = delete;
-  virtual ~SharedMemory() = default;
+  virtual ~SharedMemory();
 
   void Destroy();
 
@@ -71,18 +73,27 @@ class SharedMemory {
   static constexpr const char* SegmentName() { return "niv-shared-memory"; }
   static constexpr const char* DataStorageName() { return "DataStorage"; }
   static constexpr const char* SchemaStorageName() { return "SchemaStorage"; }
+  static constexpr const char* ReferenceCountName() { return "ReferenceCount"; }
+
   static constexpr std::size_t InitialSize() { return 1073741824u; }
 
   SharedMemory& operator=(const SharedMemory&) = delete;
   SharedMemory& operator=(SharedMemory&&) = delete;
 
- protected:
-  explicit SharedMemory(const Create&);
-  explicit SharedMemory(const Access&);
+  int GetReferenceCount() const;
 
  private:
+  SchemaStorage* ConstructSchemaStorage();
+  DataStorage* ConstructDataStorage();
+  int* ConstructReferenceCount();
+
+  SchemaStorage* FindSchemaStorage();
+  DataStorage* FindDataStorage();
+  int* FindReferenceCount();
+
   ManagedSharedMemory segment_;
   NodeStorage<SchemaStorage, DataStorage> node_storage_;
+  int* reference_count_;
 };
 
 }  // namespace niv

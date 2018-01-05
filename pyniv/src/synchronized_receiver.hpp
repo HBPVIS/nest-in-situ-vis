@@ -1,7 +1,7 @@
 //------------------------------------------------------------------------------
 // nest in situ vis
 //
-// Copyright (c) 2017 RWTH Aachen University, Germany,
+// Copyright (c) 2017-2018 RWTH Aachen University, Germany,
 // Virtual Reality & Immersive Visualisation Group.
 //------------------------------------------------------------------------------
 //                                 License
@@ -22,8 +22,7 @@
 #ifndef PYNIV_SRC_SYNCHRONIZED_RECEIVER_HPP_
 #define PYNIV_SRC_SYNCHRONIZED_RECEIVER_HPP_
 
-#include "niv/shared_memory_segment.hpp"
-#include "niv/synchronized_relay_shared_memory.hpp"
+#include "niv/relay_shared_memory.hpp"
 
 #include "conduit_data.hpp"
 
@@ -44,8 +43,7 @@ class SynchronizedReceiver {
   void Print() const;
 
  private:
-  niv::SynchronizedRelaySharedMemory relay_{
-      std::make_unique<niv::SharedMemorySegment>()};
+  niv::RelaySharedMemory relay_;
 };
 
 }  // namespace pyniv

@@ -1,7 +1,7 @@
 //------------------------------------------------------------------------------
 // nest in situ vis
 //
-// Copyright (c) 2017 RWTH Aachen University, Germany,
+// Copyright (c) 2017-2018 RWTH Aachen University, Germany,
 // Virtual Reality & Immersive Visualisation Group.
 //------------------------------------------------------------------------------
 //                                 License
@@ -23,33 +23,47 @@
 #define NIV_INCLUDE_NIV_RELAY_SHARED_MEMORY_HPP_
 
 #include <memory>
+#include <vector>
+
+#include "conduit/conduit_node.hpp"
 
 #include "niv/shared_memory.hpp"
+#include "niv/shared_memory_synchronization.hpp"
 
 namespace niv {
 
+SUPPRESS_WARNINGS_BEGIN_PADDED
 class RelaySharedMemory {
  public:
-  RelaySharedMemory() = delete;
-  explicit RelaySharedMemory(std::unique_ptr<SharedMemory> shared_memory);
+  class CreateSharedMemory {};
+  class AccessSharedMemory {};
+
+  RelaySharedMemory();
+  virtual ~RelaySharedMemory();
   RelaySharedMemory(const RelaySharedMemory&) = delete;
   RelaySharedMemory(RelaySharedMemory&&) = delete;
-  virtual ~RelaySharedMemory() = default;
 
-  virtual void Send(const conduit::Node& node);
+  void Send(const conduit::Node& node);
   conduit::Node Receive();
-  conduit::Node Listen();
 
   RelaySharedMemory& operator=(const RelaySharedMemory&) = delete;
   RelaySharedMemory& operator=(RelaySharedMemory&&) = delete;
 
+  bool IsEmpty() const;
+
  protected:
+  explicit RelaySharedMemory(const CreateSharedMemory&);
+  explicit RelaySharedMemory(const AccessSharedMemory&);
   SharedMemory* GetSharedMemory() { return shared_memory_.get(); }
   const SharedMemory* GetSharedMemory() const { return shared_memory_.get(); }
 
  private:
+  void SendUpdate(const conduit::Node& node);
+
   std::unique_ptr<SharedMemory> shared_memory_;
+  std::unique_ptr<SharedMemorySynchronization> synchronization_;
 };
+SUPPRESS_WARNINGS_END
 
 }  // namespace niv
 

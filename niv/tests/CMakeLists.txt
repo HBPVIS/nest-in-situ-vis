@@ -1,7 +1,7 @@
 #-------------------------------------------------------------------------------
 # nest in situ vis
 #
-# Copyright (c) 2017 RWTH Aachen University, Germany,
+# Copyright (c) 2017-2018 RWTH Aachen University, Germany,
 # Virtual Reality & Immersive Visualisation Group.
 #-------------------------------------------------------------------------------
 #                                  License
@@ -19,8 +19,8 @@
 # limitations under the License.
 #-------------------------------------------------------------------------------
 
-file(GLOB NIV_TEST_SOURCES src/*.cpp)
-file(GLOB NIV_TEST_HEADERS src/*.hpp)
+file(GLOB NIV_TEST_SOURCES src/*.cpp src/**/*.cpp)
+file(GLOB NIV_TEST_HEADERS src/*.hpp src/**/*.hpp)
 file(GLOB NIV_TEST_UTILITIES_TEST_SOURCES test_utilities/tests/src/*.cpp)
 file(GLOB NIV_TEST_UTILITIES_HEADERS test_utilities/*.hpp)
 
@@ -33,6 +33,10 @@ add_test_catch(NAME "niv-tests"
   LINK_LIBRARIES niv
   PATH_TO_ADD ${PROJECT_BINARY_DIR}/niv
   )
+
+set_tests_properties("src__test_relay_shared_memory_mutex" PROPERTIES TIMEOUT 2.0)
+set_tests_properties("src__test_relay_shared_memory_threaded" PROPERTIES TIMEOUT 0.1)
+
 add_test_cpplint(NAME "niv-tests--cpplint"
   ${NIV_TEST_SOURCES}
   ${NIV_TEST_HEADERS}

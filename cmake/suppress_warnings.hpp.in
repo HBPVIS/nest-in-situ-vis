@@ -1,7 +1,7 @@
 //------------------------------------------------------------------------------
 // nest in situ vis
 //
-// Copyright (c) 2017 RWTH Aachen University, Germany,
+// Copyright (c) 2017-2018 RWTH Aachen University, Germany,
 // Virtual Reality & Immersive Visualisation Group.
 //------------------------------------------------------------------------------
 //                                 License
@@ -46,6 +46,11 @@
   _Pragma("clang diagnostic ignored \"-Wdouble-promotion\"")                   \
   _Pragma("clang diagnostic ignored \"-Wdouble-promotion\"")                   \
   _Pragma("clang diagnostic ignored \"-Wdisabled-macro-expansion\"")           \
+  _Pragma("clang diagnostic ignored \"-Wsign-conversion\"")                    \
+  _Pragma("clang diagnostic ignored \"-Wcomma\"")                              \
+  _Pragma("clang diagnostic ignored \"-Wconversion\"")                         \
+  _Pragma("clang diagnostic ignored \"-Wshadow\"")                             \
+  _Pragma("clang diagnostic ignored \"-Wexit-time-destructors\"")              \
   _Pragma("clang diagnostic ignored \"-Wcast-align\"")
 // clang-format on
 
@@ -65,8 +70,9 @@
 #elif defined __GNUC__
 #define SUPPRESS_WARNINGS_BEGIN                                              \
   _Pragma("GCC diagnostic push") _Pragma("GCC diagnostic ignored \"-Wall\"") \
-      _Pragma("GCC diagnostic ignored \"-Wextra\"") \
-      _Pragma("GCC diagnostic ignored \"-Wunused-local-typedefs\"")
+      _Pragma("GCC diagnostic ignored \"-Wextra\"")                          \
+          _Pragma("GCC diagnostic ignored \"-Wunused-local-typedefs\"")      \
+              _Pragma("GCC diagnostic ignored \"-Wdeprecated-declarations\"")
 #define SUPPRESS_WARNINGS_BEGIN_PADDED
 #define SUPPRESS_WARNINGS_END _Pragma("GCC diagnostic pop")
 

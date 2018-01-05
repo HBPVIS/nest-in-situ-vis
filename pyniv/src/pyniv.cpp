@@ -1,7 +1,7 @@
 //------------------------------------------------------------------------------
 // nest in situ vis
 //
-// Copyright (c) 2017 RWTH Aachen University, Germany,
+// Copyright (c) 2017-2018 RWTH Aachen University, Germany,
 // Virtual Reality & Immersive Visualisation Group.
 //------------------------------------------------------------------------------
 //                                 License
@@ -21,19 +21,28 @@
 
 #include "pyniv.hpp"
 
-#include "niv/conduit_receiver.hpp"
+#include "niv/consumer/backend.hpp"
+#include "niv/consumer/receiver.hpp"
 #include "niv/niv.hpp"
 
+#include "analysis_device.hpp"
+#include "analysis_receiver.hpp"
 #include "conduit_data.hpp"
-#include "conduit_data_sender.hpp"
+#include "dummy_analysis_backend.hpp"
 #include "synchronized_receiver.hpp"
 #include "synchronized_sender.hpp"
+#include "vis_multimeter.hpp"
 
 BOOST_PYTHON_MODULE(pyniv) {
+  boost::python::numpy::initialize();
   def("Greet", niv::Greet);
+  pyniv::expose<niv::consumer::Backend>();
+  pyniv::expose<pyniv::AnalysisDeviceWrap>();
+  pyniv::expose<pyniv::AnalysisReceiverWrap>();
   pyniv::expose<pyniv::ConduitData>();
-  pyniv::expose<pyniv::ConduitDataSender>();
-  pyniv::expose<niv::ConduitReceiver>();
+  pyniv::expose<pyniv::DummyAnalysisBackend>();
   pyniv::expose<pyniv::SynchronizedSender>();
+  pyniv::expose<niv::consumer::Receiver>();
   pyniv::expose<pyniv::SynchronizedReceiver>();
+  pyniv::expose<pyniv::VisMultimeter>();
 }
