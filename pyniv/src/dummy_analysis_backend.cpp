@@ -19,11 +19,11 @@
 // limitations under the License.
 //------------------------------------------------------------------------------
 
+#include "pyniv.hpp"
+
 #include "dummy_analysis_backend.hpp"
 
 #include "niv/nest_test_data.hpp"
-
-#include "pyniv.hpp"
 
 namespace pyniv {
 

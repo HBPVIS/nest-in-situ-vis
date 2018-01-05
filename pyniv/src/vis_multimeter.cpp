@@ -19,8 +19,10 @@
 // limitations under the License.
 //------------------------------------------------------------------------------
 
-#include <string>
-#include <vector>
+#include "pyniv.hpp"
+
+#include <string> // NOLINT
+#include <vector> // NOLINT
 
 SUPPRESS_WARNINGS_BEGIN
 #include "boost/python/numpy.hpp"
@@ -28,7 +30,6 @@ SUPPRESS_WARNINGS_END
 
 #include "niv/consumer/device.hpp"
 
-#include "pyniv.hpp"
 #include "vis_multimeter.hpp"
 
 namespace pyniv {
