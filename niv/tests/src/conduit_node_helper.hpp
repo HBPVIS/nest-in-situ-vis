@@ -29,7 +29,7 @@
 
 #include "conduit/conduit_node.hpp"
 
-#include "niv/node_storage.hpp"
+#include "niv/exchange/node_storage.hpp"
 
 namespace testing {
 
@@ -70,16 +70,18 @@ conduit::Node UpdatedNode() {
 
 conduit::Node ADifferentNode() { return Update(); }
 
+/*
 void Serialize(const conduit::Node& node, std::string* schema_storage,
-               std::vector<conduit::uint8>* data_storage) {
-  const std::string schema{niv::CompactedSchemaJson(node)};
-  schema_storage->clear();
-  schema_storage->assign(schema.begin(), schema.end());
+             std::vector<conduit::uint8>* data_storage) {
+const std::string schema{niv::exchange::CompactedSchemaJson(node)};
+schema_storage->clear();
+schema_storage->assign(schema.begin(), schema.end());
 
-  const std::vector<conduit::uint8> data{niv::Serialize(node)};
-  data_storage->clear();
-  data_storage->assign(data.begin(), data.end());
+const std::vector<conduit::uint8> data{niv::Serialize(node)};
+data_storage->clear();
+data_storage->assign(data.begin(), data.end());
 }
+*/
 
 }  // namespace testing
 

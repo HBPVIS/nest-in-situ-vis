@@ -25,15 +25,15 @@
 
 #include "conduit/conduit_node.hpp"
 
-#include "niv/relay_shared_memory.hpp"
-#include "niv/shared_memory.hpp"
+#include "niv/exchange/relay_shared_memory.hpp"
+#include "niv/exchange/shared_memory.hpp"
 
 #include "conduit_node_helper.hpp"
 
 SCENARIO("Data gets transported", "[niv][niv::RelaySharedMemory]") {
   GIVEN("a simulation relay, and a visualization relay") {
-    niv::RelaySharedMemory visualization_relay;
-    niv::RelaySharedMemory simulation_relay;
+    niv::exchange::RelaySharedMemory visualization_relay;
+    niv::exchange::RelaySharedMemory simulation_relay;
 
     WHEN("a node is sent via the simulation relay") {
       simulation_relay.Send(testing::AnyNode());
@@ -52,7 +52,7 @@ SCENARIO("Data gets transported", "[niv][niv::RelaySharedMemory]") {
 SCENARIO("data in relay gets updated on sending update",
          "[niv][niv::RelaySharedMemory]") {
   GIVEN("a relay storing data") {
-    niv::RelaySharedMemory simulation_relay;
+    niv::exchange::RelaySharedMemory simulation_relay;
     simulation_relay.Send(testing::AnyNode());
 
     WHEN("an update gets sent to the relay") {
@@ -70,7 +70,7 @@ SCENARIO("data in relay gets updated on sending update",
 SCENARIO("Data in relay is cleared on receive",
          "[niv][niv::RelaySharedMemory]") {
   GIVEN("A synchronized relay with some data") {
-    niv::RelaySharedMemory relay;
+    niv::exchange::RelaySharedMemory relay;
     relay.Send(testing::AnyNode());
 
     WHEN("Data is received") {
@@ -88,8 +88,8 @@ SCENARIO("Data in relay is cleared on receive",
 SCENARIO("Relay's emptyness is passed throug shared memory",
          "[niv][niv::RelaySharedMemory]") {
   GIVEN("a pair of relays") {
-    niv::RelaySharedMemory relay_segment;
-    niv::RelaySharedMemory relay_access;
+    niv::exchange::RelaySharedMemory relay_segment;
+    niv::exchange::RelaySharedMemory relay_access;
 
     THEN("both relays are empty") {
       REQUIRE(relay_segment.IsEmpty());
@@ -118,36 +118,40 @@ SCENARIO("ordered destruction of relays is properly reflectes by shared memory",
          "[niv][niv::RelaySharedMemory]") {
   GIVEN("no relay") {
     THEN("accessing shared throws an exception") {
-      REQUIRE_THROWS_WITH(niv::SharedMemory(niv::SharedMemory::Access()),
-                          "No such file or directory");
+      REQUIRE_THROWS_WITH(
+          niv::exchange::SharedMemory(niv::exchange::SharedMemory::Access()),
+          "No such file or directory");
     }
   }
 
   GIVEN("a relay in a new scope") {
     {  // new scope
-      niv::RelaySharedMemory relay;
+      niv::exchange::RelaySharedMemory relay;
       THEN("accessing shared memory does not throw") {
-        REQUIRE_NOTHROW(niv::SharedMemory(niv::SharedMemory::Access()));
+        REQUIRE_NOTHROW(
+            niv::exchange::SharedMemory(niv::exchange::SharedMemory::Access()));
       }
 
       THEN("creating a second relay does not throw") {
-        REQUIRE_NOTHROW(niv::RelaySharedMemory());
+        REQUIRE_NOTHROW(niv::exchange::RelaySharedMemory());
       }
 
       WHEN("a second relay gets out of scope") {
         {  // new scope
-          niv::RelaySharedMemory relay2;
+          niv::exchange::RelaySharedMemory relay2;
         }
         THEN("accessing shared memory does not throw") {
-          REQUIRE_NOTHROW(niv::SharedMemory(niv::SharedMemory::Access()));
+          REQUIRE_NOTHROW(niv::exchange::SharedMemory(
+              niv::exchange::SharedMemory::Access()));
         }
       }
     }
 
     WHEN("the first relay is out of scope") {
       THEN("accessing shared memory throws an exception") {
-        REQUIRE_THROWS_WITH(niv::SharedMemory(niv::SharedMemory::Access()),
-                            "No such file or directory");
+        REQUIRE_THROWS_WITH(
+            niv::exchange::SharedMemory(niv::exchange::SharedMemory::Access()),
+            "No such file or directory");
       }
     }
   }
@@ -157,19 +161,21 @@ SCENARIO(
     "unorderd destruction of relays is properly reflected by shared memory",
     "[niv][niv::RelaySharedMemory]") {
   GIVEN("two relays") {
-    auto relay1 = std::make_unique<niv::RelaySharedMemory>();
-    auto relay2 = std::make_unique<niv::RelaySharedMemory>();
+    auto relay1 = std::make_unique<niv::exchange::RelaySharedMemory>();
+    auto relay2 = std::make_unique<niv::exchange::RelaySharedMemory>();
 
     WHEN("deleting the first relay") {
       relay1.reset();
       THEN("accessing shared memory does not throw") {
-        REQUIRE_NOTHROW(niv::SharedMemory(niv::SharedMemory::Access()));
+        REQUIRE_NOTHROW(
+            niv::exchange::SharedMemory(niv::exchange::SharedMemory::Access()));
       }
 
       WHEN("deleting the second relay") {
         relay2.reset();
         THEN("accessing shared memory throws an exception") {
-          REQUIRE_THROWS_WITH(niv::SharedMemory(niv::SharedMemory::Access()),
+          REQUIRE_THROWS_WITH(niv::exchange::SharedMemory(
+                                  niv::exchange::SharedMemory::Access()),
                               "No such file or directory");
         }
       }

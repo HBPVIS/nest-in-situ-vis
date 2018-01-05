@@ -22,7 +22,7 @@
 #ifndef PYNIV_SRC_SYNCHRONIZED_SENDER_HPP_
 #define PYNIV_SRC_SYNCHRONIZED_SENDER_HPP_
 
-#include "niv/relay_shared_memory.hpp"
+#include "niv/exchange/relay_shared_memory.hpp"
 
 #include "conduit_data.hpp"
 
@@ -41,7 +41,7 @@ class SynchronizedSender {
   void Send(const ConduitData& data);
 
  private:
-  niv::RelaySharedMemory relay_;
+  niv::exchange::RelaySharedMemory relay_;
 };
 
 }  // namespace pyniv

@@ -44,7 +44,9 @@ function(ADD_TEST_CATCH_INTERNAL_
     NAME "${NAME}"
     )
   add_executable(${NAME} ${SOURCES} ${HEADERS})
-  target_include_directories(${NAME} PRIVATE ${INCLUDE_DIRECTORIES})
+  target_include_directories(${NAME}
+    PRIVATE ${INCLUDE_DIRECTORIES}
+    )
   target_link_libraries(${NAME} ${LINK_LIBRARIES})
   add_test(NAME ${NAME} COMMAND ${NAME})
   set_warning_levels_RWTH(${NAME})
@@ -103,6 +105,6 @@ function(ADD_TEST_CATCH)
       "${ADD_TEST_CATCH_INCLUDE_DIRECTORIES}"
       "${ADD_TEST_CATCH_LINK_LIBRARIES};${ADD_TEST_CATCH_NAME}_catch_main"
       "${ADD_TEST_CATCH_PATH_TO_ADD}"
-    )
+      )
   endforeach()
 endfunction()

@@ -25,14 +25,14 @@
 
 #include "catch/catch.hpp"
 
-#include "niv/node_storage.hpp"
+#include "niv/exchange/node_storage.hpp"
 
 #include "conduit_node_helper.hpp"
 
 namespace {
 
 using NodeStorageBase =
-    niv::NodeStorage<std::string, std::vector<conduit::uint8>>;
+    niv::exchange::NodeStorage<std::string, std::vector<conduit::uint8>>;
 
 class NodeStorage : public NodeStorageBase {
  public:

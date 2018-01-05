@@ -19,8 +19,8 @@
 // limitations under the License.
 //------------------------------------------------------------------------------
 
-#ifndef NIV_INCLUDE_NIV_SHARED_MEMORY_SYNCHRONIZATION_HPP_
-#define NIV_INCLUDE_NIV_SHARED_MEMORY_SYNCHRONIZATION_HPP_
+#ifndef NIV_INCLUDE_NIV_EXCHANGE_SHARED_MEMORY_SYNCHRONIZATION_HPP_
+#define NIV_INCLUDE_NIV_EXCHANGE_SHARED_MEMORY_SYNCHRONIZATION_HPP_
 
 SUPPRESS_WARNINGS_BEGIN
 #include "boost/interprocess/sync/named_mutex.hpp"
@@ -28,6 +28,7 @@ SUPPRESS_WARNINGS_BEGIN
 SUPPRESS_WARNINGS_END
 
 namespace niv {
+namespace exchange {
 
 class SharedMemorySynchronization {
  public:
@@ -63,6 +64,7 @@ class SharedMemorySynchronization {
   ManagedMutex mutex_;
 };
 
+}  // namespace exchange
 }  // namespace niv
 
-#endif  // NIV_INCLUDE_NIV_SHARED_MEMORY_SYNCHRONIZATION_HPP_
+#endif  // NIV_INCLUDE_NIV_EXCHANGE_SHARED_MEMORY_SYNCHRONIZATION_HPP_

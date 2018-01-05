@@ -19,8 +19,8 @@
 // limitations under the License.
 //------------------------------------------------------------------------------
 
-#ifndef NIV_INCLUDE_NIV_SHARED_MEMORY_HPP_
-#define NIV_INCLUDE_NIV_SHARED_MEMORY_HPP_
+#ifndef NIV_INCLUDE_NIV_EXCHANGE_SHARED_MEMORY_HPP_
+#define NIV_INCLUDE_NIV_EXCHANGE_SHARED_MEMORY_HPP_
 
 #include <memory>
 #include <string>
@@ -35,9 +35,10 @@ SUPPRESS_WARNINGS_END
 #include "conduit/conduit_core.hpp"
 #include "conduit/conduit_node.hpp"
 
-#include "niv/node_storage.hpp"
+#include "niv/exchange/node_storage.hpp"
 
 namespace niv {
+namespace exchange {
 
 class SharedMemory {
  public:
@@ -96,6 +97,7 @@ class SharedMemory {
   int* reference_count_;
 };
 
+}  // namespace exchange
 }  // namespace niv
 
-#endif  // NIV_INCLUDE_NIV_SHARED_MEMORY_HPP_
+#endif  // NIV_INCLUDE_NIV_EXCHANGE_SHARED_MEMORY_HPP_

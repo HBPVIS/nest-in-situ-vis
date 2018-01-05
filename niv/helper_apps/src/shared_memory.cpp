@@ -26,8 +26,8 @@
 #include "conduit/conduit_node.hpp"
 #include "conduit/conduit_schema.hpp"
 
-#include "niv/shared_memory.hpp"
-#include "niv/shared_memory_synchronization.hpp"
+#include "niv/exchange/shared_memory.hpp"
+#include "niv/exchange/shared_memory_synchronization.hpp"
 
 conduit::Node AnyNode() {
   conduit::Node node;
@@ -40,39 +40,39 @@ conduit::Node AnyNode() {
   return node;
 }
 
-void FillWithData(niv::SharedMemory* shared_memory) {
+void FillWithData(niv::exchange::SharedMemory* shared_memory) {
   conduit::Node node{AnyNode()};
   shared_memory->Store(node);
 }
 
 void Create() {
-  niv::SharedMemory segment{niv::SharedMemory::Create()};
+  niv::exchange::SharedMemory segment{niv::exchange::SharedMemory::Create()};
   FillWithData(&segment);
 }
 
 void Fill() {
-  niv::SharedMemory access{niv::SharedMemory::Access()};
+  niv::exchange::SharedMemory access{niv::exchange::SharedMemory::Access()};
   FillWithData(&access);
 }
 
 void Destroy() {
-  niv::SharedMemory access{niv::SharedMemory::Access()};
+  niv::exchange::SharedMemory access{niv::exchange::SharedMemory::Access()};
   access.Destroy();
 }
 
 void CreateMutex() {
-  niv::SharedMemorySynchronization::ManagedMutex mutex{
+  niv::exchange::SharedMemorySynchronization::ManagedMutex mutex{
       boost::interprocess::create_only,
-      niv::SharedMemorySynchronization::MutexName()};
+      niv::exchange::SharedMemorySynchronization::MutexName()};
 }
 
 void DestroyMutex() {
-  niv::SharedMemorySynchronization::ManagedMutex mutex{
+  niv::exchange::SharedMemorySynchronization::ManagedMutex mutex{
       boost::interprocess::open_only,
-      niv::SharedMemorySynchronization::MutexName()};
+      niv::exchange::SharedMemorySynchronization::MutexName()};
   mutex.unlock();
-  niv::SharedMemorySynchronization::ManagedMutex::remove(
-      niv::SharedMemorySynchronization::MutexName());
+  niv::exchange::SharedMemorySynchronization::ManagedMutex::remove(
+      niv::exchange::SharedMemorySynchronization::MutexName());
 }
 
 int Command(char* command) {

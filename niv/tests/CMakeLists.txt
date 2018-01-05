@@ -29,13 +29,14 @@ add_test_catch(NAME "niv-tests"
   SOURCES ${NIV_TEST_SOURCES} ${NIV_TEST_UTILITIES_TEST_SOURCES}
   HEADERS ${NIV_TEST_HEADERS} ${NIV_TEST_UTILITIES_HEADERS}
   CATCH_MAIN src/tests.cpp
-  INCLUDE_DIRECTORIES ${CMAKE_CURRENT_SOURCE_DIR}
+  INCLUDE_DIRECTORIES
+    ${CMAKE_CURRENT_SOURCE_DIR} ${CMAKE_CURRENT_SOURCE_DIR}/src
   LINK_LIBRARIES niv
   PATH_TO_ADD ${PROJECT_BINARY_DIR}/niv
   )
 
-set_tests_properties("src__test_relay_shared_memory_mutex" PROPERTIES TIMEOUT 2.0)
-set_tests_properties("src__test_relay_shared_memory_threaded" PROPERTIES TIMEOUT 0.1)
+set_tests_properties("src__exchange__test_relay_shared_memory_mutex" PROPERTIES TIMEOUT 2.0)
+set_tests_properties("src__exchange__test_relay_shared_memory_threaded" PROPERTIES TIMEOUT 0.1)
 
 add_test_cpplint(NAME "niv-tests--cpplint"
   ${NIV_TEST_SOURCES}

@@ -21,13 +21,13 @@
 
 #include "catch/catch.hpp"
 
-#include "niv/shared_memory_synchronization.hpp"
+#include "niv/exchange/shared_memory_synchronization.hpp"
 
 SCENARIO("SharedMemorySynchronization locks and releases properly",
          "[niv][niv::SharedMemorySynchronization]") {
   GIVEN("A SharedMemorySynchronization") {
-    niv::SharedMemorySynchronization sync{
-        niv::SharedMemorySynchronization::Create()};
+    niv::exchange::SharedMemorySynchronization sync{
+        niv::exchange::SharedMemorySynchronization::Create()};
     WHEN("scoped lock is acquired") {
       auto lock{sync.ScopedLock()};
       THEN("the mutex cannot be locked a second time") {
@@ -54,10 +54,10 @@ SCENARIO("SharedMemorySynchronization locks and releases properly",
 SCENARIO("SharedMemorySynchronization locks and releases through shared mem",
          "[niv][niv::SharedMemorySynchronization]") {
   GIVEN("A pair of shared memory synchronization") {
-    niv::SharedMemorySynchronization sync_object{
-        niv::SharedMemorySynchronization::Create()};
-    niv::SharedMemorySynchronization sync_access{
-        niv::SharedMemorySynchronization::Access()};
+    niv::exchange::SharedMemorySynchronization sync_object{
+        niv::exchange::SharedMemorySynchronization::Create()};
+    niv::exchange::SharedMemorySynchronization sync_access{
+        niv::exchange::SharedMemorySynchronization::Access()};
 
     WHEN("scoped lock is acquired on the first one") {
       auto lock = sync_object.ScopedLock();

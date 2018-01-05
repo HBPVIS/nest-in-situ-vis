@@ -22,9 +22,9 @@
 #include "catch/catch.hpp"
 
 #include "niv/consumer/receiver.hpp"
-#include "niv/relay_shared_memory.hpp"
+#include "niv/exchange/relay_shared_memory.hpp"
 
-#include "../conduit_node_helper.hpp"
+#include "conduit_node_helper.hpp"
 
 SCENARIO("received data is aggregated in the consumer::Receiver",
          "[niv][niv::consumer][niv::consumer::Receiver]") {
@@ -32,7 +32,7 @@ SCENARIO("received data is aggregated in the consumer::Receiver",
     niv::consumer::Receiver receiver;
     conduit::Node receiving_node;
     receiver.SetNode(&receiving_node);
-    niv::RelaySharedMemory sender;
+    niv::exchange::RelaySharedMemory sender;
 
     WHEN("Data is sent and a receive is triggered") {
       sender.Send(testing::AnyNode());

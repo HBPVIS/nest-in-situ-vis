@@ -19,7 +19,7 @@
 // limitations under the License.
 //------------------------------------------------------------------------------
 
-#include "niv/shared_memory.hpp"
+#include "niv/exchange/shared_memory.hpp"
 
 #include <string>
 #include <utility>
@@ -29,6 +29,7 @@
 #include "conduit/conduit_schema.hpp"
 
 namespace niv {
+namespace exchange {
 
 SharedMemory::SharedMemory(const Create&)
     : segment_{boost::interprocess::create_only, SegmentName(), InitialSize()},
@@ -97,4 +98,5 @@ bool SharedMemory::IsEmpty() const { return node_storage_.IsEmpty(); }
 
 int SharedMemory::GetReferenceCount() const { return *reference_count_; }
 
+}  // namespace exchange
 }  // namespace niv

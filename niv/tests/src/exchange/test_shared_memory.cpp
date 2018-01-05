@@ -23,13 +23,13 @@
 
 #include "conduit/conduit_node.hpp"
 
-#include "niv/shared_memory.hpp"
+#include "niv/exchange/shared_memory.hpp"
 
 #include "conduit_node_helper.hpp"
 
 SCENARIO("Shared memory creation", "[niv][niv::SharedMemory]") {
   GIVEN("A shared memory segment") {
-    niv::SharedMemory segment{niv::SharedMemory::Create()};
+    niv::exchange::SharedMemory segment{niv::exchange::SharedMemory::Create()};
     WHEN("I ask it for its free size") {
       auto free_size_after_creation = segment.GetFreeSize();
       THEN("it is > 0") { REQUIRE(free_size_after_creation > 0); }
@@ -56,7 +56,8 @@ SCENARIO("Shared memory creation", "[niv][niv::SharedMemory]") {
       THEN("It throws an exception") {
         REQUIRE_THROWS_WITH(
             []() {
-              niv::SharedMemory segment2{niv::SharedMemory::Create()};
+              niv::exchange::SharedMemory segment2{
+                  niv::exchange::SharedMemory::Create()};
               segment2.Destroy();
             }(),
             "File exists");
@@ -69,7 +70,7 @@ SCENARIO("Shared memory creation", "[niv][niv::SharedMemory]") {
 SCENARIO("write updated node to shared memory segment",
          "[niv][niv::SharedMemory]") {
   GIVEN("a shared memory segment with some data") {
-    niv::SharedMemory segment{niv::SharedMemory::Create()};
+    niv::exchange::SharedMemory segment{niv::exchange::SharedMemory::Create()};
     segment.Store(testing::AnyNode());
     WHEN("a larger node is stored") {
       segment.Store(testing::UpdatedNode());
@@ -87,19 +88,22 @@ SCENARIO("write updated node to shared memory segment",
 SCENARIO("Shared memory access", "[niv][niv::SharedMemory]") {
   GIVEN("No shared memory segment") {
     THEN("Creating a shared memory access throws an exception.") {
-      REQUIRE_THROWS_WITH(niv::SharedMemory{niv::SharedMemory::Access()},
-                          "No such file or directory");
+      REQUIRE_THROWS_WITH(
+          niv::exchange::SharedMemory{niv::exchange::SharedMemory::Access()},
+          "No such file or directory");
     }
   }
 
   GIVEN("A shared memory segment") {
-    niv::SharedMemory segment{niv::SharedMemory::Create()};
+    niv::exchange::SharedMemory segment{niv::exchange::SharedMemory::Create()};
 
     WHEN("I create shared memory access") {
       THEN("It does not throw an exception") {
-        REQUIRE_NOTHROW(niv::SharedMemory{niv::SharedMemory::Access()});
+        REQUIRE_NOTHROW(
+            niv::exchange::SharedMemory{niv::exchange::SharedMemory::Access()});
       }
-      niv::SharedMemory segment_access{niv::SharedMemory::Access()};
+      niv::exchange::SharedMemory segment_access{
+          niv::exchange::SharedMemory::Access()};
 
       WHEN("data is stored in the shared memory access") {
         segment_access.Store(testing::AnyNode());
@@ -117,8 +121,10 @@ SCENARIO("storing and retrieving conduit nodes to/from shared memory",
          "[niv][niv:SharedMemory][niv:SharedMemorySegment][niv:"
          "SharedMemoryAccess]") {
   GIVEN("a shared memory segment and access") {
-    niv::SharedMemory shared_memory_segment{niv::SharedMemory::Create()};
-    niv::SharedMemory shared_memory_access{niv::SharedMemory::Access()};
+    niv::exchange::SharedMemory shared_memory_segment{
+        niv::exchange::SharedMemory::Create()};
+    niv::exchange::SharedMemory shared_memory_access{
+        niv::exchange::SharedMemory::Access()};
 
     WHEN("a node is stored in the shared memory segment") {
       shared_memory_segment.Store(testing::AnyNode());
@@ -163,8 +169,10 @@ SCENARIO("Overwriting data in shared memory",
          "[niv][niv::SharedMemory][niv::SharedMemorySegment][niv::"
          "SharedMemoryAccess") {
   GIVEN("A shared memory segment + access, with some data in it") {
-    niv::SharedMemory shared_memory_segment{niv::SharedMemory::Create()};
-    niv::SharedMemory shared_memory_access{niv::SharedMemory::Access()};
+    niv::exchange::SharedMemory shared_memory_segment{
+        niv::exchange::SharedMemory::Create()};
+    niv::exchange::SharedMemory shared_memory_access{
+        niv::exchange::SharedMemory::Access()};
     shared_memory_segment.Store(testing::AnyNode());
     WHEN("when new data is stored in the segment") {
       shared_memory_segment.Store(testing::ADifferentNode());
@@ -185,8 +193,9 @@ SCENARIO("data can be updated in shared memory",
   std::cout << "SCENARIO(\"data can be updated in shared memory\")"
             << std::endl;
   GIVEN("a shared memory segment with data in it, and shared memory access") {
-    niv::SharedMemory segment{niv::SharedMemory::Create()};
-    niv::SharedMemory segment_access{niv::SharedMemory::Access()};
+    niv::exchange::SharedMemory segment{niv::exchange::SharedMemory::Create()};
+    niv::exchange::SharedMemory segment_access{
+        niv::exchange::SharedMemory::Access()};
     segment.Store(testing::AnyNode());
 
     WHEN("the data in the shared memory is updated") {
@@ -205,14 +214,15 @@ SCENARIO("data can be updated in shared memory",
 SCENARIO("Shared memory provides correct reference counts",
          "[niv][niv::SharedMemory]") {
   GIVEN("a shared memory segment") {
-    niv::SharedMemory segment{niv::SharedMemory::Create()};
+    niv::exchange::SharedMemory segment{niv::exchange::SharedMemory::Create()};
     THEN("the reference count is correct") {
       REQUIRE(segment.GetReferenceCount() == 0);
     }
 
     WHEN("a shared memory access is created in a new scope") {
       {  // new scope
-        niv::SharedMemory access{niv::SharedMemory::Access()};
+        niv::exchange::SharedMemory access{
+            niv::exchange::SharedMemory::Access()};
         THEN("the reference count is correct") {
           REQUIRE(segment.GetReferenceCount() == 1);
           REQUIRE(access.GetReferenceCount() == 1);

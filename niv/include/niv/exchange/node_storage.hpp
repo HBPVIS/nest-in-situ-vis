@@ -19,8 +19,8 @@
 // limitations under the License.
 //------------------------------------------------------------------------------
 
-#ifndef NIV_INCLUDE_NIV_NODE_STORAGE_HPP_
-#define NIV_INCLUDE_NIV_NODE_STORAGE_HPP_
+#ifndef NIV_INCLUDE_NIV_EXCHANGE_NODE_STORAGE_HPP_
+#define NIV_INCLUDE_NIV_EXCHANGE_NODE_STORAGE_HPP_
 
 #include <string>
 #include <vector>
@@ -28,9 +28,7 @@
 #include "conduit/conduit_node.hpp"
 
 namespace niv {
-
-std::string CompactedSchemaJson(const conduit::Node& node);
-std::vector<conduit::uint8> Serialize(const conduit::Node& node);
+namespace exchange {
 
 template <typename SchemaStorage, typename DataStorage>
 class NodeStorage {
@@ -103,10 +101,24 @@ class NodeStorage {
     data_storage_->assign(data.begin(), data.end());
   }
 
+  static std::string CompactedSchemaJson(const conduit::Node& node) {
+    const conduit::Schema schema{node.schema()};
+    conduit::Schema compact_schema;
+    schema.compact_to(compact_schema);
+    return compact_schema.to_json();
+  }
+
+  static std::vector<conduit::uint8> Serialize(const conduit::Node& node) {
+    std::vector<conduit::uint8> data;
+    node.serialize(data);
+    return data;
+  }
+
   SchemaStorage* schema_storage_{nullptr};
   DataStorage* data_storage_{nullptr};
 };
 
+}  // namespace exchange
 }  // namespace niv
 
-#endif  // NIV_INCLUDE_NIV_NODE_STORAGE_HPP_
+#endif  // NIV_INCLUDE_NIV_EXCHANGE_NODE_STORAGE_HPP_

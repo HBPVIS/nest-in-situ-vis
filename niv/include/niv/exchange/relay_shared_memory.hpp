@@ -19,18 +19,19 @@
 // limitations under the License.
 //------------------------------------------------------------------------------
 
-#ifndef NIV_INCLUDE_NIV_RELAY_SHARED_MEMORY_HPP_
-#define NIV_INCLUDE_NIV_RELAY_SHARED_MEMORY_HPP_
+#ifndef NIV_INCLUDE_NIV_EXCHANGE_RELAY_SHARED_MEMORY_HPP_
+#define NIV_INCLUDE_NIV_EXCHANGE_RELAY_SHARED_MEMORY_HPP_
 
 #include <memory>
 #include <vector>
 
 #include "conduit/conduit_node.hpp"
 
-#include "niv/shared_memory.hpp"
-#include "niv/shared_memory_synchronization.hpp"
+#include "niv/exchange/shared_memory.hpp"
+#include "niv/exchange/shared_memory_synchronization.hpp"
 
 namespace niv {
+namespace exchange {
 
 SUPPRESS_WARNINGS_BEGIN_PADDED
 class RelaySharedMemory {
@@ -65,6 +66,7 @@ class RelaySharedMemory {
 };
 SUPPRESS_WARNINGS_END
 
+}  // namespace exchange
 }  // namespace niv
 
-#endif  // NIV_INCLUDE_NIV_RELAY_SHARED_MEMORY_HPP_
+#endif  // NIV_INCLUDE_NIV_EXCHANGE_RELAY_SHARED_MEMORY_HPP_

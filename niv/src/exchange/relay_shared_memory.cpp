@@ -19,7 +19,7 @@
 // limitations under the License.
 //------------------------------------------------------------------------------
 
-#include "niv/relay_shared_memory.hpp"
+#include "niv/exchange/relay_shared_memory.hpp"
 
 #include <memory>
 #include <utility>
@@ -28,10 +28,11 @@
 #include "conduit/conduit_core.hpp"
 #include "conduit/conduit_schema.hpp"
 
-#include "niv/shared_memory.hpp"
-#include "niv/shared_memory_synchronization.hpp"
+#include "niv/exchange/shared_memory.hpp"
+#include "niv/exchange/shared_memory_synchronization.hpp"
 
 namespace niv {
+namespace exchange {
 
 RelaySharedMemory::RelaySharedMemory() {
   try {
@@ -46,10 +47,9 @@ RelaySharedMemory::RelaySharedMemory() {
 }
 
 RelaySharedMemory::RelaySharedMemory(const CreateSharedMemory&)
-    : shared_memory_{std::make_unique<SharedMemory>(
-          niv::SharedMemory::Create())},
+    : shared_memory_{std::make_unique<SharedMemory>(SharedMemory::Create())},
       synchronization_{std::make_unique<SharedMemorySynchronization>(
-          niv::SharedMemorySynchronization::Create())} {}
+          SharedMemorySynchronization::Create())} {}
 
 RelaySharedMemory::RelaySharedMemory(const AccessSharedMemory&)
     : shared_memory_{std::make_unique<SharedMemory>(SharedMemory::Access())},
@@ -85,4 +85,5 @@ conduit::Node RelaySharedMemory::Receive() {
 
 bool RelaySharedMemory::IsEmpty() const { return GetSharedMemory()->IsEmpty(); }
 
+}  // namespace exchange
 }  // namespace niv

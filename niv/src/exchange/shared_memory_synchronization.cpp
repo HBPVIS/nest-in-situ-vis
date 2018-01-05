@@ -19,7 +19,7 @@
 // limitations under the License.
 //------------------------------------------------------------------------------
 
-#include "niv/shared_memory_synchronization.hpp"
+#include "niv/exchange/shared_memory_synchronization.hpp"
 
 SUPPRESS_WARNINGS_BEGIN
 #include "boost/interprocess/sync/named_mutex.hpp"
@@ -27,6 +27,7 @@ SUPPRESS_WARNINGS_BEGIN
 SUPPRESS_WARNINGS_END
 
 namespace niv {
+namespace exchange {
 
 SharedMemorySynchronization::SharedMemorySynchronization(
     const SharedMemorySynchronization::Create&)
@@ -49,4 +50,5 @@ bool SharedMemorySynchronization::TryLock() { return mutex_.try_lock(); }
 
 void SharedMemorySynchronization::Unlock() { mutex_.unlock(); }
 
+}  // namespace exchange
 }  // namespace niv
