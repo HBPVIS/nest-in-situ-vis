@@ -23,24 +23,24 @@
 #include <string>
 #include <vector>
 
-#include "niv/producer/recorder.hpp"
+#include "niv/producer/device.hpp"
 
 namespace niv {
 namespace producer {
 
-Recorder::Recorder(const std::string& name, conduit::Node* node)
+Device::Device(const std::string& name, conduit::Node* node)
     : node_(node), name_(name) {}
 
-void Recorder::SetRecordingTime(double time) {
+void Device::SetRecordingTime(double time) {
   std::stringstream time_stream;
   time_stream << time;
   timestep_node_ = &(*node_)[name_][time_stream.str()];
 }
 
-void Recorder::Record(std::size_t) {}
-void Recorder::Record(std::size_t, const std::vector<double>&) {}
+void Device::Record(std::size_t) {}
+void Device::Record(std::size_t, const std::vector<double>&) {}
 
-conduit::Node& Recorder::GetTimestepNode() {
+conduit::Node& Device::GetTimestepNode() {
   if (timestep_node_ == nullptr) {
     SetRecordingTime(0.0);
   }

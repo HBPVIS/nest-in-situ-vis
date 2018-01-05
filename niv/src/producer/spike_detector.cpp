@@ -29,7 +29,7 @@ namespace niv {
 namespace producer {
 
 SpikeDetector::SpikeDetector(const std::string& name, conduit::Node* node)
-    : Recorder{name, node} {}
+    : Device{name, node} {}
 
 void SpikeDetector::Record(std::size_t id) {
   std::vector<std::size_t> data(GetData(GetTimestepNode()));

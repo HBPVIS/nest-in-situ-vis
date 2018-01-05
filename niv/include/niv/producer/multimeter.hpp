@@ -27,12 +27,12 @@
 #include <string>
 #include <vector>
 
-#include "niv/producer/recorder.hpp"
+#include "niv/producer/device.hpp"
 
 namespace niv {
 namespace producer {
 
-class Multimeter final : public Recorder {
+class Multimeter final : public Device {
  public:
   Multimeter(const std::string& name,
              const std::vector<std::string>& value_names, conduit::Node* node);

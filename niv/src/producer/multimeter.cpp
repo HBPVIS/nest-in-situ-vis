@@ -31,7 +31,7 @@ namespace producer {
 Multimeter::Multimeter(const std::string& name,
                        const std::vector<std::string>& value_names,
                        conduit::Node* node)
-    : Recorder{name, node}, value_names_{value_names} {}
+    : Device{name, node}, value_names_{value_names} {}
 
 void Multimeter::Record(std::size_t id, const std::vector<double>& values) {
   const std::string id_string{IdString(id)};

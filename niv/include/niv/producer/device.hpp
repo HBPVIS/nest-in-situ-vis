@@ -19,8 +19,8 @@
 // limitations under the License.
 //------------------------------------------------------------------------------
 
-#ifndef NIV_INCLUDE_NIV_PRODUCER_RECORDER_HPP_
-#define NIV_INCLUDE_NIV_PRODUCER_RECORDER_HPP_
+#ifndef NIV_INCLUDE_NIV_PRODUCER_DEVICE_HPP_
+#define NIV_INCLUDE_NIV_PRODUCER_DEVICE_HPP_
 
 #include <string>
 #include <vector>
@@ -39,22 +39,22 @@ DataArray<uint64>::~DataArray();
 namespace niv {
 namespace producer {
 
-class Recorder {
+class Device {
  public:
-  Recorder(const Recorder&) = default;
-  Recorder(Recorder&&) = default;
-  virtual ~Recorder() = default;
+  Device(const Device&) = default;
+  Device(Device&&) = default;
+  virtual ~Device() = default;
 
   void SetRecordingTime(double time);
 
   virtual void Record(std::size_t);
   virtual void Record(std::size_t, const std::vector<double>&);
 
-  Recorder& operator=(const Recorder&) = default;
-  Recorder& operator=(Recorder&&) = default;
+  Device& operator=(const Device&) = default;
+  Device& operator=(Device&&) = default;
 
  protected:
-  Recorder(const std::string& name, conduit::Node* node);
+  Device(const std::string& name, conduit::Node* node);
 
   conduit::Node& GetTimestepNode();
 
@@ -67,4 +67,4 @@ class Recorder {
 }  // namespace producer
 }  // namespace niv
 
-#endif  // NIV_INCLUDE_NIV_PRODUCER_RECORDER_HPP_
+#endif  // NIV_INCLUDE_NIV_PRODUCER_DEVICE_HPP_

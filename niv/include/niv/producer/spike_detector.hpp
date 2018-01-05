@@ -26,12 +26,12 @@
 #include <string>
 #include <vector>
 
-#include "niv/producer/recorder.hpp"
+#include "niv/producer/device.hpp"
 
 namespace niv {
 namespace producer {
 
-class SpikeDetector final : public Recorder {
+class SpikeDetector final : public Device {
  public:
   SpikeDetector(const std::string& name, conduit::Node* node);
   SpikeDetector(const SpikeDetector&) = default;
