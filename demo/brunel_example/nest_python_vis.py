@@ -38,9 +38,9 @@ class MainWindow:
         self.SetupUpdateTimer()
         
     def SetupStreaming(self):
-        self.receiver = pyniv.SynchronizedAggregatingReceiver()
+        self.receiver = pyniv.ConsumerReceiver()
         
-        self.multimeter = pyniv.VisMultimeter("recordingNode51")
+        self.multimeter = pyniv.ConsumerMultimeter("recordingNode51")
         self.multimeter.SetAttribute("V_m")
 
         self.backend = pyniv.AnalysisBackend();
