@@ -26,11 +26,8 @@
 #include "niv/niv.hpp"
 
 #include "analysis_device.hpp"
-#include "analysis_receiver.hpp"
 #include "conduit_data.hpp"
 #include "dummy_analysis_backend.hpp"
-#include "synchronized_receiver.hpp"
-#include "synchronized_sender.hpp"
 #include "vis_multimeter.hpp"
 
 BOOST_PYTHON_MODULE(pyniv) {
@@ -38,11 +35,8 @@ BOOST_PYTHON_MODULE(pyniv) {
   def("Greet", niv::Greet);
   pyniv::expose<niv::consumer::Backend>();
   pyniv::expose<pyniv::AnalysisDeviceWrap>();
-  pyniv::expose<pyniv::AnalysisReceiverWrap>();
   pyniv::expose<pyniv::ConduitData>();
   pyniv::expose<pyniv::DummyAnalysisBackend>();
-  pyniv::expose<pyniv::SynchronizedSender>();
   pyniv::expose<niv::consumer::Receiver>();
-  pyniv::expose<pyniv::SynchronizedReceiver>();
   pyniv::expose<pyniv::VisMultimeter>();
 }
