@@ -1,6 +1,6 @@
 # nest in situ vis
 
-*nest in situ vis* is Copyright (c) 2017 RWTH Aachen University, Germany,
+*nest in situ vis* is Copyright (c) 2017-2018 RWTH Aachen University, Germany,
 Virtual Reality & Immersive Visualization Group.
 
 
