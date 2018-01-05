@@ -45,8 +45,8 @@ def test_pyniv_greet():
 
 def test_pyniv_backend():
     backend = pyniv.AnalysisBackend()
-    receiver = pyniv.SynchronizedAggregatingReceiver()
     multimeter = pyniv.VisMultimeter("Multimeter A")
+    receiver = pyniv.Receiver()
     backend.Connect(receiver)
     backend.Connect(multimeter)
     multimeter.SetTime(0.0)
