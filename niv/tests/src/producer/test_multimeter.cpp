@@ -27,7 +27,7 @@
 
 #include "conduit/conduit_node.hpp"
 
-#include "niv/multimeter.hpp"
+#include "niv/producer/multimeter.hpp"
 
 SCENARIO("A unique multimeter ptr can be constructed via its factory",
          "[niv][niv::Multimeter]") {

@@ -26,7 +26,7 @@
 
 #include "conduit/conduit_node.hpp"
 
-#include "niv/spike_detector.hpp"
+#include "niv/producer/spike_detector.hpp"
 
 SCENARIO("A unique spike detector ptr can be constructed via its factory",
          "[niv][niv::SpikeDetector]") {

@@ -25,7 +25,7 @@
 #include <string>
 #include <vector>
 
-#include "niv/multimeter.hpp"
+#include "niv/producer/multimeter.hpp"
 
 namespace testing {
 std::string AnyAttribute() { return "V_m"; }

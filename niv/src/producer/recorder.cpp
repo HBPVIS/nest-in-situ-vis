@@ -23,7 +23,7 @@
 #include <string>
 #include <vector>
 
-#include "niv/recorder.hpp"
+#include "niv/producer/recorder.hpp"
 
 namespace niv {
 

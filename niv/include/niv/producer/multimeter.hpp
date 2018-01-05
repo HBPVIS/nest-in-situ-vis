@@ -19,50 +19,43 @@
 // limitations under the License.
 //------------------------------------------------------------------------------
 
-#ifndef NIV_INCLUDE_NIV_RECORDER_HPP_
-#define NIV_INCLUDE_NIV_RECORDER_HPP_
+#ifndef NIV_INCLUDE_NIV_PRODUCER_MULTIMETER_HPP_
+#define NIV_INCLUDE_NIV_PRODUCER_MULTIMETER_HPP_
 
+#include <memory>
+#include <sstream>
 #include <string>
 #include <vector>
 
-SUPPRESS_WARNINGS_BEGIN
-#include "conduit/conduit_node.hpp"
-SUPPRESS_WARNINGS_END
-
-namespace conduit {
-
-template <>
-DataArray<uint64>::~DataArray();
-
-}  // namespace conduit
+#include "niv/producer/recorder.hpp"
 
 namespace niv {
 
-class Recorder {
+class Multimeter final : public Recorder {
  public:
-  Recorder(const Recorder&) = default;
-  Recorder(Recorder&&) = default;
-  virtual ~Recorder() = default;
+  Multimeter(const std::string& name,
+             const std::vector<std::string>& value_names, conduit::Node* node);
+  Multimeter(const Multimeter&) = default;
+  Multimeter(Multimeter&&) = default;
+  virtual ~Multimeter() = default;
 
-  void SetRecordingTime(double time);
+  void Record(std::size_t id, const std::vector<double>& values) override;
 
-  virtual void Record(std::size_t);
-  virtual void Record(std::size_t, const std::vector<double>&);
+  Multimeter& operator=(const Multimeter&) = default;
+  Multimeter& operator=(Multimeter&&) = default;
 
-  Recorder& operator=(const Recorder&) = default;
-  Recorder& operator=(Recorder&&) = default;
-
- protected:
-  Recorder(const std::string& name, conduit::Node* node);
-
-  conduit::Node& GetTimestepNode();
+  static std::unique_ptr<Multimeter> New(
+      const std::string& name, const std::vector<std::string>& value_names,
+      conduit::Node* node);
 
  private:
-  conduit::Node* node_{nullptr};
-  conduit::Node* timestep_node_{nullptr};
-  std::string name_{"recorder"};
+  void RecordValue(std::string id_string, const std::vector<double> values,
+                   std::size_t value_index);
+  std::string IdString(std::size_t id) const;
+
+  std::vector<std::string> value_names_;
 };
 
 }  // namespace niv
 
-#endif  // NIV_INCLUDE_NIV_RECORDER_HPP_
+#endif  // NIV_INCLUDE_NIV_PRODUCER_MULTIMETER_HPP_

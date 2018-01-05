@@ -19,43 +19,37 @@
 // limitations under the License.
 //------------------------------------------------------------------------------
 
-#ifndef NIV_INCLUDE_NIV_MULTIMETER_HPP_
-#define NIV_INCLUDE_NIV_MULTIMETER_HPP_
+#ifndef NIV_INCLUDE_NIV_PRODUCER_SPIKE_DETECTOR_HPP_
+#define NIV_INCLUDE_NIV_PRODUCER_SPIKE_DETECTOR_HPP_
 
 #include <memory>
-#include <sstream>
 #include <string>
 #include <vector>
 
-#include "niv/recorder.hpp"
+#include "niv/producer/recorder.hpp"
 
 namespace niv {
 
-class Multimeter final : public Recorder {
+class SpikeDetector final : public Recorder {
  public:
-  Multimeter(const std::string& name,
-             const std::vector<std::string>& value_names, conduit::Node* node);
-  Multimeter(const Multimeter&) = default;
-  Multimeter(Multimeter&&) = default;
-  virtual ~Multimeter() = default;
+  SpikeDetector(const std::string& name, conduit::Node* node);
+  SpikeDetector(const SpikeDetector&) = default;
+  SpikeDetector(SpikeDetector&&) = default;
+  virtual ~SpikeDetector() = default;
 
-  void Record(std::size_t id, const std::vector<double>& values) override;
+  void Record(std::size_t id) override;
 
-  Multimeter& operator=(const Multimeter&) = default;
-  Multimeter& operator=(Multimeter&&) = default;
+  SpikeDetector& operator=(const SpikeDetector&) = default;
+  SpikeDetector& operator=(SpikeDetector&&) = default;
 
-  static std::unique_ptr<Multimeter> New(
-      const std::string& name, const std::vector<std::string>& value_names,
-      conduit::Node* node);
+  static std::unique_ptr<SpikeDetector> New(const std::string& name,
+                                            conduit::Node* node);
 
  private:
-  void RecordValue(std::string id_string, const std::vector<double> values,
-                   std::size_t value_index);
-  std::string IdString(std::size_t id) const;
-
-  std::vector<std::string> value_names_;
+  std::vector<std::size_t> GetData(const conduit::Node& node);
+  std::vector<std::size_t> AsVector(const conduit::uint64_array& array);
 };
 
 }  // namespace niv
 
-#endif  // NIV_INCLUDE_NIV_MULTIMETER_HPP_
+#endif  // NIV_INCLUDE_NIV_PRODUCER_SPIKE_DETECTOR_HPP_

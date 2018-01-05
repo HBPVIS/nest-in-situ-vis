@@ -19,37 +19,50 @@
 // limitations under the License.
 //------------------------------------------------------------------------------
 
-#ifndef NIV_INCLUDE_NIV_SPIKE_DETECTOR_HPP_
-#define NIV_INCLUDE_NIV_SPIKE_DETECTOR_HPP_
+#ifndef NIV_INCLUDE_NIV_PRODUCER_RECORDER_HPP_
+#define NIV_INCLUDE_NIV_PRODUCER_RECORDER_HPP_
 
-#include <memory>
 #include <string>
 #include <vector>
 
-#include "niv/recorder.hpp"
+SUPPRESS_WARNINGS_BEGIN
+#include "conduit/conduit_node.hpp"
+SUPPRESS_WARNINGS_END
+
+namespace conduit {
+
+template <>
+DataArray<uint64>::~DataArray();
+
+}  // namespace conduit
 
 namespace niv {
 
-class SpikeDetector final : public Recorder {
+class Recorder {
  public:
-  SpikeDetector(const std::string& name, conduit::Node* node);
-  SpikeDetector(const SpikeDetector&) = default;
-  SpikeDetector(SpikeDetector&&) = default;
-  virtual ~SpikeDetector() = default;
+  Recorder(const Recorder&) = default;
+  Recorder(Recorder&&) = default;
+  virtual ~Recorder() = default;
 
-  void Record(std::size_t id) override;
+  void SetRecordingTime(double time);
 
-  SpikeDetector& operator=(const SpikeDetector&) = default;
-  SpikeDetector& operator=(SpikeDetector&&) = default;
+  virtual void Record(std::size_t);
+  virtual void Record(std::size_t, const std::vector<double>&);
 
-  static std::unique_ptr<SpikeDetector> New(const std::string& name,
-                                            conduit::Node* node);
+  Recorder& operator=(const Recorder&) = default;
+  Recorder& operator=(Recorder&&) = default;
+
+ protected:
+  Recorder(const std::string& name, conduit::Node* node);
+
+  conduit::Node& GetTimestepNode();
 
  private:
-  std::vector<std::size_t> GetData(const conduit::Node& node);
-  std::vector<std::size_t> AsVector(const conduit::uint64_array& array);
+  conduit::Node* node_{nullptr};
+  conduit::Node* timestep_node_{nullptr};
+  std::string name_{"recorder"};
 };
 
 }  // namespace niv
 
-#endif  // NIV_INCLUDE_NIV_SPIKE_DETECTOR_HPP_
+#endif  // NIV_INCLUDE_NIV_PRODUCER_RECORDER_HPP_

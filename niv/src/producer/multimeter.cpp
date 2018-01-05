@@ -23,7 +23,7 @@
 #include <string>
 #include <vector>
 
-#include "niv/multimeter.hpp"
+#include "niv/producer/multimeter.hpp"
 
 namespace niv {
 

@@ -23,7 +23,7 @@
 #include <string>
 #include <vector>
 
-#include "niv/spike_detector.hpp"
+#include "niv/producer/spike_detector.hpp"
 
 namespace niv {
 
