@@ -19,15 +19,44 @@
 // limitations under the License.
 //------------------------------------------------------------------------------
 
+#include <memory>
+#include <string>
+#include <vector>
+
 #include "catch/catch.hpp"
 
-#include "niv/local_node_storage.hpp"
+#include "niv/node_storage.hpp"
 
 #include "conduit_node_helper.hpp"
 
+namespace {
+
+using NodeStorageBase =
+    niv::NodeStorage<std::string, std::vector<conduit::uint8>>;
+
+class NodeStorage : public NodeStorageBase {
+ public:
+  NodeStorage()
+      : NodeStorageBase{new std::string, new std::vector<conduit::uint8>},
+        owned_schema_storage_{GetSchemaStorage()},
+        owned_data_storage_{GetDataStorage()} {}
+  NodeStorage(const NodeStorage&) = delete;
+  NodeStorage(NodeStorage&&) = default;
+  ~NodeStorage() = default;
+
+  NodeStorage& operator=(const NodeStorage&) = delete;
+  NodeStorage& operator=(NodeStorage&&) = default;
+
+ private:
+  std::unique_ptr<std::string> owned_schema_storage_;
+  std::unique_ptr<std::vector<conduit::uint8>> owned_data_storage_;
+};
+
+}  // namespace
+
 SCENARIO("storing and reading a node", "[niv][niv::NodeStorage]") {
   GIVEN("a node storage") {
-    niv::LocalNodeStorage storage;
+    ::NodeStorage storage;
     WHEN("a node is stored") {
       storage.Store(testing::AnyNode());
       THEN("it can be read") {
@@ -40,7 +69,7 @@ SCENARIO("storing and reading a node", "[niv][niv::NodeStorage]") {
 SCENARIO("a node can be stored and read multiple times",
          "[niv][niv::NodeStorage]") {
   GIVEN("a node stored and read back") {
-    niv::LocalNodeStorage storage;
+    ::NodeStorage storage;
     storage.Store(testing::AnyNode());
     storage.Store(storage.Read());
 
@@ -55,7 +84,7 @@ SCENARIO("a node can be stored and read multiple times",
 
 SCENARIO("a node can be listening to changes", "[niv][niv::NodeStorage]") {
   GIVEN("a node listening to data") {
-    niv::LocalNodeStorage storage;
+    ::NodeStorage storage;
     storage.Store(testing::AnyNode());
     conduit::Node listening_node{storage.Listen()};
 
