@@ -27,7 +27,7 @@ namespace pyniv {
 
 template <>
 void expose<niv::consumer::Receiver>() {
-  class_<niv::consumer::Receiver, boost::noncopyable>("Receiver")
+  class_<niv::consumer::Receiver, boost::noncopyable>("ConsumerReceiver")
       .def("Receive", &niv::consumer::Receiver::Receive);
 }
 

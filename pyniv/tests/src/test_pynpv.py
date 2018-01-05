@@ -45,7 +45,7 @@ def test_pyniv_greet():
 
 def test_pyniv_backend():
     backend = pyniv.AnalysisBackend()
-    receiver = pyniv.Receiver()
+    receiver = pyniv.ConsumerReceiver()
     multimeter = pyniv.ConsumerMultimeter("Multimeter A")
     backend.Connect(receiver)
     backend.Connect(multimeter)
