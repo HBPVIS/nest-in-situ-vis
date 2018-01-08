@@ -25,8 +25,8 @@
 #include "niv/consumer/receiver.hpp"
 #include "niv/niv.hpp"
 
-#include "analysis_device.hpp"
 #include "conduit_data.hpp"
+#include "device.hpp"
 #include "dummy_analysis_backend.hpp"
 #include "multimeter.hpp"
 
@@ -34,7 +34,7 @@ BOOST_PYTHON_MODULE(pyniv) {
   boost::python::numpy::initialize();
   def("Greet", niv::Greet);
   pyniv::expose<niv::consumer::Backend>();
-  pyniv::expose<pyniv::AnalysisDeviceWrap>();
+  pyniv::expose<pyniv::consumer::DeviceWrap>();
   pyniv::expose<pyniv::ConduitData>();
   pyniv::expose<pyniv::DummyAnalysisBackend>();
   pyniv::expose<niv::consumer::Receiver>();

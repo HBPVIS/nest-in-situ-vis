@@ -19,19 +19,21 @@
 // limitations under the License.
 //------------------------------------------------------------------------------
 
-#include "pyniv.hpp"
-
-#include "analysis_device.hpp"
+#ifndef PYNIV_SRC_DEVICE_HPP_
+#define PYNIV_SRC_DEVICE_HPP_
 
 #include "niv/consumer/device.hpp"
 
+#include "pyniv.hpp"
+
 namespace pyniv {
+namespace consumer {
 
-template <>
-void expose<AnalysisDeviceWrap>() {
-  class_<AnalysisDeviceWrap, noncopyable>("AnalysisDevice", no_init)
-      .def("SetTime", &niv::consumer::Device::SetTime)
-      .def("Update", pure_virtual(&niv::consumer::Device::Update));
-}
+struct DeviceWrap : niv::consumer::Device, wrapper<niv::consumer::Device> {
+  void Update() { this->Update(); }
+};
 
+}  // namespace consumer
 }  // namespace pyniv
+
+#endif  // PYNIV_SRC_DEVICE_HPP_
