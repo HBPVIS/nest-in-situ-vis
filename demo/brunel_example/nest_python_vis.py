@@ -81,7 +81,6 @@ class MainWindow:
 
     def GetValues(self, multimeter):
         ts = multimeter.GetTimesteps()
-        ts.sort()
         plot_ts = []
         plot_vs = []
         for t in ts:

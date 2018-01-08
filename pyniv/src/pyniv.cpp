@@ -21,13 +21,17 @@
 
 #include "pyniv.hpp"
 
+SUPPRESS_WARNINGS_BEGIN
+#include "boost/python/numpy.hpp"
+SUPPRESS_WARNINGS_END
+
 #include "niv/consumer/backend.hpp"
+#include "niv/consumer/multimeter.hpp"
 #include "niv/consumer/receiver.hpp"
 #include "niv/niv.hpp"
 
 #include "conduit_data.hpp"
 #include "consumer/device.hpp"
-#include "consumer/multimeter.hpp"
 #include "dummy_analysis_backend.hpp"
 
 BOOST_PYTHON_MODULE(pyniv) {
@@ -38,5 +42,5 @@ BOOST_PYTHON_MODULE(pyniv) {
   pyniv::expose<pyniv::ConduitData>();
   pyniv::expose<pyniv::DummyAnalysisBackend>();
   pyniv::expose<niv::consumer::Receiver>();
-  pyniv::expose<pyniv::consumer::Multimeter>();
+  pyniv::expose<niv::consumer::Multimeter>();
 }

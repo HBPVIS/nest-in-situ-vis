@@ -23,6 +23,7 @@
 
 #include <cstdlib>
 
+#include <algorithm>
 #include <string>
 #include <vector>
 
@@ -31,14 +32,14 @@ namespace consumer {
 
 Device::Device(const std::string& name) : name_{name} {}
 
-std::vector<double> Device::GetTimesteps() const {
-  std::vector<double> timesteps;
+const std::vector<double>& Device::GetTimesteps() {
+  timesteps_.clear();
 
   const conduit::Node* device_node{nullptr};
   try {
     device_node = &node_->fetch_child(name_);
   } catch (...) {
-    return std::vector<double>();
+    return timesteps_;
   }
 
   const std::string device_node_path{device_node->path()};
@@ -48,9 +49,11 @@ std::vector<double> Device::GetTimesteps() const {
     const std::string child_local_path{
         child_path.substr(device_node_path.size() + 1,
                           child_path.size() - device_node_path.size() - 1)};
-    timesteps.push_back(std::strtof(child_local_path.c_str(), nullptr));
+    timesteps_.push_back(std::strtof(child_local_path.c_str(), nullptr));
   }
-  return timesteps;
+
+  std::sort(timesteps_.begin(), timesteps_.end());
+  return timesteps_;
 }
 
 void Device::SetTime(double time) { time_ = time; }

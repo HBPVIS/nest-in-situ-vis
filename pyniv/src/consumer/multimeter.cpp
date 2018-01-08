@@ -21,25 +21,25 @@
 
 #include "pyniv.hpp"
 
-#include <string>  // NOLINT
-#include <vector>  // NOLINT
+#include <iostream>  // NOLINT
+#include <string>    // NOLINT
+#include <vector>    // NOLINT
 
 SUPPRESS_WARNINGS_BEGIN
 #include "boost/python/numpy.hpp"
 SUPPRESS_WARNINGS_END
 
 #include "niv/consumer/device.hpp"
-
-#include "multimeter.hpp"
+#include "niv/consumer/multimeter.hpp"
 
 namespace pyniv {
 namespace consumer {
 
-Multimeter::Multimeter(const std::string& name)
-    : niv::consumer::Multimeter{name} {}
-
-boost::python::numpy::ndarray Multimeter::GetValues() {
-  const auto& values{niv::consumer::Multimeter::GetValues()};
+boost::python::numpy::ndarray GetValues(
+    const niv::consumer::Multimeter& multimeter);
+boost::python::numpy::ndarray GetValues(
+    const niv::consumer::Multimeter& multimeter) {
+  const auto& values{multimeter.GetValues()};
 
   return boost::python::numpy::from_data(
       values.data(), boost::python::numpy::dtype::get_builtin<double>(),
@@ -47,25 +47,28 @@ boost::python::numpy::ndarray Multimeter::GetValues() {
       boost::python::make_tuple(sizeof(double)), boost::python::object());
 }
 
-boost::python::numpy::ndarray Multimeter::GetTimesteps() {
-  timesteps_ = niv::consumer::Multimeter::GetTimesteps();
+boost::python::numpy::ndarray GetTimesteps(
+    niv::consumer::Multimeter& multimeter);  // NOLINT
+boost::python::numpy::ndarray GetTimesteps(
+    niv::consumer::Multimeter& multimeter) {  // NOLINT
+  auto& timesteps{multimeter.GetTimesteps()};
 
   return boost::python::numpy::from_data(
-      timesteps_.data(), boost::python::numpy::dtype::get_builtin<double>(),
-      boost::python::make_tuple(timesteps_.size()),
+      timesteps.data(), boost::python::numpy::dtype::get_builtin<double>(),
+      boost::python::make_tuple(timesteps.size()),
       boost::python::make_tuple(sizeof(double)), boost::python::object());
 }
 
 }  // namespace consumer
 
 template <>
-void expose<pyniv::consumer::Multimeter>() {
-  class_<pyniv::consumer::Multimeter, bases<niv::consumer::Device>>(
+void expose<niv::consumer::Multimeter>() {
+  class_<niv::consumer::Multimeter, bases<niv::consumer::Device>>(
       "ConsumerMultimeter", init<std::string>())
-      .def("GetValues", &pyniv::consumer::Multimeter::GetValues)
-      .def("GetTimesteps", &pyniv::consumer::Multimeter::GetTimesteps)
-      .def("SetAttribute", &pyniv::consumer::Multimeter::SetAttribute)
-      .def("Update", &pyniv::consumer::Multimeter::Update);
+      .def("GetValues", &pyniv::consumer::GetValues)
+      .def("GetTimesteps", &pyniv::consumer::GetTimesteps)
+      .def("SetAttribute", &niv::consumer::Multimeter::SetAttribute)
+      .def("Update", &niv::consumer::Multimeter::Update);
 }
 
 }  // namespace pyniv
