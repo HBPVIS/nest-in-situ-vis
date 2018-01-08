@@ -26,9 +26,9 @@
 #include "niv/niv.hpp"
 
 #include "conduit_data.hpp"
-#include "device.hpp"
+#include "consumer/device.hpp"
+#include "consumer/multimeter.hpp"
 #include "dummy_analysis_backend.hpp"
-#include "multimeter.hpp"
 
 BOOST_PYTHON_MODULE(pyniv) {
   boost::python::numpy::initialize();

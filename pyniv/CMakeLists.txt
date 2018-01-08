@@ -21,16 +21,19 @@
 
 
 
-file(GLOB PYNIV_SOURCES src/*.cpp)
+file(GLOB PYNIV_SOURCES src/*.cpp src/**/*.cpp)
+file(GLOB PYNIV_HEADERS src/*.hpp src/**/*.hpp)
 
 python_add_module(pyniv
   ${PYNIV_SOURCES}
+  ${PYNIV_HEADERS}
 )
 target_link_libraries(pyniv niv)
 
 target_include_directories(pyniv
   PRIVATE ${Boost_INCLUDE_DIRS}
   PRIVATE ${PYTHON_INCLUDE_DIRS}
+  PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src
   )
 target_link_libraries(pyniv
   ${Boost_LIBRARIES}
