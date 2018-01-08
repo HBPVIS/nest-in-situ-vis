@@ -46,7 +46,7 @@ class MainWindow:
         self.multimeter_b = pyniv.ConsumerMultimeter("multimeter B")
         self.multimeter_b.SetAttribute("V_m")
 
-        self.backend = pyniv.AnalysisBackend();
+        self.backend = pyniv.ConsumerBackend();
         self.backend.Connect(self.receiver);
         self.backend.Connect(self.multimeter_a);
         self.backend.Connect(self.multimeter_b);
