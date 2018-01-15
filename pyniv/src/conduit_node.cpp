@@ -19,32 +19,28 @@
 // limitations under the License.
 //------------------------------------------------------------------------------
 
-#include "pyniv.hpp"
+#include <string>
 
-SUPPRESS_WARNINGS_BEGIN
-#include "boost/python/numpy.hpp"
-SUPPRESS_WARNINGS_END
+#include "pyniv.hpp"
 
 #include "conduit/conduit_node.hpp"
 
-#include "niv/consumer/backend.hpp"
-#include "niv/consumer/multimeter.hpp"
-#include "niv/consumer/receiver.hpp"
-#include "niv/niv.hpp"
+namespace pyniv {
 
-#include "conduit_data.hpp"
-#include "dummy_analysis_backend.hpp"
-
-BOOST_PYTHON_MODULE(pyniv) {
-  boost::python::numpy::initialize();
-  def("Greet", niv::Greet);
-
-  pyniv::expose<conduit::Node>();
-
-  pyniv::expose<niv::consumer::Backend>();
-  pyniv::expose<niv::consumer::Device>();
-  pyniv::expose<pyniv::ConduitData>();
-  pyniv::expose<pyniv::DummyAnalysisBackend>();
-  pyniv::expose<niv::consumer::Receiver>();
-  pyniv::expose<niv::consumer::Multimeter>();
+double GetDoubleAtPath(const conduit::Node& node, const std::string& path) {
+  return node[path].as_double();
 }
+
+void SetDoubleAtPath(const conduit::Node& node, const std::string& path,
+                     double value) {
+  const_cast<conduit::Node&>(node)[path] = value;
+}
+
+template <>
+void expose<conduit::Node>() {
+  class_<conduit::Node>("ConduitNode")
+      .def("GetDoubleAtPath", &pyniv::GetDoubleAtPath)
+      .def("SetDoubleAtPath", &pyniv::SetDoubleAtPath);
+}
+
+}  // namespace pyniv
