@@ -27,45 +27,38 @@
 
 #include "niv/producer/multimeter.hpp"
 
+namespace niv {
+
+class Testing {
+ public:
+  Testing() = delete;
+  Testing(const Testing&) = delete;
+  Testing(Testing&&) = delete;
+  ~Testing() = delete;
+
+  Testing& operator=(const Testing&) = delete;
+  Testing& operator=(Testing&&) = delete;
+};
+
 namespace testing {
-std::string AnyAttribute() { return "V_m"; }
-std::string AnotherAttribute() { return "g_m"; }
-std::string ThirdAttribute() { return "g_i"; }
 
-constexpr double AnyTime();
-constexpr double AnyTime() { return 0.0; }
+std::string AnyAttribute();
+std::string AnotherAttribute();
+std::string ThirdAttribute();
 
-std::vector<double> AnyAttributesValues() {
-  return std::vector<double>{0.0, -0.1, 0.2, -0.3, 0.4, -0.5};
-}
-std::vector<double> AnotherAttributesValues() {
-  return std::vector<double>{1.0, -1.1, 1.2, -1.3, 1.4, -1.5};
-}
-std::vector<double> ThirdAttributesValues() {
-  return std::vector<double>{-2.01, 3.12, -4.23, 5.34, -6.45, 7.56};
-}
+double AnyTime();
 
-std::vector<std::string> AnyValueNames() {
-  return std::vector<std::string>{AnyAttribute(), AnotherAttribute(),
-                                  ThirdAttribute()};
-}
+std::vector<double> AnyAttributesValues();
+std::vector<double> AnotherAttributesValues();
+std::vector<double> ThirdAttributesValues();
 
-std::string AnyMultimeterName() { return "multimeter A"; }
+std::vector<std::string> AnyValueNames();
 
-conduit::Node AnyNestData() {
-  conduit::Node node;
-  niv::producer::Multimeter multimeter(AnyMultimeterName(), AnyValueNames(),
-                                       &node);
-  multimeter.SetRecordingTime(AnyTime());
-  for (auto i = 0u; i < AnyAttributesValues().size(); ++i) {
-    multimeter.Record(i, std::vector<double>{AnyAttributesValues()[i],
-                                             AnotherAttributesValues()[i],
-                                             ThirdAttributesValues()[i]});
-  }
+std::string AnyMultimeterName();
 
-  return node;
-}
+conduit::Node AnyNestData();
 
 }  // namespace testing
+}  // namespace niv
 
 #endif  // NIV_INCLUDE_NIV_NEST_TEST_DATA_HPP_

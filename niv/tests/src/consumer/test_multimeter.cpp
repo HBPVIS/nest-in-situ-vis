@@ -31,29 +31,29 @@
 SCENARIO("a Multimeter provides access to data stored in a conduit node",
          "[niv][niv::consumer][niv::consumer::Multimeter]") {
   GIVEN("A Multimeter with some data") {
-    const conduit::Node nest_data{testing::AnyNestData()};
-    niv::consumer::Multimeter multimeter(testing::AnyMultimeterName());
+    const conduit::Node nest_data{niv::testing::AnyNestData()};
+    niv::consumer::Multimeter multimeter(niv::testing::AnyMultimeterName());
     multimeter.SetNode(&nest_data);
 
     WHEN("The time step is set") {
-      multimeter.SetTime(testing::AnyTime());
+      multimeter.SetTime(niv::testing::AnyTime());
       WHEN("one attribute is queried") {
-        multimeter.SetAttribute(testing::AnyValueNames()[0]);
+        multimeter.SetAttribute(niv::testing::AnyValueNames()[0]);
         multimeter.Update();
         auto result = multimeter.GetValues();
         THEN("the result is correct") {
-          REQUIRE_THAT(result,
-                       Catch::Matchers::Equals(testing::AnyAttributesValues()));
+          REQUIRE_THAT(result, Catch::Matchers::Equals(
+                                   niv::testing::AnyAttributesValues()));
         }
       }
       WHEN("another attribute is queried") {
-        multimeter.SetAttribute(testing::AnyValueNames()[1]);
+        multimeter.SetAttribute(niv::testing::AnyValueNames()[1]);
         multimeter.Update();
 
         auto result = multimeter.GetValues();
         THEN("the result is correct") {
           REQUIRE_THAT(result, Catch::Matchers::Equals(
-                                   testing::AnotherAttributesValues()));
+                                   niv::testing::AnotherAttributesValues()));
         }
       }
     }

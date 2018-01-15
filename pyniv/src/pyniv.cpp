@@ -30,6 +30,7 @@ SUPPRESS_WARNINGS_END
 #include "niv/consumer/backend.hpp"
 #include "niv/consumer/multimeter.hpp"
 #include "niv/consumer/receiver.hpp"
+#include "niv/nest_test_data.hpp"
 #include "niv/niv.hpp"
 
 #include "conduit_data.hpp"
@@ -47,4 +48,5 @@ BOOST_PYTHON_MODULE(pyniv) {
   pyniv::expose<pyniv::DummyAnalysisBackend>();
   pyniv::expose<niv::consumer::Receiver>();
   pyniv::expose<niv::consumer::Multimeter>();
+  pyniv::expose<niv::Testing>();
 }

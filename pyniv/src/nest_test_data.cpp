@@ -19,29 +19,28 @@
 // limitations under the License.
 //------------------------------------------------------------------------------
 
-#include "pyniv.hpp"
-
-#include "dummy_analysis_backend.hpp"
+#include "conduit/conduit_node.hpp"
 
 #include "niv/nest_test_data.hpp"
 
+#include "pyniv.hpp"
+
 namespace pyniv {
 
-DummyAnalysisBackend::DummyAnalysisBackend() {
-  node_ = niv::testing::AnyNestData();
-}
-
-void DummyAnalysisBackend::Connect(niv::consumer::Device* device) {
-  niv::consumer::Backend::Connect(device);
-}
-
-void DummyAnalysisBackend::Receive() { niv::consumer::Backend::Receive(); }
+void bar() {}
 
 template <>
-void expose<pyniv::DummyAnalysisBackend>() {
-  class_<pyniv::DummyAnalysisBackend, noncopyable>("DummyAnalysisBackend")
-      .def("Connect", &DummyAnalysisBackend::Connect)
-      .def("Receive", &DummyAnalysisBackend::Receive);
+void expose<niv::Testing>() {
+  def("TestingAnyAttribute", &niv::testing::AnyAttribute);
+  def("TestingAnotherAttribute", &niv::testing::AnotherAttribute);
+  def("TestingThirdAttribute", &niv::testing::ThirdAttribute);
+  def("TestingAnyTime", &niv::testing::AnyTime);
+  def("TestingAnyAttributesValues", &niv::testing::AnyAttributesValues);
+  def("TestingAnotherAttributesValues", &niv::testing::AnotherAttributesValues);
+  def("TestingThirdAttributesValues", &niv::testing::ThirdAttributesValues);
+  def("TestingAnyValueNames", &niv::testing::AnyValueNames);
+  def("TestingAnyMultimeterName", &niv::testing::AnyMultimeterName);
+  def("TestingAnyNestData", &niv::testing::AnyNestData);
 }
 
 }  // namespace pyniv

@@ -47,7 +47,7 @@ class Device : public niv::consumer::Device {
 SCENARIO("A consumer::Device can list its timesteps",
          "[niv][niv::consumer][niv::consumer::Device]") {
   GIVEN("A device accessing a node") {
-    conduit::Node any_data{testing::AnyNestData()};
+    conduit::Node any_data{niv::testing::AnyNestData()};
     ::Device device("multimeter A");
     device.SetNode(&any_data);
     WHEN("The device is asked for the timesteps") {
