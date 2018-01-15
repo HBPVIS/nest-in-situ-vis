@@ -24,11 +24,26 @@
 #include "niv/consumer/receiver.hpp"
 
 namespace pyniv {
+namespace consumer {
+
+struct ReceiverWrap : niv::consumer::Receiver,
+                      wrapper<niv::consumer::Receiver> {
+  void Receive() {
+    boost::python::override receive = this->get_override("Receive");
+    if (receive) {
+      receive();
+    } else {
+      niv::consumer::Receiver::Receive();
+    }
+  }
+};
+
+}  // namespace consumer
 
 template <>
 void expose<niv::consumer::Receiver>() {
-  class_<niv::consumer::Receiver, boost::noncopyable>("ConsumerReceiver")
-      .def("Receive", &niv::consumer::Receiver::Receive);
+  class_<pyniv::consumer::ReceiverWrap, boost::noncopyable>("ConsumerReceiver")
+      .def("Receive", &pyniv::consumer::ReceiverWrap::Receive);
 }
 
 }  // namespace pyniv

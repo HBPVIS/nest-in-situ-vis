@@ -19,11 +19,34 @@
 # limitations under the License.
 #-------------------------------------------------------------------------------
 
+import pyniv
 
+class Receiver(pyniv.ConsumerReceiver):
+    def __init__(self):
+        pyniv.ConsumerReceiver.__init__(self)
+        self.count_receives = 0;
 
-file(GLOB PYNIV_TEST_SOURCES src/*.py src/**/*.py)
+    def Receive(self):
+        self.count_receives += 1;
 
-add_test_py_test(NAME test_pyniv
-  ${CMAKE_CURRENT_SOURCE_DIR}
-  PYTHONPATH "$<TARGET_FILE_DIR:pyniv>:$<TARGET_FILE_DIR:pytest_utilities>"
-)
+class Device(pyniv.ConsumerDevice):
+    def __init__(self):
+        pyniv.ConsumerDevice.__init__(self)
+        self.count_updates = 0;
+
+    def Update(self):
+        self.count_updates += 1;
+
+def test_pyniv_consumer_backend():
+    backend = pyniv.ConsumerBackend()
+
+    receiver = Receiver()
+    backend.Connect(receiver)
+    backend.Receive()
+    assert receiver.count_receives == 1
+
+    device = Device()
+    backend.Connect(device)
+    backend.Receive()
+    assert receiver.count_receives == 2
+    assert device.count_updates == 1

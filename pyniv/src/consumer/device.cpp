@@ -21,15 +21,20 @@
 
 #include "pyniv.hpp"
 
-#include "device.hpp"
-
 #include "niv/consumer/device.hpp"
 
 namespace pyniv {
+namespace consumer {
+
+struct DeviceWrap : niv::consumer::Device, wrapper<niv::consumer::Device> {
+  void Update() { this->get_override("Update")(); }
+};
+
+}  // namespace consumer
 
 template <>
-void expose<consumer::DeviceWrap>() {
-  class_<consumer::DeviceWrap, noncopyable>("ConsumerDevice", no_init)
+void expose<niv::consumer::Device>() {
+  class_<consumer::DeviceWrap, noncopyable>("ConsumerDevice")
       .def("SetTime", &niv::consumer::Device::SetTime)
       .def("Update", pure_virtual(&niv::consumer::Device::Update));
 }

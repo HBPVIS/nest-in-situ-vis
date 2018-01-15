@@ -32,7 +32,7 @@ namespace consumer {
 
 class Device {
  public:
-  Device() = delete;
+  Device() = default;
   Device(const Device&) = default;
   Device(Device&&) = default;
   virtual ~Device() = default;
@@ -55,7 +55,7 @@ class Device {
   const conduit::Node* GetTimestepNode() const;
 
  private:
-  const conduit::Node* node_;
+  const conduit::Node* node_{nullptr};
   const conduit::Node* timestep_node_{nullptr};
 
   std::vector<double> timesteps_;

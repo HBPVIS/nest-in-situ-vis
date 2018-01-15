@@ -31,14 +31,13 @@ SUPPRESS_WARNINGS_END
 #include "niv/niv.hpp"
 
 #include "conduit_data.hpp"
-#include "consumer/device.hpp"
 #include "dummy_analysis_backend.hpp"
 
 BOOST_PYTHON_MODULE(pyniv) {
   boost::python::numpy::initialize();
   def("Greet", niv::Greet);
   pyniv::expose<niv::consumer::Backend>();
-  pyniv::expose<pyniv::consumer::DeviceWrap>();
+  pyniv::expose<niv::consumer::Device>();
   pyniv::expose<pyniv::ConduitData>();
   pyniv::expose<pyniv::DummyAnalysisBackend>();
   pyniv::expose<niv::consumer::Receiver>();
