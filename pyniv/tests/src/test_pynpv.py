@@ -42,32 +42,3 @@ def test_cout_capture(capsys):
 
 def test_pyniv_greet():
     assert pyniv.Greet() == "G'day!"
-
-def test_pyniv_backend():
-    backend = pyniv.ConsumerBackend()
-    receiver = pyniv.ConsumerReceiver()
-    multimeter = pyniv.ConsumerMultimeter("Multimeter A")
-    backend.Connect(receiver)
-    backend.Connect(multimeter)
-    multimeter.SetTime(0.0)
-    multimeter.SetAttribute("A")
-    backend.Receive()
-    a = multimeter.GetValues()
-    assert len(a) == 0
-
-def test_pyniv_dummy_analysis_backend():
-    backend = pyniv.DummyAnalysisBackend();
-    multimeter = pyniv.ConsumerMultimeter("multimeter A")
-    multimeter.SetAttribute("V_m")
-    backend.Connect(multimeter)
-    multimeter.SetTime(0.0)
-    backend.Receive()
-    a = multimeter.GetValues()
-    assert (a == [0.0, -0.1, 0.2, -0.3, 0.4, -0.5]).all()
-
-def test_pyniv_dummy_vis_multimeter_timesteps():
-    backend = pyniv.DummyAnalysisBackend();
-    multimeter = pyniv.ConsumerMultimeter("multimeter A")
-    backend.Connect(multimeter)
-    ts = multimeter.GetTimesteps();
-    assert (ts == [0.0]).all()
