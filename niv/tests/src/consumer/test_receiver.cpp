@@ -23,6 +23,7 @@
 
 #include "niv/consumer/receiver.hpp"
 #include "niv/exchange/relay_shared_memory.hpp"
+#include "niv/nest_test_data.hpp"
 
 #include "conduit_node_helper.hpp"
 
@@ -35,17 +36,17 @@ SCENARIO("received data is aggregated in the consumer::Receiver",
     niv::exchange::RelaySharedMemory sender;
 
     WHEN("Data is sent and a receive is triggered") {
-      sender.Send(testing::AnyNode());
+      sender.Send(niv::testing::AnyNode());
       receiver.Receive();
       THEN("it is received correctly") {
-        REQUIRE_THAT(receiving_node, Equals(testing::AnyNode()));
+        REQUIRE_THAT(receiving_node, Equals(niv::testing::AnyNode()));
       }
 
       WHEN("an update is sent and a receive is triggered") {
-        sender.Send(testing::Update());
+        sender.Send(niv::testing::Update());
         receiver.Receive();
         THEN("then the data has been updated") {
-          REQUIRE_THAT(receiving_node, Equals(testing::UpdatedNode()));
+          REQUIRE_THAT(receiving_node, Equals(niv::testing::UpdatedNode()));
         }
       }
     }

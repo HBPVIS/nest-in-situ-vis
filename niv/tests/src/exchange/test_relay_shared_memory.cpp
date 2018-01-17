@@ -27,6 +27,7 @@
 
 #include "niv/exchange/relay_shared_memory.hpp"
 #include "niv/exchange/shared_memory.hpp"
+#include "niv/nest_test_data.hpp"
 
 #include "conduit_node_helper.hpp"
 
@@ -36,13 +37,13 @@ SCENARIO("Data gets transported", "[niv][niv::RelaySharedMemory]") {
     niv::exchange::RelaySharedMemory simulation_relay;
 
     WHEN("a node is sent via the simulation relay") {
-      simulation_relay.Send(testing::AnyNode());
+      simulation_relay.Send(niv::testing::AnyNode());
 
       WHEN("data is received via the visualization relay") {
         conduit::Node received_node{visualization_relay.Receive()};
 
         THEN("received data matches original data") {
-          REQUIRE_THAT(received_node, Equals(testing::AnyNode()));
+          REQUIRE_THAT(received_node, Equals(niv::testing::AnyNode()));
         }
       }
     }
@@ -53,14 +54,14 @@ SCENARIO("data in relay gets updated on sending update",
          "[niv][niv::RelaySharedMemory]") {
   GIVEN("a relay storing data") {
     niv::exchange::RelaySharedMemory simulation_relay;
-    simulation_relay.Send(testing::AnyNode());
+    simulation_relay.Send(niv::testing::AnyNode());
 
     WHEN("an update gets sent to the relay") {
-      simulation_relay.Send(testing::Update());
+      simulation_relay.Send(niv::testing::Update());
       WHEN("the node is received from the relay") {
         conduit::Node received_node{simulation_relay.Receive()};
         THEN("the received node includes the update") {
-          REQUIRE_THAT(received_node, Equals(testing::UpdatedNode()));
+          REQUIRE_THAT(received_node, Equals(niv::testing::UpdatedNode()));
         }
       }
     }
@@ -71,7 +72,7 @@ SCENARIO("Data in relay is cleared on receive",
          "[niv][niv::RelaySharedMemory]") {
   GIVEN("A synchronized relay with some data") {
     niv::exchange::RelaySharedMemory relay;
-    relay.Send(testing::AnyNode());
+    relay.Send(niv::testing::AnyNode());
 
     WHEN("Data is received") {
       auto node{relay.Receive()};
@@ -97,7 +98,7 @@ SCENARIO("Relay's emptyness is passed throug shared memory",
     }
 
     WHEN("Data is sent") {
-      relay_segment.Send(testing::AnyNode());
+      relay_segment.Send(niv::testing::AnyNode());
       THEN("both relays are not empty.") {
         REQUIRE_FALSE(relay_segment.IsEmpty());
         REQUIRE_FALSE(relay_access.IsEmpty());

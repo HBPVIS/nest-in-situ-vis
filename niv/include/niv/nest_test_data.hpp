@@ -58,6 +58,18 @@ std::string AnyMultimeterName();
 
 conduit::Node AnyNestData();
 
+void Send(const conduit::Node& node);
+
+conduit::Node AnyNode();
+
+conduit::Node AnotherNode();
+
+conduit::Node Update();
+
+conduit::Node UpdatedNode();
+
+conduit::Node ADifferentNode();
+
 }  // namespace testing
 }  // namespace niv
 

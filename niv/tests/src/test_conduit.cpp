@@ -28,6 +28,7 @@
 #include "conduit/conduit_node.hpp"
 
 #include "niv/exchange/node_storage.hpp"
+#include "niv/nest_test_data.hpp"
 
 #include "conduit_node_helper.hpp"
 
@@ -40,14 +41,14 @@ DataArray<uint64>::~DataArray();
 
 SCENARIO("update inserts new nodes", "[conduit]") {
   GIVEN("A conduit tree") {
-    conduit::Node a = testing::AnyNode();
+    conduit::Node a = niv::testing::AnyNode();
 
     WHEN("A second node updates the tree") {
-      conduit::Node b = testing::Update();
+      conduit::Node b = niv::testing::Update();
       a.update(b);
 
       THEN("the first node contains also the content of the second") {
-        REQUIRE_THAT(a, Equals(testing::UpdatedNode()));
+        REQUIRE_THAT(a, Equals(niv::testing::UpdatedNode()));
       }
     }
   }
@@ -112,7 +113,7 @@ SCENARIO(
     std::string schema;
     std::vector<conduit::uint8> bytes;
 
-    SerializeConstRef(testing::AnyNode(), &schema, &bytes);
+    SerializeConstRef(niv::testing::AnyNode(), &schema, &bytes);
 
     conduit::Node second_node;
     second_node.set_data_using_schema(conduit::Schema(schema), bytes.data());
@@ -123,7 +124,7 @@ SCENARIO(
       conduit::Node third_node;
       third_node.set_data_using_schema(conduit::Schema(schema), bytes.data());
 
-      REQUIRE(third_node.to_json() == testing::AnyNode().to_json());
+      REQUIRE(third_node.to_json() == niv::testing::AnyNode().to_json());
     }
   }
 }
@@ -143,7 +144,7 @@ SCENARIO(
     std::vector<conduit::uint8> data;
     niv::exchange::NodeStorage<std::string, std::vector<conduit::uint8>>
         storage(&schema, &data);
-    storage.Store(testing::AnyNode());
+    storage.Store(niv::testing::AnyNode());
 
     constexpr bool external{true};
     conduit::Node external_node(schema, data.data(), external);

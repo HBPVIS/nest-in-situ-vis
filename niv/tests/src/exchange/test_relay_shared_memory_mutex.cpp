@@ -24,8 +24,7 @@
 #include "catch/catch.hpp"
 
 #include "niv/exchange/relay_shared_memory.hpp"
-
-#include "conduit_node_helper.hpp"
+#include "niv/nest_test_data.hpp"
 
 SCENARIO("Mutex does not stall multiple sends/receives",
          "[niv][niv::RelaySharedMemory]") {
@@ -34,30 +33,30 @@ SCENARIO("Mutex does not stall multiple sends/receives",
     niv::exchange::RelaySharedMemory relay_access;
 
     THEN("send, receive works") {
-      relay_segment.Send(testing::AnyNode());
+      relay_segment.Send(niv::testing::AnyNode());
       relay_access.Receive();
     }
 
     THEN("receive, send works") {
       relay_access.Receive();
-      relay_segment.Send(testing::AnyNode());
+      relay_segment.Send(niv::testing::AnyNode());
     }
 
     THEN("send, send, receive works") {
-      relay_segment.Send(testing::AnyNode());
-      relay_segment.Send(testing::AnotherNode());
+      relay_segment.Send(niv::testing::AnyNode());
+      relay_segment.Send(niv::testing::AnotherNode());
       relay_access.Receive();
     }
 
     THEN("send, receive, send, receive works") {
-      relay_segment.Send(testing::AnyNode());
+      relay_segment.Send(niv::testing::AnyNode());
       relay_access.Receive();
-      relay_segment.Send(testing::AnotherNode());
+      relay_segment.Send(niv::testing::AnotherNode());
     }
 
     THEN("receive, send, send, receive works") {
-      relay_segment.Send(testing::AnyNode());
-      relay_segment.Send(testing::AnotherNode());
+      relay_segment.Send(niv::testing::AnyNode());
+      relay_segment.Send(niv::testing::AnotherNode());
       relay_access.Receive();
     }
   }

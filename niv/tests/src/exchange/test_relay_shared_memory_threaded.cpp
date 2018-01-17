@@ -26,8 +26,7 @@
 #include "catch/catch.hpp"
 
 #include "niv/exchange/relay_shared_memory.hpp"
-
-#include "conduit_node_helper.hpp"
+#include "niv/nest_test_data.hpp"
 
 namespace {
 
@@ -39,7 +38,7 @@ void Send(niv::exchange::RelaySharedMemory* relay) {
   for (auto i = 0u; i < 10; ++i) {
     const int wait = distribution(generator);
     std::this_thread::sleep_for(std::chrono::milliseconds(wait));
-    relay->Send(testing::AnyNode());
+    relay->Send(niv::testing::AnyNode());
   }
 }
 

@@ -64,5 +64,42 @@ conduit::Node AnyNestData() {
   return node;
 }
 
+conduit::Node AnyNode() {
+  conduit::Node node;
+  node["A/B/C"] = 3.1415;
+  node["A/B/D"] = 4.124;
+  node["A/E"] = 42.0;
+  return node;
+}
+
+conduit::Node AnotherNode() {
+  conduit::Node node;
+  node["A/B/C"] = 2.0 * 3.1415;
+  node["A/B/D"] = 3.0 * 4.124;
+  node["A/E"] = 4.0 * 42.0;
+  return node;
+}
+
+conduit::Node Update() {
+  conduit::Node node;
+  node["A/B/F"] = 2.0 * 3.1415;
+  node["A/B/G"] = 3.0 * 4.124;
+  node["A/H"] = 4.0 * 42.0;
+  return node;
+}
+
+conduit::Node UpdatedNode() {
+  conduit::Node node;
+  node["A/B/C"] = 3.1415;
+  node["A/B/D"] = 4.124;
+  node["A/E"] = 42.0;
+  node["A/B/F"] = 2.0 * 3.1415;
+  node["A/B/G"] = 3.0 * 4.124;
+  node["A/H"] = 4.0 * 42.0;
+  return node;
+}
+
+conduit::Node ADifferentNode() { return Update(); }
+
 }  // namespace testing
 }  // namespace niv

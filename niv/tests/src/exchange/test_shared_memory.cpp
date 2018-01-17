@@ -24,6 +24,7 @@
 #include "conduit/conduit_node.hpp"
 
 #include "niv/exchange/shared_memory.hpp"
+#include "niv/nest_test_data.hpp"
 
 #include "conduit_node_helper.hpp"
 
@@ -42,13 +43,13 @@ SCENARIO("Shared memory creation", "[niv][niv::SharedMemory]") {
 
     WHEN("I store data in the segment") {
       auto free_size_before = segment.GetFreeSize();
-      segment.Store(testing::AnyNode());
+      segment.Store(niv::testing::AnyNode());
       auto free_size_after = segment.GetFreeSize();
       THEN("we have less free space in the segment") {
         REQUIRE(free_size_after < free_size_before);
       }
       THEN("I can read the data") {
-        REQUIRE_THAT(segment.Read(), Equals(testing::AnyNode()));
+        REQUIRE_THAT(segment.Read(), Equals(niv::testing::AnyNode()));
       }
     }
 
@@ -71,13 +72,13 @@ SCENARIO("write updated node to shared memory segment",
          "[niv][niv::SharedMemory]") {
   GIVEN("a shared memory segment with some data") {
     niv::exchange::SharedMemory segment{niv::exchange::SharedMemory::Create()};
-    segment.Store(testing::AnyNode());
+    segment.Store(niv::testing::AnyNode());
     WHEN("a larger node is stored") {
-      segment.Store(testing::UpdatedNode());
+      segment.Store(niv::testing::UpdatedNode());
       WHEN("the node is read") {
         conduit::Node read_node{segment.Read()};
         THEN("the content is equal to the written one") {
-          REQUIRE_THAT(read_node, Equals(testing::UpdatedNode()));
+          REQUIRE_THAT(read_node, Equals(niv::testing::UpdatedNode()));
         }
       }
     }
@@ -106,10 +107,10 @@ SCENARIO("Shared memory access", "[niv][niv::SharedMemory]") {
           niv::exchange::SharedMemory::Access()};
 
       WHEN("data is stored in the shared memory access") {
-        segment_access.Store(testing::AnyNode());
+        segment_access.Store(niv::testing::AnyNode());
 
         THEN("it can be read") {
-          REQUIRE_THAT(segment_access.Read(), Equals(testing::AnyNode()));
+          REQUIRE_THAT(segment_access.Read(), Equals(niv::testing::AnyNode()));
         }
       }
     }
@@ -127,36 +128,38 @@ SCENARIO("storing and retrieving conduit nodes to/from shared memory",
         niv::exchange::SharedMemory::Access()};
 
     WHEN("a node is stored in the shared memory segment") {
-      shared_memory_segment.Store(testing::AnyNode());
+      shared_memory_segment.Store(niv::testing::AnyNode());
 
       THEN("it can be read via access") {
-        REQUIRE_THAT(shared_memory_access.Read(), Equals(testing::AnyNode()));
+        REQUIRE_THAT(shared_memory_access.Read(),
+                     Equals(niv::testing::AnyNode()));
       }
 
       GIVEN("a node listening to shared memory") {
         conduit::Node listening_node{shared_memory_access.Listen()};
         WHEN("the first node is updated and stored again") {
-          shared_memory_segment.Store(testing::AnotherNode());
+          shared_memory_segment.Store(niv::testing::AnotherNode());
           THEN("the result arrives at the listening node") {
-            REQUIRE_THAT(listening_node, Equals(testing::AnotherNode()));
+            REQUIRE_THAT(listening_node, Equals(niv::testing::AnotherNode()));
           }
         }
       }
     }
 
     WHEN("a node is stored in the shared memory access") {
-      shared_memory_access.Store(testing::AnyNode());
+      shared_memory_access.Store(niv::testing::AnyNode());
 
       THEN("it can be read from the segment") {
-        REQUIRE_THAT(shared_memory_segment.Read(), Equals(testing::AnyNode()));
+        REQUIRE_THAT(shared_memory_segment.Read(),
+                     Equals(niv::testing::AnyNode()));
       }
 
       GIVEN("a node listening to shared memory") {
         conduit::Node listening_node{shared_memory_segment.Listen()};
         WHEN("the first node is updated and stored again") {
-          shared_memory_segment.Store(testing::AnotherNode());
+          shared_memory_segment.Store(niv::testing::AnotherNode());
           THEN("the result arrives at the listening node") {
-            REQUIRE_THAT(listening_node, Equals(testing::AnotherNode()));
+            REQUIRE_THAT(listening_node, Equals(niv::testing::AnotherNode()));
           }
         }
       }
@@ -173,13 +176,13 @@ SCENARIO("Overwriting data in shared memory",
         niv::exchange::SharedMemory::Create()};
     niv::exchange::SharedMemory shared_memory_access{
         niv::exchange::SharedMemory::Access()};
-    shared_memory_segment.Store(testing::AnyNode());
+    shared_memory_segment.Store(niv::testing::AnyNode());
     WHEN("when new data is stored in the segment") {
-      shared_memory_segment.Store(testing::ADifferentNode());
+      shared_memory_segment.Store(niv::testing::ADifferentNode());
       WHEN("that data is read") {
         conduit::Node read_node{shared_memory_access.Read()};
         THEN("the read data is equal to the stored one") {
-          REQUIRE_THAT(read_node, Equals(testing::ADifferentNode()));
+          REQUIRE_THAT(read_node, Equals(niv::testing::ADifferentNode()));
         }
       }
     }
@@ -196,15 +199,15 @@ SCENARIO("data can be updated in shared memory",
     niv::exchange::SharedMemory segment{niv::exchange::SharedMemory::Create()};
     niv::exchange::SharedMemory segment_access{
         niv::exchange::SharedMemory::Access()};
-    segment.Store(testing::AnyNode());
+    segment.Store(niv::testing::AnyNode());
 
     WHEN("the data in the shared memory is updated") {
-      segment.Update(testing::Update());
+      segment.Update(niv::testing::Update());
       THEN("the  updated data can be read from the segment") {
-        REQUIRE_THAT(segment.Read(), Equals(testing::UpdatedNode()));
+        REQUIRE_THAT(segment.Read(), Equals(niv::testing::UpdatedNode()));
       }
       THEN("the updated data can be read from the segment access") {
-        REQUIRE_THAT(segment.Read(), Equals(testing::UpdatedNode()));
+        REQUIRE_THAT(segment.Read(), Equals(niv::testing::UpdatedNode()));
       }
     }
     segment.Destroy();
