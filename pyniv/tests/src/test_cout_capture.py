@@ -19,10 +19,14 @@
 # limitations under the License.
 #-------------------------------------------------------------------------------
 
-import pyniv
+import sys
 
-def test_pypvt():
-    assert True
-
-def test_pyniv_greet():
-    assert pyniv.Greet() == "G'day!"
+def test_cout_capture(capsys):
+    print("hello")
+    sys.stderr.write("world\n")
+    out, err = capsys.readouterr()
+    assert out == "hello\n"
+    assert err == "world\n"
+    print ("next")
+    out, err = capsys.readouterr()
+    assert out == "next\n"
