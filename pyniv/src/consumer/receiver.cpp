@@ -43,7 +43,8 @@ struct ReceiverWrap : niv::consumer::Receiver,
 template <>
 void expose<niv::consumer::Receiver>() {
   class_<pyniv::consumer::ReceiverWrap, boost::noncopyable>("ConsumerReceiver")
-      .def("Receive", &pyniv::consumer::ReceiverWrap::Receive);
+      .def("Receive", &pyniv::consumer::ReceiverWrap::Receive)
+      .def("SetNode", &niv::consumer::Receiver::SetNode);
 }
 
 }  // namespace pyniv

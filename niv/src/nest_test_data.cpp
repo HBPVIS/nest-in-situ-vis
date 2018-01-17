@@ -24,6 +24,8 @@
 #include <string>
 #include <vector>
 
+#include "niv/exchange/relay_shared_memory.hpp"
+
 namespace niv {
 namespace testing {
 
@@ -62,6 +64,11 @@ conduit::Node AnyNestData() {
   }
 
   return node;
+}
+
+void Send(const conduit::Node& node) {
+  exchange::RelaySharedMemory relay;
+  relay.Send(node);
 }
 
 conduit::Node AnyNode() {

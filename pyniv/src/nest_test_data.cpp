@@ -27,7 +27,20 @@
 
 namespace pyniv {
 
-void bar() {}
+namespace testing {
+bool Equal(const conduit::Node& node1, const conduit::Node& node2) {
+  bool is_equal = (node1.to_json() == node2.to_json());
+  if (!is_equal) {
+    std::cout << "Nodes are not equal:" << std::endl;
+    std::cout << "Node 1:" << std::endl;
+    std::cout << node1.to_json() << std::endl;
+    std::cout << "----------" << std::endl;
+    std::cout << "Node 2:" << std::endl;
+    std::cout << node2.to_json() << std::endl;
+  }
+  return is_equal;
+}
+}  // namespace testing
 
 template <>
 void expose<niv::Testing>() {
@@ -41,6 +54,13 @@ void expose<niv::Testing>() {
   def("TestingAnyValueNames", &niv::testing::AnyValueNames);
   def("TestingAnyMultimeterName", &niv::testing::AnyMultimeterName);
   def("TestingAnyNestData", &niv::testing::AnyNestData);
+  def("TestingSend", &niv::testing::Send);
+  def("TestingAnyNode", &niv::testing::AnyNode);
+  def("TestingAnotherNode", &niv::testing::AnotherNode);
+  def("TestingUpdate", &niv::testing::Update);
+  def("TestingUpdatedNode", &niv::testing::UpdatedNode);
+  def("TestingADifferentNode", &niv::testing::ADifferentNode);
+  def("TestingEqual", &pyniv::testing::Equal);
 }
 
 }  // namespace pyniv
