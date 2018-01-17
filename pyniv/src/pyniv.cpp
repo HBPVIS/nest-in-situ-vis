@@ -33,8 +33,6 @@ SUPPRESS_WARNINGS_END
 #include "niv/nest_test_data.hpp"
 #include "niv/niv.hpp"
 
-#include "conduit_data.hpp"
-
 BOOST_PYTHON_MODULE(pyniv) {
   boost::python::numpy::initialize();
   def("Greet", niv::Greet);
@@ -43,8 +41,8 @@ BOOST_PYTHON_MODULE(pyniv) {
 
   pyniv::expose<niv::consumer::Backend>();
   pyniv::expose<niv::consumer::Device>();
-  pyniv::expose<pyniv::ConduitData>();
   pyniv::expose<niv::consumer::Receiver>();
   pyniv::expose<niv::consumer::Multimeter>();
+
   pyniv::expose<niv::Testing>();
 }
