@@ -47,18 +47,6 @@ boost::python::numpy::ndarray GetValues(
       boost::python::make_tuple(sizeof(double)), boost::python::object());
 }
 
-boost::python::numpy::ndarray GetTimesteps(
-    niv::consumer::Multimeter& multimeter);  // NOLINT
-boost::python::numpy::ndarray GetTimesteps(
-    niv::consumer::Multimeter& multimeter) {  // NOLINT
-  auto& timesteps{multimeter.GetTimesteps()};
-
-  return boost::python::numpy::from_data(
-      timesteps.data(), boost::python::numpy::dtype::get_builtin<double>(),
-      boost::python::make_tuple(timesteps.size()),
-      boost::python::make_tuple(sizeof(double)), boost::python::object());
-}
-
 }  // namespace consumer
 
 template <>
@@ -66,7 +54,6 @@ void expose<niv::consumer::Multimeter>() {
   class_<niv::consumer::Multimeter, bases<niv::consumer::Device>>(
       "ConsumerMultimeter", init<std::string>())
       .def("GetValues", &pyniv::consumer::GetValues)
-      .def("GetTimesteps", &pyniv::consumer::GetTimesteps)
       .def("SetAttribute", &niv::consumer::Multimeter::SetAttribute)
       .def("Update", &niv::consumer::Multimeter::Update);
 }

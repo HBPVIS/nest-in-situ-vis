@@ -21,6 +21,12 @@
 
 #include "pyniv.hpp"
 
+#include <string>  // NOLINT
+
+SUPPRESS_WARNINGS_BEGIN
+#include "boost/python/numpy.hpp"
+SUPPRESS_WARNINGS_END
+
 #include "niv/consumer/device.hpp"
 
 namespace pyniv {
@@ -29,6 +35,16 @@ namespace consumer {
 struct DeviceWrap : niv::consumer::Device, wrapper<niv::consumer::Device> {
   explicit DeviceWrap(const std::string& name) : niv::consumer::Device(name) {}
   void Update() { this->get_override("Update")(); }
+
+  static boost::python::numpy::ndarray GetTimesteps(
+      niv::consumer::Device* device) {
+    auto& timesteps{device->GetTimesteps()};
+
+    return boost::python::numpy::from_data(
+        timesteps.data(), boost::python::numpy::dtype::get_builtin<double>(),
+        boost::python::make_tuple(timesteps.size()),
+        boost::python::make_tuple(sizeof(double)), boost::python::object());
+  }
 };
 
 }  // namespace consumer
@@ -37,6 +53,8 @@ template <>
 void expose<niv::consumer::Device>() {
   class_<consumer::DeviceWrap, noncopyable>("ConsumerDevice",
                                             init<const std::string&>())
+      .def("GetTimesteps", &pyniv::consumer::DeviceWrap::GetTimesteps)
+      .def("SetNode", &niv::consumer::Device::SetNode)
       .def("SetTime", &niv::consumer::Device::SetTime)
       .def("Update", pure_virtual(&niv::consumer::Device::Update));
 }
