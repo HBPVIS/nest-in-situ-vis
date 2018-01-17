@@ -19,11 +19,18 @@
 // limitations under the License.
 //------------------------------------------------------------------------------
 
+#include "pyniv.hpp"
+
+#include <string>  // NOLINT
+#include <vector>  // NOLINT
+
+SUPPRESS_WARNINGS_BEGIN
+#include "boost/python/numpy.hpp"
+SUPPRESS_WARNINGS_END
+
 #include "conduit/conduit_node.hpp"
 
 #include "niv/nest_test_data.hpp"
-
-#include "pyniv.hpp"
 
 namespace pyniv {
 
@@ -40,6 +47,29 @@ bool Equal(const conduit::Node& node1, const conduit::Node& node2) {
   }
   return is_equal;
 }
+
+std::string AnyValueNames(std::size_t index) {
+  return niv::testing::AnyValueNames()[index];
+}
+
+boost::python::numpy::ndarray AnyAttributesValues() {
+  static std::vector<double> values{niv::testing::AnyAttributesValues()};
+
+  return boost::python::numpy::from_data(
+      values.data(), boost::python::numpy::dtype::get_builtin<double>(),
+      boost::python::make_tuple(values.size()),
+      boost::python::make_tuple(sizeof(double)), boost::python::object());
+}
+
+boost::python::numpy::ndarray AnotherAttributesValues() {
+  static std::vector<double> values{niv::testing::AnotherAttributesValues()};
+
+  return boost::python::numpy::from_data(
+      values.data(), boost::python::numpy::dtype::get_builtin<double>(),
+      boost::python::make_tuple(values.size()),
+      boost::python::make_tuple(sizeof(double)), boost::python::object());
+}
+
 }  // namespace testing
 
 template <>
@@ -48,10 +78,11 @@ void expose<niv::Testing>() {
   def("TestingAnotherAttribute", &niv::testing::AnotherAttribute);
   def("TestingThirdAttribute", &niv::testing::ThirdAttribute);
   def("TestingAnyTime", &niv::testing::AnyTime);
-  def("TestingAnyAttributesValues", &niv::testing::AnyAttributesValues);
-  def("TestingAnotherAttributesValues", &niv::testing::AnotherAttributesValues);
+  def("TestingAnyAttributesValues", &pyniv::testing::AnyAttributesValues);
+  def("TestingAnotherAttributesValues",
+      &pyniv::testing::AnotherAttributesValues);
   def("TestingThirdAttributesValues", &niv::testing::ThirdAttributesValues);
-  def("TestingAnyValueNames", &niv::testing::AnyValueNames);
+  def("TestingAnyValueNames", &pyniv::testing::AnyValueNames);
   def("TestingAnyMultimeterName", &niv::testing::AnyMultimeterName);
   def("TestingAnyNestData", &niv::testing::AnyNestData);
   def("TestingSend", &niv::testing::Send);
