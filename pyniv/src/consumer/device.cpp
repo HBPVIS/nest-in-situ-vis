@@ -27,6 +27,7 @@ namespace pyniv {
 namespace consumer {
 
 struct DeviceWrap : niv::consumer::Device, wrapper<niv::consumer::Device> {
+  explicit DeviceWrap(const std::string& name) : niv::consumer::Device(name) {}
   void Update() { this->get_override("Update")(); }
 };
 
@@ -34,7 +35,8 @@ struct DeviceWrap : niv::consumer::Device, wrapper<niv::consumer::Device> {
 
 template <>
 void expose<niv::consumer::Device>() {
-  class_<consumer::DeviceWrap, noncopyable>("ConsumerDevice")
+  class_<consumer::DeviceWrap, noncopyable>("ConsumerDevice",
+                                            init<const std::string&>())
       .def("SetTime", &niv::consumer::Device::SetTime)
       .def("Update", pure_virtual(&niv::consumer::Device::Update));
 }

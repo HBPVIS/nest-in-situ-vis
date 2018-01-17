@@ -32,7 +32,7 @@ namespace consumer {
 
 class Device {
  public:
-  Device() = default;
+  Device() = delete;
   Device(const Device&) = default;
   Device(Device&&) = default;
   virtual ~Device() = default;

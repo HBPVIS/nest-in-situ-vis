@@ -31,7 +31,7 @@ class Receiver(pyniv.ConsumerReceiver):
 
 class Device(pyniv.ConsumerDevice):
     def __init__(self):
-        pyniv.ConsumerDevice.__init__(self)
+        pyniv.ConsumerDevice.__init__(self, "any_name")
         self.count_updates = 0;
 
     def Update(self):

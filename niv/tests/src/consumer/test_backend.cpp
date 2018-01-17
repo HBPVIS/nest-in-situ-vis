@@ -41,7 +41,7 @@ class Receiver : public niv::consumer::Receiver {
 
 class Device : public niv::consumer::Device {
  public:
-  Device() : niv::consumer::Device("Device") {}
+  Device() : niv::consumer::Device("any_name") {}
   void Update() override { ++count_updates_; }
 
   std::size_t GetCountUpdates() const { return count_updates_; }
