@@ -1,7 +1,7 @@
 #-------------------------------------------------------------------------------
 # nest in situ vis
 #
-# Copyright (c) 2017 RWTH Aachen University, Germany,
+# Copyright (c) 2017-2018 RWTH Aachen University, Germany,
 # Virtual Reality & Immersive Visualisation Group.
 #-------------------------------------------------------------------------------
 #                                  License
@@ -27,7 +27,7 @@ if(NOT PYTHON_EXECUTABLE)
         CMake will not generate the project without it. ")
 endif()
 
-find_file(PY_TEST_COMMAND py.test
+find_file(PY_TEST_COMMAND py.test pytest
   PATHS $ENV{PATH} $ENV{PY_TEST_DIR}
 )
 if(NOT PY_TEST_COMMAND)
@@ -35,7 +35,7 @@ if(NOT PY_TEST_COMMAND)
     " ERROR: Could not find py.test.
         Having py.test is a mandatory requirement.
         CMake will not generate the project without it.
-        Add its location to the environments variables PATH or CPPLINT_DIR.")
+        Add its location to the environments variables PATH or PY_TEST_DIR.")
 endif()
 
 function(ADD_TEST_PY_TEST)

@@ -1,7 +1,7 @@
 #-------------------------------------------------------------------------------
 # nest in situ vis
 #
-# Copyright (c) 2017 RWTH Aachen University, Germany,
+# Copyright (c) 2017-2018 RWTH Aachen University, Germany,
 # Virtual Reality & Immersive Visualisation Group.
 #-------------------------------------------------------------------------------
 #                                  License
@@ -39,8 +39,14 @@ endfunction()
 
 function(ADD_TEST_CATCH_INTERNAL_
     NAME SOURCES HEADERS INCLUDE_DIRECTORIES LINK_LIBRARIES PATH_TO_ADD)
+  STRING(REGEX REPLACE
+    "^__" ""
+    NAME "${NAME}"
+    )
   add_executable(${NAME} ${SOURCES} ${HEADERS})
-  target_include_directories(${NAME} PRIVATE ${INCLUDE_DIRECTORIES})
+  target_include_directories(${NAME}
+    PRIVATE ${INCLUDE_DIRECTORIES}
+    )
   target_link_libraries(${NAME} ${LINK_LIBRARIES})
   add_test(NAME ${NAME} COMMAND ${NAME})
   set_warning_levels_RWTH(${NAME})
@@ -83,13 +89,22 @@ function(ADD_TEST_CATCH)
 
   # add test for each test source file
   foreach(TEST_SOURCE_FILE ${ADD_TEST_CATCH_SOURCES})
+    get_filename_component(TEST_SUBDIR ${TEST_SOURCE_FILE} DIRECTORY)
+    STRING(REGEX REPLACE
+      "^${CMAKE_CURRENT_SOURCE_DIR}" ""
+      TEST_SUBDIR "${TEST_SUBDIR}"
+      )
+    STRING(REGEX REPLACE
+      "[/|\\]" "__"
+      TEST_SUBDIR "${TEST_SUBDIR}"
+      )
     get_filename_component(TEST_NAME ${TEST_SOURCE_FILE} NAME_WE)
-    ADD_TEST_CATCH_INTERNAL_("${TEST_NAME}"
+    ADD_TEST_CATCH_INTERNAL_("${TEST_SUBDIR}__${TEST_NAME}"
       "${TEST_SOURCE_FILE}"
       ""
       "${ADD_TEST_CATCH_INCLUDE_DIRECTORIES}"
       "${ADD_TEST_CATCH_LINK_LIBRARIES};${ADD_TEST_CATCH_NAME}_catch_main"
       "${ADD_TEST_CATCH_PATH_TO_ADD}"
-    )
+      )
   endforeach()
 endfunction()

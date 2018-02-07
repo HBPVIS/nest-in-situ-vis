@@ -1,7 +1,7 @@
 #-------------------------------------------------------------------------------
 # nest in situ vis
 #
-# Copyright (c) 2017 RWTH Aachen University, Germany,
+# Copyright (c) 2017-2018 RWTH Aachen University, Germany,
 # Virtual Reality & Immersive Visualisation Group.
 #-------------------------------------------------------------------------------
 #                                  License
@@ -27,6 +27,15 @@ set(CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
 set(CMAKE_CXX_STANDARD 17)
 
 find_package(Boost REQUIRED COMPONENTS python)
+find_library(Boost_PYTHON_NUMPY_LIBRARY
+  boost_numpy
+  PATHS ${Boost_LIBRARY_DIRS}
+  NO_DEFAULT_PATH
+  )
+set(Boost_LIBRARIES
+  ${Boost_LIBRARIES}
+  ${Boost_PYTHON_NUMPY_LIBRARY}
+  )
 
 find_package(PythonInterp)
 find_package(PythonLibs)
@@ -46,7 +55,7 @@ include(py.test)
 
 include(WarningLevels)
 
-find_package(conduit)
+find_package(Conduit)
 set_target_properties(conduit
   PROPERTIES INTERFACE_INCLUDE_DIRECTORIES "${CONDUIT_INCLUDE_DIRS}/..")
 

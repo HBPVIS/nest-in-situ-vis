@@ -1,7 +1,7 @@
 #-------------------------------------------------------------------------------
 # nest in situ vis
 #
-# Copyright (c) 2017 RWTH Aachen University, Germany,
+# Copyright (c) 2017-2018 RWTH Aachen University, Germany,
 # Virtual Reality & Immersive Visualisation Group.
 #-------------------------------------------------------------------------------
 #                                  License
@@ -21,6 +21,10 @@
 
 import sys
 
+import matplotlib.pyplot as plt
+import numpy as np
+import seaborn as sns
+
 import pyniv
 
 from PyQt5.QtWidgets import QApplication, QWidget, QLabel, QGridLayout, QPushButton
@@ -28,33 +32,32 @@ from PyQt5.QtCore import QTimer
 
 class MainWindow:
     def __init__(self):
-        self.receiver = pyniv.ConduitReceiver()
+        self.SetupStreaming()
         self.SetupWindow()
+        self.SetupPlot()
         self.SetupUpdateTimer()
         
+    def SetupStreaming(self):
+        self.receiver = pyniv.ConsumerReceiver()
+        
+        self.multimeter_a = pyniv.ConsumerMultimeter("multimeter A")
+        self.multimeter_a.SetAttribute("V_m")
+
+        self.multimeter_b = pyniv.ConsumerMultimeter("multimeter B")
+        self.multimeter_b.SetAttribute("V_m")
+
+        self.backend = pyniv.ConsumerBackend();
+        self.backend.Connect(self.receiver);
+        self.backend.Connect(self.multimeter_a);
+        self.backend.Connect(self.multimeter_b);
 
     def SetupWindow(self):
-        self.label_V_m = QLabel("V_m:")
-        self.value_V_m = QLabel("{:0.3f} mV".format(0.0))
-
-        self.label_g_ex = QLabel("g_ex:")
-        self.value_g_ex = QLabel("{:0.3f}".format(0.0))
-
-        self.label_g_in = QLabel("g_ex:")
-        self.value_g_in = QLabel("{:0.3f}".format(0.0))
-
-        self.start_button = QPushButton("Start")
-        self.start_button.clicked.connect(self.StartButtonClicked)
+        self.visualize_button = QPushButton("Visualize")
+        self.visualize_button.clicked.connect(self.VisualizeButtonClicked)
 
         self.layout = QGridLayout()
-        self.layout.addWidget(self.label_V_m, 0, 0)
-        self.layout.addWidget(self.value_V_m, 0, 1)
-        self.layout.addWidget(self.label_g_ex, 1, 0)
-        self.layout.addWidget(self.value_g_ex, 1, 1)
-        self.layout.addWidget(self.label_g_in, 2, 0)
-        self.layout.addWidget(self.value_g_in, 2, 1)
  
-        self.layout.addWidget(self.start_button, 3, 0, 1, 2)
+        self.layout.addWidget(self.visualize_button, 0, 0, 1, 1)
 
         self.window = QWidget()
         self.window.setLayout(self.layout)
@@ -62,25 +65,46 @@ class MainWindow:
 
     def SetupUpdateTimer(self):
         self.update_timer = QTimer()
-        self.update_timer.timeout.connect(self.UpdateValue)
+        self.update_timer.timeout.connect(self.Visualize)
 
+    def SetupPlot(self):
+        self.fig = plt.figure()
+        self.ax1 = self.fig.add_subplot(1,1,1)
 
-    def StartButtonClicked(self):
-        self.start_button.setEnabled(False)
-        self.receiver.Start()
-        self.update_timer.start(0.01)
-        self.UpdateValue()
-
+    def VisualizeButtonClicked(self):
+        self.visualize_button.setEnabled(False)
+        self.update_timer.start(0.5)
+        self.Visualize()
+        
     def Show(self):
         self.window.show()
 
-    def UpdateValue(self):
-        self.value_V_m.setText("{:0.3f} mV".format(self.receiver.Get("V_m")))
-        self.value_g_ex.setText("{:0.3f}".format(self.receiver.Get("g_ex")))
-        self.value_g_in.setText("{:0.3f}".format(self.receiver.Get("g_in")))
+    def Visualize(self):
+        self.backend.Receive()
+        plot_ts_a, plot_vs_a = self.GetValues(self.multimeter_a)
+        plot_ts_b, plot_vs_b = self.GetValues(self.multimeter_b)
+        self.Plot([[plot_ts_a, plot_vs_a], [plot_ts_b, plot_vs_b]]);
 
-        self.value_V_m.update()
-        self.window.update()
+    def GetValues(self, multimeter):
+        ts = multimeter.GetTimesteps()
+        plot_ts = []
+        plot_vs = []
+        for t in ts:
+          multimeter.SetTime(t)
+          multimeter.Update()
+          vs = multimeter.GetValues()
+          if len(vs) > 0:
+            plot_ts.append(t)
+            plot_vs.append(vs[0])
+        return plot_ts, plot_vs
+
+    def Plot(self, values):
+        self.ax1.clear()
+        for [ts, vs] in values:
+            self.ax1.plot(ts, vs)
+        plt.show(block=False)
+        self.fig.canvas.draw()
+        
 
 def main(argv):
     app = QApplication(argv)

@@ -1,7 +1,7 @@
 //------------------------------------------------------------------------------
 // nest in situ vis
 //
-// Copyright (c) 2017 RWTH Aachen University, Germany,
+// Copyright (c) 2017-2018 RWTH Aachen University, Germany,
 // Virtual Reality & Immersive Visualisation Group.
 //------------------------------------------------------------------------------
 //                                 License
@@ -19,13 +19,16 @@
 // limitations under the License.
 //------------------------------------------------------------------------------
 
-#include <iostream>
-#include <string>
-
 SUPPRESS_WARNINGS_BEGIN
 #pragma GCC diagnostic ignored "-Wdeprecated-declarations"
+#if __GNUC__ >= 7
+#pragma GCC diagnostic ignored "-Wregister"
+#endif
 #include "boost/python.hpp"
 SUPPRESS_WARNINGS_END
+
+#include <iostream>  // NOLINT
+#include <string>    // NOLINT
 
 namespace test_utilities {
 

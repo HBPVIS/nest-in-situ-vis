@@ -1,7 +1,7 @@
 #-------------------------------------------------------------------------------
 # nest in situ vis
 #
-# Copyright (c) 2017 RWTH Aachen University, Germany,
+# Copyright (c) 2017-2018 RWTH Aachen University, Germany,
 # Virtual Reality & Immersive Visualisation Group.
 #-------------------------------------------------------------------------------
 #                                  License
@@ -21,7 +21,7 @@
 
 
 
-file(GLOB PYNIV_TEST_SOURCES src/*.py)
+file(GLOB PYNIV_TEST_SOURCES src/*.py src/**/*.py)
 
 add_test_py_test(NAME test_pyniv
   ${CMAKE_CURRENT_SOURCE_DIR}

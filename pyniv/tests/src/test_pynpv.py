@@ -1,7 +1,7 @@
 #-------------------------------------------------------------------------------
 # nest in situ vis
 #
-# Copyright (c) 2017 RWTH Aachen University, Germany,
+# Copyright (c) 2017-2018 RWTH Aachen University, Germany,
 # Virtual Reality & Immersive Visualisation Group.
 #-------------------------------------------------------------------------------
 #                                  License
@@ -19,42 +19,10 @@
 # limitations under the License.
 #-------------------------------------------------------------------------------
 
-import ctypes
-import sys
-import time
-
 import pyniv
-
-import pytest_utilities
 
 def test_pypvt():
     assert True
 
-def test_cout_capture(capsys):
-    print("hello")
-    sys.stderr.write("world\n")
-    out, err = capsys.readouterr()
-    assert out == "hello\n"
-    assert err == "world\n"
-    print ("next")
-    out, err = capsys.readouterr()
-    assert out == "next\n"
-
 def test_pyniv_greet():
     assert pyniv.Greet() == "G'day!"
-
-def test_pyniv_receive_via_shared_mem_segment_relay():
-    r = pyniv.ConduitReceiver()
-
-    d = pyniv.ConduitData()
-    s = pyniv.ConduitDataSender()
-    s.Send(d)
-
-    r.Start()
-
-    assert r.Get("V_m") == 1.2
-
-    d.Set("V_m", 42.0)
-    s.Send(d)
-
-    assert r.Get("V_m") == 42.0
