@@ -74,24 +74,23 @@ boost::python::numpy::ndarray AnotherAttributesValues() {
 
 template <>
 void expose<niv::Testing>() {
-  def("TestingAnyAttribute", &niv::testing::AnyAttribute);
-  def("TestingAnotherAttribute", &niv::testing::AnotherAttribute);
-  def("TestingThirdAttribute", &niv::testing::ThirdAttribute);
-  def("TestingAnyTime", &niv::testing::AnyTime);
-  def("TestingAnyAttributesValues", &pyniv::testing::AnyAttributesValues);
-  def("TestingAnotherAttributesValues",
-      &pyniv::testing::AnotherAttributesValues);
-  def("TestingThirdAttributesValues", &niv::testing::ThirdAttributesValues);
-  def("TestingAnyValueNames", &pyniv::testing::AnyValueNames);
-  def("TestingAnyMultimeterName", &niv::testing::AnyMultimeterName);
-  def("TestingAnyNestData", &niv::testing::AnyNestData);
-  def("TestingSend", &niv::testing::Send);
-  def("TestingAnyNode", &niv::testing::AnyNode);
-  def("TestingAnotherNode", &niv::testing::AnotherNode);
-  def("TestingUpdate", &niv::testing::Update);
-  def("TestingUpdatedNode", &niv::testing::UpdatedNode);
-  def("TestingADifferentNode", &niv::testing::ADifferentNode);
-  def("TestingEqual", &pyniv::testing::Equal);
+  def("AnyAttribute", &niv::testing::AnyAttribute);
+  def("AnotherAttribute", &niv::testing::AnotherAttribute);
+  def("ThirdAttribute", &niv::testing::ThirdAttribute);
+  def("AnyTime", &niv::testing::AnyTime);
+  def("AnyAttributesValues", &pyniv::testing::AnyAttributesValues);
+  def("AnotherAttributesValues", &pyniv::testing::AnotherAttributesValues);
+  def("ThirdAttributesValues", &niv::testing::ThirdAttributesValues);
+  def("AnyValueNames", &pyniv::testing::AnyValueNames);
+  def("AnyMultimeterName", &niv::testing::AnyMultimeterName);
+  def("AnyNestData", &niv::testing::AnyNestData);
+  def("Send", &niv::testing::Send);
+  def("AnyNode", &niv::testing::AnyNode);
+  def("AnotherNode", &niv::testing::AnotherNode);
+  def("Update", &niv::testing::Update);
+  def("UpdatedNode", &niv::testing::UpdatedNode);
+  def("ADifferentNode", &niv::testing::ADifferentNode);
+  def("Equal", &pyniv::testing::Equal);
 }
 
 }  // namespace pyniv

@@ -38,12 +38,12 @@ class MainWindow:
         self.SetupUpdateTimer()
         
     def SetupStreaming(self):
-        self.receiver = pyniv.ConsumerReceiver()
+        self.receiver = pyniv.consumer.Receiver()
         
-        self.multimeter = pyniv.ConsumerMultimeter("recordingNode51")
+        self.multimeter = pyniv.consumer.Multimeter("recordingNode51")
         self.multimeter.SetAttribute("V_m")
 
-        self.backend = pyniv.ConsumerBackend();
+        self.backend = pyniv.consumer.Backend();
         self.backend.Connect(self.receiver);
         self.backend.Connect(self.multimeter);
 

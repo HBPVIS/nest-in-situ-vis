@@ -21,13 +21,13 @@
 
 import pyniv
 
-class Device(pyniv.ConsumerDevice):
+class Device(pyniv.consumer.Device):
     def __init__(self, name):
-        pyniv.ConsumerDevice.__init__(self, name)
+        pyniv.consumer.Device.__init__(self, name)
 
 def test_consumer_device_lists_timesteps():
-    any_data = pyniv.TestingAnyNestData()
-    device = Device(pyniv.TestingAnyMultimeterName())
+    any_data = pyniv.testing.AnyNestData()
+    device = Device(pyniv.testing.AnyMultimeterName())
     device.SetNode(any_data)
     timesteps = device.GetTimesteps()
     assert (timesteps == [0.0]).all()

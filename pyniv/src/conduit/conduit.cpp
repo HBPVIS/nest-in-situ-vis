@@ -21,22 +21,14 @@
 
 #include "pyniv.hpp"
 
-#include "niv/consumer/backend.hpp"
-#include "niv/consumer/device.hpp"
+SUPPRESS_WARNINGS_BEGIN
+#include "boost/python/numpy.hpp"
+SUPPRESS_WARNINGS_END
+
+#include "conduit/conduit_node.hpp"
 
 namespace pyniv {
 
-template <>
-void expose<niv::consumer::Backend>() {
-  class_<niv::consumer::Backend, noncopyable>("Backend")
-      .def("Connect",
-           static_cast<void (niv::consumer::Backend::*)(  // NOLINT
-               niv::consumer::Receiver*)>(&niv::consumer::Backend::Connect))
-      .def(
-          "Connect",
-          static_cast<void (niv::consumer::Backend::*)(niv::consumer::Device*)>(
-              &niv::consumer::Backend::Connect))
-      .def("Receive", &niv::consumer::Backend::Receive);
-}
+BOOST_PYTHON_MODULE(_conduit) { pyniv::expose<conduit::Node>(); }
 
 }  // namespace pyniv

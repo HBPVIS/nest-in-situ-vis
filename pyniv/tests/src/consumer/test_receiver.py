@@ -22,15 +22,16 @@
 import pyniv
 
 def test_receiver_aggregates_data():
-    receiver = pyniv.ConsumerReceiver()
-    receiving_node = pyniv.ConduitNode()
+    receiver = pyniv.consumer.Receiver()
+    receiving_node = pyniv.conduit.Node()
     receiver.SetNode(receiving_node)
 
-    pyniv.TestingSend(pyniv.TestingAnyNode())
+    pyniv.testing.Send(pyniv.testing.AnyNode())
     receiver.Receive()
-    assert pyniv.TestingEqual(receiving_node, pyniv.TestingAnyNode())
+    assert pyniv.testing.Equal(receiving_node, pyniv.testing.AnyNode())
 
-    pyniv.TestingSend(pyniv.TestingUpdate())
+    
+    pyniv.testing.Send(pyniv.testing.Update())
     receiver.Receive()
-    assert pyniv.TestingEqual(receiving_node, pyniv.TestingUpdatedNode())
+    assert pyniv.testing.Equal(receiving_node, pyniv.testing.UpdatedNode())
     

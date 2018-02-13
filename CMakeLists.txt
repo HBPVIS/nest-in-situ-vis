@@ -53,6 +53,8 @@ include(GenerateExportHeader)
 
 include(py.test)
 
+include(python_module)
+
 include(WarningLevels)
 
 find_package(Conduit)

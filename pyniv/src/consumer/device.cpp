@@ -45,16 +45,20 @@ struct DeviceWrap : niv::consumer::Device, wrapper<niv::consumer::Device> {
         boost::python::make_tuple(timesteps.size()),
         boost::python::make_tuple(sizeof(double)), boost::python::object());
   }
+
+  static void SetNodePointer(niv::consumer::Device* device, PyObject* node) {
+    device->SetNode(boost::python::extract<conduit::Node*>(node));
+  }
 };
 
 }  // namespace consumer
 
 template <>
 void expose<niv::consumer::Device>() {
-  class_<consumer::DeviceWrap, noncopyable>("ConsumerDevice",
+  class_<consumer::DeviceWrap, noncopyable>("Device",
                                             init<const std::string&>())
       .def("GetTimesteps", &pyniv::consumer::DeviceWrap::GetTimesteps)
-      .def("SetNode", &niv::consumer::Device::SetNode)
+      .def("SetNode", &pyniv::consumer::DeviceWrap::SetNodePointer)
       .def("SetTime", &niv::consumer::Device::SetTime)
       .def("Update", pure_virtual(&niv::consumer::Device::Update));
 }

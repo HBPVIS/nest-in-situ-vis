@@ -25,5 +25,5 @@ file(GLOB PYNIV_TEST_SOURCES src/*.py src/**/*.py)
 
 add_test_py_test(NAME test_pyniv
   ${CMAKE_CURRENT_SOURCE_DIR}
-  PYTHONPATH "$<TARGET_FILE_DIR:pyniv>:$<TARGET_FILE_DIR:pytest_utilities>"
+  PYTHONPATH "${PYNIV_OUTPUT_DIR}/..:$<TARGET_FILE_DIR:pytest_utilities>"
 )

@@ -22,21 +22,21 @@
 import pyniv
 
 def test_integration_consumer():
-    backend = pyniv.ConsumerBackend()
+    backend = pyniv.consumer.Backend()
 
-    receiver = pyniv.ConsumerReceiver()
+    receiver = pyniv.consumer.Receiver()
     backend.Connect(receiver)
 
-    multimeter = pyniv.ConsumerMultimeter(pyniv.TestingAnyMultimeterName())
-    multimeter.SetAttribute(pyniv.TestingAnyValueNames(0))
+    multimeter = pyniv.consumer.Multimeter(pyniv.testing.AnyMultimeterName())
+    multimeter.SetAttribute(pyniv.testing.AnyValueNames(0))
     backend.Connect(multimeter)
 
-    pyniv.TestingSend(pyniv.TestingAnyNestData())
+    pyniv.testing.Send(pyniv.testing.AnyNestData())
 
     backend.Receive()
     
-    multimeter.SetTime(pyniv.TestingAnyTime())
+    multimeter.SetTime(pyniv.testing.AnyTime())
     multimeter.Update()
 
     values = multimeter.GetValues()
-    assert (values == pyniv.TestingAnyAttributesValues()).all()
+    assert (values == pyniv.testing.AnyAttributesValues()).all()

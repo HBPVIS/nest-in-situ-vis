@@ -19,34 +19,25 @@
 # limitations under the License.
 #-------------------------------------------------------------------------------
 
-import pyniv
+file(GLOB SOURCES *.cpp)
+file(GLOB HEADERS *.hpp)
+file(GLOB PYTHON_SOURCES *.py)
 
-class Receiver(pyniv.consumer.Receiver):
-    def __init__(self):
-        pyniv.consumer.Receiver.__init__(self)
-        self.count_receives = 0;
+set(PYNIV_OUTPUT_DIR
+  ${CMAKE_CURRENT_BINARY_DIR}/../pyniv
+  CACHE PATH "Output path for pyniv python module"
+  )
 
-    def Receive(self):
-        self.count_receives += 1;
+add_python_module(
+  NAME _pyniv
+  SOURCES ${SOURCES}
+  HEADERS ${HEADERS}
+  PYTHON_SOURCES ${PYTHON_SOURCES}
+  INCLUDE_DIRECTORIES ${CMAKE_CURRENT_SOURCE_DIR}
+  LINK_LIBRARIES niv
+  OUTPUT_DIRECTORY ${PYNIV_OUTPUT_DIR}
+  )
 
-class Device(pyniv.consumer.Device):
-    def __init__(self):
-        pyniv.consumer.Device.__init__(self, "any_name")
-        self.count_updates = 0;
-
-    def Update(self):
-        self.count_updates += 1;
-
-def test_pyniv_consumer_backend():
-    backend = pyniv.consumer.Backend()
-
-    receiver = Receiver()
-    backend.Connect(receiver)
-    backend.Receive()
-    assert receiver.count_receives == 1
-
-    device = Device()
-    backend.Connect(device)
-    backend.Receive()
-    assert receiver.count_receives == 2
-    assert device.count_updates == 1
+add_subdirectory(conduit)
+add_subdirectory(consumer)
+add_subdirectory(testing)

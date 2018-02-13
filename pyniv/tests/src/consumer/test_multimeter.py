@@ -22,18 +22,18 @@
 import pyniv
 
 def test_multimeter_provides_access_to_data_stored_in_a_conduit_node():
-    nest_data = pyniv.TestingAnyNestData()
-    multimeter = pyniv.ConsumerMultimeter(pyniv.TestingAnyMultimeterName())
+    nest_data = pyniv.testing.AnyNestData()
+    multimeter = pyniv.consumer.Multimeter(pyniv.testing.AnyMultimeterName())
     multimeter.SetNode(nest_data)
 
-    multimeter.SetTime(pyniv.TestingAnyTime())
+    multimeter.SetTime(pyniv.testing.AnyTime())
 
-    multimeter.SetAttribute(pyniv.TestingAnyValueNames(0))
+    multimeter.SetAttribute(pyniv.testing.AnyValueNames(0))
     multimeter.Update()
     result = multimeter.GetValues()
-    assert (result == pyniv.TestingAnyAttributesValues()).all()
+    assert (result == pyniv.testing.AnyAttributesValues()).all()
 
-    multimeter.SetAttribute(pyniv.TestingAnyValueNames(1))
+    multimeter.SetAttribute(pyniv.testing.AnyValueNames(1))
     multimeter.Update()
     result = multimeter.GetValues()
-    assert (result == pyniv.TestingAnotherAttributesValues()).all()
+    assert (result == pyniv.testing.AnotherAttributesValues()).all()

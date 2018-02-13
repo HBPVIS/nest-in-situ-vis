@@ -19,24 +19,28 @@
 // limitations under the License.
 //------------------------------------------------------------------------------
 
+#include <string>
+
 #include "pyniv.hpp"
 
-#include "niv/consumer/backend.hpp"
-#include "niv/consumer/device.hpp"
+#include "conduit/conduit_node.hpp"
 
 namespace pyniv {
 
+double GetDoubleAtPath(const conduit::Node& node, const std::string& path) {
+  return node[path].as_double();
+}
+
+void SetDoubleAtPath(const conduit::Node& node, const std::string& path,
+                     double value) {
+  const_cast<conduit::Node&>(node)[path] = value;
+}
+
 template <>
-void expose<niv::consumer::Backend>() {
-  class_<niv::consumer::Backend, noncopyable>("Backend")
-      .def("Connect",
-           static_cast<void (niv::consumer::Backend::*)(  // NOLINT
-               niv::consumer::Receiver*)>(&niv::consumer::Backend::Connect))
-      .def(
-          "Connect",
-          static_cast<void (niv::consumer::Backend::*)(niv::consumer::Device*)>(
-              &niv::consumer::Backend::Connect))
-      .def("Receive", &niv::consumer::Backend::Receive);
+void expose<conduit::Node>() {
+  class_<conduit::Node>("Node")
+      .def("GetDoubleAtPath", &pyniv::GetDoubleAtPath)
+      .def("SetDoubleAtPath", &pyniv::SetDoubleAtPath);
 }
 
 }  // namespace pyniv

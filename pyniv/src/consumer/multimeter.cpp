@@ -52,7 +52,7 @@ boost::python::numpy::ndarray GetValues(
 template <>
 void expose<niv::consumer::Multimeter>() {
   class_<niv::consumer::Multimeter, bases<niv::consumer::Device>>(
-      "ConsumerMultimeter", init<std::string>())
+      "Multimeter", init<std::string>())
       .def("GetValues", &pyniv::consumer::GetValues)
       .def("SetAttribute", &niv::consumer::Multimeter::SetAttribute)
       .def("Update", &niv::consumer::Multimeter::Update);

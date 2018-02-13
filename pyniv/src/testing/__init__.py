@@ -19,34 +19,4 @@
 # limitations under the License.
 #-------------------------------------------------------------------------------
 
-import pyniv
-
-class Receiver(pyniv.consumer.Receiver):
-    def __init__(self):
-        pyniv.consumer.Receiver.__init__(self)
-        self.count_receives = 0;
-
-    def Receive(self):
-        self.count_receives += 1;
-
-class Device(pyniv.consumer.Device):
-    def __init__(self):
-        pyniv.consumer.Device.__init__(self, "any_name")
-        self.count_updates = 0;
-
-    def Update(self):
-        self.count_updates += 1;
-
-def test_pyniv_consumer_backend():
-    backend = pyniv.consumer.Backend()
-
-    receiver = Receiver()
-    backend.Connect(receiver)
-    backend.Receive()
-    assert receiver.count_receives == 1
-
-    device = Device()
-    backend.Connect(device)
-    backend.Receive()
-    assert receiver.count_receives == 2
-    assert device.count_updates == 1
+from _testing import *
