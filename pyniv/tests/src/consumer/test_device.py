@@ -19,6 +19,8 @@
 # limitations under the License.
 #-------------------------------------------------------------------------------
 
+import numpy as np
+
 import pyniv
 
 class Device(pyniv.consumer.Device):
@@ -30,5 +32,6 @@ def test_consumer_device_lists_timesteps():
     device = Device(pyniv.testing.AnyMultimeterName())
     device.SetNode(any_data)
     timesteps = device.GetTimesteps()
-    assert (timesteps == [0.0]).all()
-    assert len(timesteps) == 1
+    assert len(timesteps) == 2
+    expected_timesteps = [pyniv.testing.AnyTime(), pyniv.testing.AnotherTime()]
+    assert np.isclose(timesteps, expected_timesteps).all()

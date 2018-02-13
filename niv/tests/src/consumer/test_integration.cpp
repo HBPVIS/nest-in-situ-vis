@@ -48,10 +48,16 @@ SCENARIO("Consumer integration", "[niv][integration]") {
         WHEN("the multimeter queries the data") {
           multimeter.SetTime(niv::testing::AnyTime());
           multimeter.Update();
-          std::vector<double> values{multimeter.GetValues()};
+          std::vector<double> values_at_t0{multimeter.GetValues()};
+
+          multimeter.SetTime(niv::testing::AnotherTime());
+          multimeter.Update();
+          std::vector<double> values_at_t1{multimeter.GetValues()};
 
           THEN("the received values are correct") {
-            REQUIRE(values == niv::testing::AnyAttributesValues());
+            REQUIRE(values_at_t0 == niv::testing::AnyAttributesValues());
+            REQUIRE(values_at_t1 == niv::testing::AnyAttributesValues(
+                                        niv::testing::AnotherTime()));
           }
         }
       }

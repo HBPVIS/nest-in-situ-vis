@@ -47,10 +47,11 @@ std::string AnotherAttribute();
 std::string ThirdAttribute();
 
 double AnyTime();
+double AnotherTime();
 
-std::vector<double> AnyAttributesValues();
-std::vector<double> AnotherAttributesValues();
-std::vector<double> ThirdAttributesValues();
+std::vector<double> AnyAttributesValues(double time = 0.0);
+std::vector<double> AnotherAttributesValues(double time = 0.0);
+std::vector<double> ThirdAttributesValues(double time = 0.0);
 
 std::vector<std::string> AnyValueNames();
 

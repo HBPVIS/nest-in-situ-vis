@@ -19,6 +19,8 @@
 # limitations under the License.
 #-------------------------------------------------------------------------------
 
+import numpy as np
+
 import pyniv
 
 def test_integration_consumer():
@@ -37,6 +39,10 @@ def test_integration_consumer():
     
     multimeter.SetTime(pyniv.testing.AnyTime())
     multimeter.Update()
+    values_at_t0 = multimeter.GetValues()
+    assert np.isclose(values_at_t0, pyniv.testing.AnyAttributesValues()).all()
 
-    values = multimeter.GetValues()
-    assert (values == pyniv.testing.AnyAttributesValues()).all()
+    multimeter.SetTime(pyniv.testing.AnotherTime())
+    multimeter.Update()
+    values_at_t1 = multimeter.GetValues()
+    assert np.isclose(values_at_t1, pyniv.testing.AnyAttributesValues(pyniv.testing.AnotherTime())).all()

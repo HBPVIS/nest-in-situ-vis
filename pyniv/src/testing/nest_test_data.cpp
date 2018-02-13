@@ -52,8 +52,9 @@ std::string AnyValueNames(std::size_t index) {
   return niv::testing::AnyValueNames()[index];
 }
 
-boost::python::numpy::ndarray AnyAttributesValues() {
-  static std::vector<double> values{niv::testing::AnyAttributesValues()};
+boost::python::numpy::ndarray AnyAttributesValues(double time = 0) {
+  static std::vector<double> values;
+  values = std::vector<double>{niv::testing::AnyAttributesValues(time)};
 
   return boost::python::numpy::from_data(
       values.data(), boost::python::numpy::dtype::get_builtin<double>(),
@@ -70,6 +71,9 @@ boost::python::numpy::ndarray AnotherAttributesValues() {
       boost::python::make_tuple(sizeof(double)), boost::python::object());
 }
 
+BOOST_PYTHON_FUNCTION_OVERLOADS(AnyAttributesValuesOverloads,
+                                AnyAttributesValues, 0, 1)
+
 }  // namespace testing
 
 template <>
@@ -78,7 +82,9 @@ void expose<niv::Testing>() {
   def("AnotherAttribute", &niv::testing::AnotherAttribute);
   def("ThirdAttribute", &niv::testing::ThirdAttribute);
   def("AnyTime", &niv::testing::AnyTime);
-  def("AnyAttributesValues", &pyniv::testing::AnyAttributesValues);
+  def("AnotherTime", &niv::testing::AnotherTime);
+  def("AnyAttributesValues", &pyniv::testing::AnyAttributesValues,
+      pyniv::testing::AnyAttributesValuesOverloads());
   def("AnotherAttributesValues", &pyniv::testing::AnotherAttributesValues);
   def("ThirdAttributesValues", &niv::testing::ThirdAttributesValues);
   def("AnyValueNames", &pyniv::testing::AnyValueNames);
