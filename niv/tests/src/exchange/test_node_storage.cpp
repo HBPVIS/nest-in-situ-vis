@@ -67,6 +67,20 @@ SCENARIO("storing and reading a node", "[niv][niv::NodeStorage]") {
   }
 }
 
+SCENARIO("storing and reading a node yields contifguous data",
+         "[niv][niv::NodeStorage]") {
+  GIVEN("a node storage") {
+    ::NodeStorage storage;
+    WHEN("a node is stored and retrieved") {
+      storage.Store(niv::testing::AnyNode());
+      conduit::Node read{storage.Read()};
+      THEN("the read node's data is contiguous") {
+        REQUIRE(read.is_contiguous());
+      }
+    }
+  }
+}
+
 SCENARIO("a node can be stored and read multiple times",
          "[niv][niv::NodeStorage]") {
   GIVEN("a node stored and read back") {

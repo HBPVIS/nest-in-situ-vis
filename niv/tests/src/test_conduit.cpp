@@ -284,3 +284,21 @@ SCENARIO("node updates into pre-allocated node with unexpected order",
     }
   }
 }
+
+SCENARIO("conduit data layout", "[conduit]") {
+  GIVEN("a compacted conduit node") {
+    conduit::Node node;
+    niv::testing::AnyNode().compact_to(node);
+
+    THEN("the node's data is contiguous") { REQUIRE(node.is_contiguous()); }
+    WHEN("the node's data is accessed via ptr") {
+      const double* data_ptr =
+          reinterpret_cast<const double*>(node.contiguous_data_ptr());
+      THEN("the leafs' data is accessible as an array") {
+        REQUIRE(data_ptr[0] == 3.1415);
+        REQUIRE(data_ptr[1] == 4.124);
+        REQUIRE(data_ptr[2] == 42.0);
+      }
+    }
+  }
+}
