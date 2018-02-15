@@ -23,6 +23,8 @@
 
 #include <cstdlib>
 
+#include <iostream>
+
 #include <algorithm>
 #include <string>
 #include <vector>
@@ -69,6 +71,9 @@ void Device::SetTimestepNode() {
 
 void Device::Print() const {
   if (node_ != nullptr) {
+    std::cout << "Schema" << std::endl;
+    std::cout << node_->schema().to_json() << std::endl;
+    std::cout << "Data" << std::endl;
     node_->print();
   }
 }
