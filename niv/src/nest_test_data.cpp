@@ -124,6 +124,17 @@ conduit::Node UpdatedNode() {
   return node;
 }
 
+conduit::Node UpdatedNodeAllZeros() {
+  conduit::Node node;
+  node["A/B/C"] = 0.0;
+  node["A/B/D"] = 0.0;
+  node["A/E"] = 0.0;
+  node["A/B/F"] = 0.0;
+  node["A/B/G"] = 0.0;
+  node["A/H"] = 0.0;
+  return node;
+}
+
 conduit::Node ADifferentNode() { return Update(); }
 
 }  // namespace testing

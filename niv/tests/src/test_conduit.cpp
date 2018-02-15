@@ -39,21 +39,6 @@ DataArray<uint64>::~DataArray();
 
 }  // namespace conduit
 
-SCENARIO("update inserts new nodes", "[conduit]") {
-  GIVEN("A conduit tree") {
-    conduit::Node a = niv::testing::AnyNode();
-
-    WHEN("A second node updates the tree") {
-      conduit::Node b = niv::testing::Update();
-      a.update(b);
-
-      THEN("the first node contains also the content of the second") {
-        REQUIRE_THAT(a, Equals(niv::testing::UpdatedNode()));
-      }
-    }
-  }
-}
-
 SCENARIO("conduit array leafs are compatible to std::vector", "[conduit]") {
   const std::string some_path{"root/inner/leaf"};
 
@@ -258,4 +243,44 @@ SCENARIO(
   }
 }
 
-SCENARIO("node updates ", "[]") {}
+SCENARIO("update inserts new nodes", "[conduit]") {
+  GIVEN("A conduit tree") {
+    conduit::Node a = niv::testing::AnyNode();
+
+    WHEN("A second node updates the tree") {
+      conduit::Node b = niv::testing::Update();
+      a.update(b);
+
+      THEN("the first node contains also the content of the second") {
+        REQUIRE_THAT(a, Equals(niv::testing::UpdatedNode()));
+      }
+    }
+  }
+}
+
+SCENARIO("node updates into empty node with unexpected order", "[conduit]") {
+  GIVEN("an empty conduit node") {
+    conduit::Node target;
+    WHEN("the target node is updated with some data in unexpected order") {
+      target.update(niv::testing::Update());
+      target.update(niv::testing::AnyNode());
+      THEN("the node's layout is unexpected") {
+        REQUIRE_THAT(target, !Equals(niv::testing::UpdatedNode()));
+      }
+    }
+  }
+}
+
+SCENARIO("node updates into pre-allocated node with unexpected order",
+         "[conduit]") {
+  GIVEN("an allocated conduit node") {
+    conduit::Node preallocated{niv::testing::UpdatedNodeAllZeros()};
+    WHEN("the node is updated with some data in unexpected order") {
+      preallocated.update(niv::testing::Update());
+      preallocated.update(niv::testing::AnyNode());
+      THEN("the node's layout is as expected") {
+        REQUIRE_THAT(preallocated, Equals(niv::testing::UpdatedNode()));
+      }
+    }
+  }
+}

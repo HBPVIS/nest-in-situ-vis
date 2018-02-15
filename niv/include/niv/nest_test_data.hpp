@@ -68,6 +68,7 @@ conduit::Node AnotherNode();
 conduit::Node Update();
 
 conduit::Node UpdatedNode();
+conduit::Node UpdatedNodeAllZeros();
 
 conduit::Node ADifferentNode();
 
