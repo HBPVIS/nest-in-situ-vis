@@ -55,7 +55,8 @@ void expose<niv::consumer::Multimeter>() {
       "Multimeter", init<std::string>())
       .def("GetValues", &pyniv::consumer::GetValues)
       .def("SetAttribute", &niv::consumer::Multimeter::SetAttribute)
-      .def("Update", &niv::consumer::Multimeter::Update);
+      .def("Update", &niv::consumer::Multimeter::Update)
+      .def("Print", &niv::consumer::Multimeter::Print);
 }
 
 }  // namespace pyniv

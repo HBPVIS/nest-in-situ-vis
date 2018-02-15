@@ -48,6 +48,8 @@ class Device {
 
   void SetNode(const conduit::Node* node) { node_ = node; }
 
+  void Print() const;
+
  protected:
   explicit Device(const std::string& name);
 

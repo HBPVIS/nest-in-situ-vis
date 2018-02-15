@@ -20,12 +20,17 @@
 #-------------------------------------------------------------------------------
 
 set(NEST_PYTHON_VIS_SOURCE nest_python_vis.py)
+set(NEST_PYTHON_DUMP_SOURCE dump_to_stdout.py)
 set(NEST_SIM_SOURCE nest_sim.py)
 
 if(NOT CMAKE_MAKE_PROGRAM STREQUAL "/usr/bin/xcodebuild")
   
 file(GENERATE OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/run_vis.sh
   CONTENT "PYTHONPATH=${PYNIV_OUTPUT_DIR}/..:$<TARGET_FILE_DIR:pytest_utilities> ${PYTHON_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/${NEST_PYTHON_VIS_SOURCE}"
+  )
+
+file(GENERATE OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/run_dump.sh
+  CONTENT "PYTHONPATH=${PYNIV_OUTPUT_DIR}/..:$<TARGET_FILE_DIR:pytest_utilities> ${PYTHON_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/${NEST_PYTHON_DUMP_SOURCE}"
   )
 
 set(NEST_DIR

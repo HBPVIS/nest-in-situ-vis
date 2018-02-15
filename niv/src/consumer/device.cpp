@@ -67,6 +67,12 @@ void Device::SetTimestepNode() {
   }
 }
 
+void Device::Print() const {
+  if (node_ != nullptr) {
+    node_->print();
+  }
+}
+
 const conduit::Node* Device::GetTimestepNode() const { return timestep_node_; }
 
 }  // namespace consumer
