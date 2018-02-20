@@ -37,12 +37,12 @@ def test_integration_consumer():
 
     backend.Receive()
     
-    multimeter.SetTime(pyniv.testing.AnyTime())
+    multimeter.SetTime(pyniv.testing.ANY_TIME)
     multimeter.Update()
     values_at_t0 = multimeter.GetValues()
     assert np.isclose(values_at_t0, pyniv.testing.AnyAttributesValues()).all()
 
-    multimeter.SetTime(pyniv.testing.AnotherTime())
+    multimeter.SetTime(pyniv.testing.ANOTHER_TIME)
     multimeter.Update()
     values_at_t1 = multimeter.GetValues()
-    assert np.isclose(values_at_t1, pyniv.testing.AnyAttributesValues(pyniv.testing.AnotherTime())).all()
+    assert np.isclose(values_at_t1, pyniv.testing.AnyAttributesValues(pyniv.testing.ANOTHER_TIME)).all()

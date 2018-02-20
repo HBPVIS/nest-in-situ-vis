@@ -33,5 +33,5 @@ def test_consumer_device_lists_timesteps():
     device.SetNode(any_data)
     timesteps = device.GetTimesteps()
     assert len(timesteps) == 2
-    expected_timesteps = [pyniv.testing.AnyTime(), pyniv.testing.AnotherTime()]
+    expected_timesteps = [pyniv.testing.ANY_TIME, pyniv.testing.ANOTHER_TIME]
     assert np.isclose(timesteps, expected_timesteps).all()

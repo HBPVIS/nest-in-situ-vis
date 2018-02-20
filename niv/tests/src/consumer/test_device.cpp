@@ -86,10 +86,9 @@ SCENARIO("A consumer::Device can list its timesteps",
     WHEN("The device is asked for the timesteps") {
       auto timesteps(device.GetTimesteps());
       THEN("the list of timesteps is correct") {
-        REQUIRE_THAT(
-            timesteps,
-            Catch::Matchers::EqualsApprox(std::vector<double>{
-                niv::testing::AnyTime(), niv::testing::AnotherTime()}));
+        REQUIRE_THAT(timesteps,
+                     Catch::Matchers::EqualsApprox(std::vector<double>{
+                         niv::testing::ANY_TIME, niv::testing::ANOTHER_TIME}));
       }
     }
   }

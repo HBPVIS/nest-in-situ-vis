@@ -42,12 +42,44 @@ class Testing {
 
 namespace testing {
 
-std::string AnyAttribute();
-std::string AnotherAttribute();
-std::string ThirdAttribute();
+#if defined __GNUC__
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wunused-variable"
+#endif
 
-double AnyTime();
-double AnotherTime();
+static const char* ANY_MULTIMETER_NAME{"multimeter A"};
+
+static const std::vector<double> ANY_TIMES{0.1, 0.2, 0.3};
+static const double ANY_TIME{ANY_TIMES[0]};
+static const double ANOTHER_TIME{ANY_TIMES[1]};
+static const double THIRD_TIME{ANY_TIMES[2]};
+
+static const std::vector<double> ANY_TIME_OFFSETS{0.0123, 0.0234, 0.0345};
+static const double ANY_TIME_OFFSET{ANY_TIME_OFFSETS[0]};
+static const double ANOTHER_TIME_OFFSET{ANY_TIME_OFFSETS[1]};
+static const double THIRD_TIME_OFFSET{ANY_TIME_OFFSETS[2]};
+
+static const std::vector<std::string> ANY_ATTRIBUTES{"V_m", "g_e", "g_i"};
+static const char* ANY_ATTRIBUTE{ANY_ATTRIBUTES[0].c_str()};
+static const char* ANOTHER_ATTRIBUTE{ANY_ATTRIBUTES[1].c_str()};
+static const char* THIRD_ATTRIBUTE{ANY_ATTRIBUTES[2].c_str()};
+
+static const std::vector<std::size_t> ANY_IDS{1, 2, 3};
+static const std::size_t ANY_ID{ANY_IDS[0]};
+static const std::size_t ANOTHER_ID{ANY_IDS[0]};
+static const std::size_t THIRD_ID{ANY_IDS[0]};
+
+// clang-format off
+static const std::vector<double> ANY_VALUES{
+  0.111, 0.112, 0.113,  0.121, 0.122, 0.123,  0.131, 0.132, 0.133,
+  0.211, 0.212, 0.213,  0.221, 0.222, 0.223,  0.231, 0.232, 0.233,
+  0.311, 0.312, 0.313,  0.321, 0.322, 0.323,  0.331, 0.332, 0.333};
+// clang-format on
+static const double ANY_VALUE{ANY_VALUES[0]};
+
+#if defined __GNUC__
+#pragma GCC diagnostic pop
+#endif
 
 std::vector<double> AnyAttributesValues(double time = 0.0);
 std::vector<double> AnotherAttributesValues(double time = 0.0);

@@ -36,7 +36,7 @@ SCENARIO("a Multimeter provides access to data stored in a conduit node",
     multimeter.SetNode(&nest_data);
 
     WHEN("The time step is set") {
-      multimeter.SetTime(niv::testing::AnyTime());
+      multimeter.SetTime(niv::testing::ANY_TIME);
       WHEN("one attribute is queried") {
         multimeter.SetAttribute(niv::testing::AnyValueNames()[0]);
         multimeter.Update();
@@ -58,7 +58,7 @@ SCENARIO("a Multimeter provides access to data stored in a conduit node",
       }
 
       WHEN("The time step is set to another value") {
-        multimeter.SetTime(niv::testing::AnotherTime());
+        multimeter.SetTime(niv::testing::ANOTHER_TIME);
         WHEN("one attribute is queried") {
           multimeter.SetAttribute(niv::testing::AnyValueNames()[0]);
           multimeter.Update();
@@ -66,7 +66,7 @@ SCENARIO("a Multimeter provides access to data stored in a conduit node",
           THEN("the result is correct") {
             REQUIRE_THAT(result, Catch::Matchers::Equals(
                                      niv::testing::AnyAttributesValues(
-                                         niv::testing::AnotherTime())));
+                                         niv::testing::ANOTHER_TIME)));
           }
         }
         WHEN("another attribute is queried") {
@@ -77,7 +77,7 @@ SCENARIO("a Multimeter provides access to data stored in a conduit node",
           THEN("the result is correct") {
             REQUIRE_THAT(result, Catch::Matchers::Equals(
                                      niv::testing::AnotherAttributesValues(
-                                         niv::testing::AnotherTime())));
+                                         niv::testing::ANOTHER_TIME)));
           }
         }
       }

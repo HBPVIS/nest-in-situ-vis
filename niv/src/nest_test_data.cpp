@@ -29,12 +29,14 @@
 namespace niv {
 namespace testing {
 
-std::string AnyAttribute() { return "V_m"; }
-std::string AnotherAttribute() { return "g_m"; }
-std::string ThirdAttribute() { return "g_i"; }
+void unused() { (void)(ANY_MULTIMETER_NAME); }
 
-double AnyTime() { return 0.0; }
-double AnotherTime() { return 0.1; }
+std::vector<std::string> AnyValueNames() {
+  return std::vector<std::string>{"V_m", "g_e", "g_i"};
+}
+std::string AnyAttribute() { return AnyValueNames()[0]; }
+std::string AnotherAttribute() { return AnyValueNames()[1]; }
+std::string ThirdAttribute() { return AnyValueNames()[2]; }
 
 std::vector<double> AnyAttributesValues(double time) {
   const double timed_offset = 1.1 * time + 2.2;
@@ -55,30 +57,25 @@ std::vector<double> ThirdAttributesValues(double time) {
                              -6.45 + timed_offset, 7.56 + timed_offset};
 }
 
-std::vector<std::string> AnyValueNames() {
-  return std::vector<std::string>{AnyAttribute(), AnotherAttribute(),
-                                  ThirdAttribute()};
-}
-
 std::string AnyMultimeterName() { return "multimeter A"; }
 
 conduit::Node AnyNestData() {
   conduit::Node node;
   niv::producer::Multimeter multimeter(AnyMultimeterName(), AnyValueNames(),
                                        &node);
-  multimeter.SetRecordingTime(AnyTime());
+  multimeter.SetRecordingTime(ANY_TIME);
   for (auto i = 0u; i < AnyAttributesValues().size(); ++i) {
     multimeter.Record(i, std::vector<double>{AnyAttributesValues()[i],
                                              AnotherAttributesValues()[i],
                                              ThirdAttributesValues()[i]});
   }
 
-  multimeter.SetRecordingTime(AnotherTime());
+  multimeter.SetRecordingTime(ANOTHER_TIME);
   for (auto i = 0u; i < AnyAttributesValues().size(); ++i) {
     multimeter.Record(
-        i, std::vector<double>{AnyAttributesValues(AnotherTime())[i],
-                               AnotherAttributesValues(AnotherTime())[i],
-                               ThirdAttributesValues(AnotherTime())[i]});
+        i, std::vector<double>{AnyAttributesValues(ANOTHER_TIME)[i],
+                               AnotherAttributesValues(ANOTHER_TIME)[i],
+                               ThirdAttributesValues(ANOTHER_TIME)[i]});
   }
 
   return node;

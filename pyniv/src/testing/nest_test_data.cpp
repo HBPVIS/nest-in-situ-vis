@@ -76,13 +76,18 @@ BOOST_PYTHON_FUNCTION_OVERLOADS(AnyAttributesValuesOverloads,
 
 }  // namespace testing
 
+#ifndef EXPOSE_CONSTANT
+#define EXPOSE_CONSTANT(a) scope().attr(#a) = niv::testing::a
+#endif
+
 template <>
 void expose<niv::Testing>() {
-  def("AnyAttribute", &niv::testing::AnyAttribute);
-  def("AnotherAttribute", &niv::testing::AnotherAttribute);
-  def("ThirdAttribute", &niv::testing::ThirdAttribute);
-  def("AnyTime", &niv::testing::AnyTime);
-  def("AnotherTime", &niv::testing::AnotherTime);
+  EXPOSE_CONSTANT(ANY_ATTRIBUTE);
+  EXPOSE_CONSTANT(ANOTHER_ATTRIBUTE);
+  EXPOSE_CONSTANT(THIRD_ATTRIBUTE);
+
+  EXPOSE_CONSTANT(ANY_TIME);
+  EXPOSE_CONSTANT(ANOTHER_TIME);
   def("AnyAttributesValues", &pyniv::testing::AnyAttributesValues,
       pyniv::testing::AnyAttributesValuesOverloads());
   def("AnotherAttributesValues", &pyniv::testing::AnotherAttributesValues);
