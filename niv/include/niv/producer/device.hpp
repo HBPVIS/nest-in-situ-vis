@@ -58,6 +58,9 @@ class Device {
 
   conduit::Node& GetTimestepNode();
 
+  const std::string& GetName() { return name_; }
+  conduit::Node& GetNode(const std::string& path);
+
  private:
   conduit::Node* node_{nullptr};
   conduit::Node* timestep_node_{nullptr};

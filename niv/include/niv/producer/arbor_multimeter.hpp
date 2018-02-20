@@ -33,6 +33,13 @@ namespace producer {
 
 class ArborMultimeter final : public Device {
  public:
+  struct Datum {
+    double time;
+    std::string attribute;
+    std::size_t id;
+    double value;
+  };
+
   ArborMultimeter(const std::string& name,
                   const std::vector<std::string>& value_names,
                   conduit::Node* node);
@@ -47,7 +54,10 @@ class ArborMultimeter final : public Device {
       const std::string& name, const std::vector<std::string>& value_names,
       conduit::Node* node);
 
+  void Record(const Datum& datum);
+
  private:
+  std::string CreatePath(const Datum& datum);
   std::vector<std::string> value_names_;
 };
 

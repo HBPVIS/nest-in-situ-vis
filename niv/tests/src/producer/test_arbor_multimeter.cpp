@@ -20,11 +20,13 @@
 //------------------------------------------------------------------------------
 
 #include <memory>
+#include <sstream>
 #include <string>
 #include <vector>
 
 #include "catch/catch.hpp"
 
+#include "niv/nest_test_data.hpp"
 #include "niv/producer/arbor_multimeter.hpp"
 
 SCENARIO("A unique multimeter ptr can be constructed via its factory",
@@ -34,5 +36,33 @@ SCENARIO("A unique multimeter ptr can be constructed via its factory",
         niv::producer::ArborMultimeter::New("name", std::vector<std::string>(),
                                             nullptr)};
     THEN("a pointer was obtained") { REQUIRE(multimeter.get() != nullptr); }
+  }
+}
+
+SCENARIO("A multimeter records to a conduit node",
+         "[niv][niv::ArborMultimeter]") {
+  GIVEN("A conduit node and a multimeter") {
+    conduit::Node node;
+    niv::producer::ArborMultimeter multimeter{
+        niv::testing::ANY_MULTIMETER_NAME, niv::testing::ANY_ATTRIBUTES, &node};
+
+    WHEN("recording data") {
+      niv::producer::ArborMultimeter::Datum datum{
+          niv::testing::ANY_TIME + niv::testing::ANY_TIME_OFFSET,
+          std::string(niv::testing::ANY_ATTRIBUTE), niv::testing::ANY_ID,
+          niv::testing::ANY_VALUE};
+      multimeter.Record(datum);
+      THEN("the data is recorded in the node") {
+        std::stringstream path;
+        path << niv::testing::ANY_MULTIMETER_NAME << '/';
+        path << niv::testing::ANY_TIME << '/';
+        path << niv::testing::ANY_ATTRIBUTE << '/';
+        path << niv::testing::ANY_ID;
+
+        REQUIRE(node[path.str()].as_double() ==
+                Approx(niv::testing::ANY_VALUE));
+      }
+      // id tag time value
+    }
   }
 }

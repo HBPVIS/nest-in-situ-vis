@@ -19,7 +19,10 @@
 // limitations under the License.
 //------------------------------------------------------------------------------
 
+#include <cmath>
+
 #include <memory>
+#include <sstream>
 #include <string>
 #include <vector>
 
@@ -39,6 +42,20 @@ std::unique_ptr<ArborMultimeter> ArborMultimeter::New(
     const std::string& name, const std::vector<std::string>& value_names,
     conduit::Node* node) {
   return std::make_unique<ArborMultimeter>(name, value_names, node);
+}
+
+void ArborMultimeter::Record(const ArborMultimeter::Datum& datum) {
+  const std::string path{CreatePath(datum)};
+  GetNode(path) = datum.value;
+}
+
+std::string ArborMultimeter::CreatePath(const ArborMultimeter::Datum& datum) {
+  std::stringstream path;
+  path << GetName() << '/';
+  path << std::round(10.0 * datum.time) / 10.0 << '/';
+  path << datum.attribute << '/';
+  path << datum.id;
+  return path.str();
 }
 
 }  // namespace producer

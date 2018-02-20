@@ -47,5 +47,9 @@ conduit::Node& Device::GetTimestepNode() {
   return *timestep_node_;
 }
 
+conduit::Node& Device::GetNode(const std::string& path) {
+  return (*node_)[path];
+}
+
 }  // namespace producer
 }  // namespace niv
