@@ -33,29 +33,26 @@
 namespace niv {
 namespace producer {
 
-ArborMultimeter::ArborMultimeter(const std::string& name,
-                                 const std::vector<std::string>& value_names,
-                                 conduit::Node* node)
-    : Device{name, node}, value_names_{value_names} {}
+ArborMultimeter::ArborMultimeter(const std::string& name) : name_{name} {}
 
-std::unique_ptr<ArborMultimeter> ArborMultimeter::New(
-    const std::string& name, const std::vector<std::string>& value_names,
-    conduit::Node* node) {
-  return std::make_unique<ArborMultimeter>(name, value_names, node);
+void ArborMultimeter::Record(const ArborMultimeter::Datum& datum,
+                             conduit::Node* node) {
+  const std::string path{ConstructPath(datum)};
+  (*node)[path] = datum.value;
 }
 
-void ArborMultimeter::Record(const ArborMultimeter::Datum& datum) {
-  const std::string path{CreatePath(datum)};
-  GetNode(path) = datum.value;
-}
-
-std::string ArborMultimeter::CreatePath(const ArborMultimeter::Datum& datum) {
+std::string ArborMultimeter::ConstructPath(
+    const ArborMultimeter::Datum& datum) {
   std::stringstream path;
-  path << GetName() << '/';
-  path << std::round(10.0 * datum.time) / 10.0 << '/';
+  path << name_ << '/';
+  path << ConstructTimestep(datum) << '/';
   path << datum.attribute << '/';
   path << datum.id;
   return path.str();
+}
+
+double ArborMultimeter::ConstructTimestep(const ArborMultimeter::Datum& datum) {
+  return std::round(10.0 * datum.time) / 10.0;
 }
 
 }  // namespace producer

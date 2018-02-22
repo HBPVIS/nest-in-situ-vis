@@ -22,16 +22,12 @@
 #ifndef NIV_INCLUDE_NIV_PRODUCER_ARBOR_MULTIMETER_HPP_
 #define NIV_INCLUDE_NIV_PRODUCER_ARBOR_MULTIMETER_HPP_
 
-#include <memory>
 #include <string>
-#include <vector>
-
-#include "niv/producer/device.hpp"
 
 namespace niv {
 namespace producer {
 
-class ArborMultimeter final : public Device {
+class ArborMultimeter final {
  public:
   struct Datum {
     double time;
@@ -40,9 +36,7 @@ class ArborMultimeter final : public Device {
     double value;
   };
 
-  ArborMultimeter(const std::string& name,
-                  const std::vector<std::string>& value_names,
-                  conduit::Node* node);
+  explicit ArborMultimeter(const std::string& name);
   ArborMultimeter(const ArborMultimeter&) = default;
   ArborMultimeter(ArborMultimeter&&) = default;
   ~ArborMultimeter() = default;
@@ -50,15 +44,13 @@ class ArborMultimeter final : public Device {
   ArborMultimeter& operator=(const ArborMultimeter&) = default;
   ArborMultimeter& operator=(ArborMultimeter&&) = default;
 
-  static std::unique_ptr<ArborMultimeter> New(
-      const std::string& name, const std::vector<std::string>& value_names,
-      conduit::Node* node);
-
-  void Record(const Datum& datum);
+  void Record(const Datum& datum, conduit::Node* node);
 
  private:
-  std::string CreatePath(const Datum& datum);
-  std::vector<std::string> value_names_;
+  std::string ConstructPath(const Datum& datum);
+  double ConstructTimestep(const Datum& datum);
+
+  std::string name_;
 };
 
 }  // namespace producer
