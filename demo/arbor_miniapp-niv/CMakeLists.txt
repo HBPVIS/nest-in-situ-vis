@@ -19,12 +19,12 @@
 # limitations under the License.
 #-------------------------------------------------------------------------------
 
-set(ARBOR_PYTHON_DUMP_SOURCE dump_to_stdout.py)
+set(PYTHON_DUMP_SOURCE dump_to_stdout.py)
 
 if(NOT CMAKE_MAKE_PROGRAM STREQUAL "/usr/bin/xcodebuild")
   
 file(GENERATE OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/run_dump.sh
-  CONTENT "PYTHONPATH=${PYNIV_OUTPUT_DIR}/..:$<TARGET_FILE_DIR:pytest_utilities> ${PYTHON_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/${ARBOR_PYTHON_DUMP_SOURCE}"
+  CONTENT "PYTHONPATH=${PYNIV_OUTPUT_DIR}/..:$<TARGET_FILE_DIR:pytest_utilities> ${PYTHON_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/${PYTHON_DUMP_SOURCE}"
   )
 
 endif()
