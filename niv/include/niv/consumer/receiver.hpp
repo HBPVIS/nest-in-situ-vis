@@ -44,8 +44,8 @@ class Receiver {
   virtual void Receive();
 
  private:
+  conduit::Node* node_{nullptr};
   exchange::RelaySharedMemory relay_;
-  conduit::Node* node_;
 };
 
 }  // namespace consumer

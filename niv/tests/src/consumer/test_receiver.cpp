@@ -29,7 +29,7 @@
 
 SCENARIO("received data is aggregated in the consumer::Receiver",
          "[niv][niv::consumer][niv::consumer::Receiver]") {
-  GIVEN("A SchnchronizedAggregatingReceiver and a sending relay") {
+  GIVEN("A Receiver and a sending relay") {
     niv::consumer::Receiver receiver;
     conduit::Node receiving_node;
     receiver.SetNode(&receiving_node);
