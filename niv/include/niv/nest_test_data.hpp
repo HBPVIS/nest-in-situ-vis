@@ -64,10 +64,10 @@ static const char* ANY_ATTRIBUTE{ANY_ATTRIBUTES[0].c_str()};
 static const char* ANOTHER_ATTRIBUTE{ANY_ATTRIBUTES[1].c_str()};
 static const char* THIRD_ATTRIBUTE{ANY_ATTRIBUTES[2].c_str()};
 
-static const std::vector<std::size_t> ANY_IDS{1, 2, 3};
-static const std::size_t ANY_ID{ANY_IDS[0]};
-static const std::size_t ANOTHER_ID{ANY_IDS[0]};
-static const std::size_t THIRD_ID{ANY_IDS[0]};
+static const std::vector<std::string> ANY_IDS{"1", "2", "3"};
+static const char* ANY_ID{ANY_IDS[0].c_str()};
+static const char* ANOTHER_ID{ANY_IDS[1].c_str()};
+static const char* THIRD_ID{ANY_IDS[2].c_str()};
 
 // clang-format off
 static const std::vector<double> ANY_VALUES{

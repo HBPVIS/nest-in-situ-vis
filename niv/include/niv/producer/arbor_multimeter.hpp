@@ -36,7 +36,7 @@ class ArborMultimeter final : public Device {
   struct Datum {
     double time;
     std::string attribute;
-    std::size_t id;
+    std::string id;
     double value;
   };
 
