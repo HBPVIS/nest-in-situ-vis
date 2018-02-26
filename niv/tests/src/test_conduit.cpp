@@ -294,7 +294,6 @@ SCENARIO("conduit data layout", "[conduit]") {
     WHEN("the node's data is accessed via ptr") {
       const double* data_ptr =
           reinterpret_cast<const double*>(node.contiguous_data_ptr());
-      std::cout << niv::testing::UpdatedNode().schema().to_json() << std::endl;
 
       THEN("the leafs' data is accessible as an array") {
         REQUIRE(data_ptr[0] ==
@@ -307,6 +306,33 @@ SCENARIO("conduit data layout", "[conduit]") {
                 niv::testing::UpdatedNode()["A/B/G"].as_double());
         REQUIRE(data_ptr[4] == niv::testing::UpdatedNode()["A/E"].as_double());
         REQUIRE(data_ptr[5] == niv::testing::UpdatedNode()["A/H"].as_double());
+      }
+    }
+  }
+}
+
+SCENARIO("create conduit::Node from data ans schema", "[conduit]") {
+  GIVEN("a schema and data") {
+    const std::string schema{
+        "{ \n"
+        "  \"A\":{ \n"
+        "    \"B\":{\"dtype\":\"float64\", \"number_of_elements\": 1, \n"
+        "           \"offset\": 0, \"stride\": 8, \"element_bytes\": 8}, \n"
+        "    \"C\":{\"dtype\":\"float64\", \"number_of_elements\": 1, \n"
+        "           \"offset\": 8, \"stride\": 8, \"element_bytes\": 8} \n"
+        "  }, \n"
+        "  \"D\":{\"dtype\":\"float64\", \"number_of_elements\": 1, \n"
+        "         \"offset\": 16, \"stride\": 8, \"element_bytes\": 8} \n"
+        "}"};
+    std::vector<double> data{1.23, 2.34, 3.45};
+
+    WHEN("a node is created from that") {
+      conduit::Node node(schema, reinterpret_cast<void*>(data.data()), true);
+
+      THEN("it contains the expected data") {
+        REQUIRE(node["A/B"].as_double() == data[0]);
+        REQUIRE(node["A/C"].as_double() == data[1]);
+        REQUIRE(node["D"].as_double() == data[2]);
       }
     }
   }
