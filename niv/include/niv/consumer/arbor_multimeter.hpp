@@ -47,7 +47,12 @@ class ArborMultimeter : public niv::consumer::Device {
   ArborMultimeter& operator=(ArborMultimeter&&) = default;
 
  private:
-  conduit::Node* GetAttributeNode(const std::string& attribute);
+  static std::string TimeToString(double time);
+
+  static const conduit::Node* GetChildNode(const conduit::Node* parent,
+                                           const std::string& child_name);
+
+  static std::vector<std::string> GetChildNames(const conduit::Node* node);
 };
 
 }  // namespace consumer

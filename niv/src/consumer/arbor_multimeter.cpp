@@ -36,32 +36,42 @@ void ArborMultimeter::Update() { SetTimestepNode(); }
 
 std::vector<std::string> ArborMultimeter::GetNodeIds(
     double time, const std::string& attribute) {
-  const conduit::Node* node{GetNode()};
+  const conduit::Node* const root_node{GetNode()};
+  const conduit::Node* const device_node{GetChildNode(root_node, GetName())};
+  const conduit::Node* const timestep_node{
+      GetChildNode(device_node, TimeToString(time))};
+  const conduit::Node* const attribute_node{
+      GetChildNode(timestep_node, attribute)};
 
-  const conduit::Node* device_node{nullptr};
-  try {
-    device_node = &node->fetch_child(GetName());
-  } catch (...) {
-    return std::vector<std::string>();
+  return GetChildNames(attribute_node);
+}
+
+std::string ArborMultimeter::TimeToString(double time) {
+  std::stringstream s;
+  s << time;
+  return s.str();
+}
+
+const conduit::Node* ArborMultimeter::GetChildNode(
+    const conduit::Node* parent, const std::string& child_name) {
+  if (parent == nullptr) {
+    return nullptr;
   }
 
-  std::stringstream time_stream;
-  time_stream << time;
-  const conduit::Node* timestep_node{nullptr};
+  const conduit::Node* child{nullptr};
   try {
-    timestep_node = &(device_node->fetch_child(time_stream.str()));
+    child = &parent->fetch_child(child_name);
   } catch (...) {
+  }
+  return child;
+}
+
+std::vector<std::string> ArborMultimeter::GetChildNames(
+    const conduit::Node* node) {
+  if (node == nullptr) {
     return std::vector<std::string>();
   }
-
-  const conduit::Node* attribute_node{nullptr};
-  try {
-    attribute_node = &(timestep_node->fetch_child(attribute));
-  } catch (...) {
-    return std::vector<std::string>();
-  }
-
-  return attribute_node->child_names();
+  return node->child_names();
 }
 
 }  // namespace consumer
