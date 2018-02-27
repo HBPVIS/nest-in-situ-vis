@@ -48,11 +48,13 @@ namespace testing {
 #endif
 
 static const char* ANY_MULTIMETER_NAME{"multimeter A"};
+static const char* NOT_A_MULTIMETER_NAME{"NOT_A_MULTIMETER_NAME"};
 
 static const std::vector<double> ANY_TIMES{0.1, 0.2, 0.3};
 static const double ANY_TIME{ANY_TIMES[0]};
 static const double ANOTHER_TIME{ANY_TIMES[1]};
 static const double THIRD_TIME{ANY_TIMES[2]};
+static const double NOT_A_TIME{ANY_TIMES.back() + 1.0};
 
 static const std::vector<double> ANY_TIME_OFFSETS{0.0123, 0.0234, 0.0345};
 static const double ANY_TIME_OFFSET{ANY_TIME_OFFSETS[0]};
@@ -63,11 +65,13 @@ static const std::vector<std::string> ANY_ATTRIBUTES{"V_m", "g_e", "g_i"};
 static const char* ANY_ATTRIBUTE{ANY_ATTRIBUTES[0].c_str()};
 static const char* ANOTHER_ATTRIBUTE{ANY_ATTRIBUTES[1].c_str()};
 static const char* THIRD_ATTRIBUTE{ANY_ATTRIBUTES[2].c_str()};
+static const char* NOT_AN_ATTRIBUTE{"NOT_AN_ATTRIBUTE"};
 
 static const std::vector<std::string> ANY_IDS{"1", "2", "3"};
 static const char* ANY_ID{ANY_IDS[0].c_str()};
 static const char* ANOTHER_ID{ANY_IDS[1].c_str()};
 static const char* THIRD_ID{ANY_IDS[2].c_str()};
+static const char* NOT_AN_ID{"NOT_AN_ID"};
 
 // clang-format off
 static const std::vector<double> ANY_VALUES{
@@ -76,6 +80,63 @@ static const std::vector<double> ANY_VALUES{
   0.311, 0.312, 0.313,  0.321, 0.322, 0.323,  0.331, 0.332, 0.333};
 // clang-format on
 static const double ANY_VALUE{ANY_VALUES[0]};
+
+template <typename T>
+inline std::string OpenTag(T tag) {
+  std::stringstream s;
+  s << '\"' << tag << '\"' << ":{ \n";
+  return s.str();
+}
+
+inline std::string CloseTag() { return std::string("} \n"); }
+inline std::string CloseTagNext() { return std::string("}, \n"); }
+
+inline std::string DoubleData(std::size_t offset) {
+  std::stringstream s;
+  s << "dtype:float64, ";
+  s << "number_of_elements:1, ";
+  s << "offset:" << offset << ", ";
+  s << "stride:8, ";
+  s << "element_bytes:8";
+  s << "\n";
+  return s.str();
+}
+
+inline void RemoveNextIndicator(std::stringstream* s) {
+  s->clear();
+  s->seekp(s->str().size() - 3);
+  *s << " \n";
+}
+
+inline static const std::string AnyNestDataSchema() {
+  std::stringstream s;
+  std::size_t offset = 0;
+  const std::size_t datum_size = 8;
+  s << "{\n";
+  s << "  " << OpenTag(ANY_MULTIMETER_NAME);
+  for (auto time : ANY_TIMES) {
+    s << "    " << OpenTag(time);
+    for (auto attribute : ANY_ATTRIBUTES) {
+      s << "      " << OpenTag(attribute);
+      for (auto id : ANY_IDS) {
+        s << "        " << OpenTag(id);
+        s << "          " << DoubleData((offset++) * datum_size);
+        s << "        " << CloseTagNext();
+      }
+      RemoveNextIndicator(&s);
+      s << "      " << CloseTagNext();
+    }
+    RemoveNextIndicator(&s);
+    s << "    " << CloseTagNext();
+  }
+  RemoveNextIndicator(&s);
+  s << "  " << CloseTag();
+  s << "}";
+  return s.str();
+}
+
+static conduit::Node ANY_NEST_DATA{
+    AnyNestDataSchema(), const_cast<double*>(ANY_VALUES.data()), false};
 
 #if defined __GNUC__
 #pragma GCC diagnostic pop

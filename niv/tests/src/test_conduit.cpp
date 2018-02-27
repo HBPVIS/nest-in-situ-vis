@@ -311,7 +311,7 @@ SCENARIO("conduit data layout", "[conduit]") {
   }
 }
 
-SCENARIO("create conduit::Node from data ans schema", "[conduit]") {
+SCENARIO("create conduit::Node from data and schema (string)", "[conduit]") {
   GIVEN("a schema and data") {
     const std::string schema{
         "{ \n"
@@ -328,6 +328,45 @@ SCENARIO("create conduit::Node from data ans schema", "[conduit]") {
 
     WHEN("a node is created from that") {
       conduit::Node node(schema, reinterpret_cast<void*>(data.data()), true);
+
+      THEN("it contains the expected data") {
+        REQUIRE(node["A/B"].as_double() == data[0]);
+        REQUIRE(node["A/C"].as_double() == data[1]);
+        REQUIRE(node["D"].as_double() == data[2]);
+      }
+    }
+  }
+}
+
+namespace {
+
+const char* ANY_TAG{"A"};
+
+}  // namespace
+
+SCENARIO("create conduit::Node from data and schema (stringstream)",
+         "[conduit]") {
+  GIVEN("a schema and data") {
+    std::stringstream schema;
+    schema << "{\n";
+    schema << "  " << niv::testing::OpenTag(::ANY_TAG);
+    schema << "    " << niv::testing::OpenTag("B");
+    schema << "      " << niv::testing::DoubleData(0);
+    schema << "    " << niv::testing::CloseTagNext();
+    schema << "    " << niv::testing::OpenTag("C");
+    schema << "      " << niv::testing::DoubleData(8);
+    schema << "    " << niv::testing::CloseTag();
+    schema << "  " << niv::testing::CloseTagNext();
+    schema << "  " << niv::testing::OpenTag("D");
+    schema << "    " << niv::testing::DoubleData(16);
+    schema << "  " << niv::testing::CloseTag();
+    schema << "}";
+
+    std::vector<double> data{1.23, 2.34, 3.45};
+
+    WHEN("a node is created from that") {
+      conduit::Node node(schema.str(), reinterpret_cast<void*>(data.data()),
+                         true);
 
       THEN("it contains the expected data") {
         REQUIRE(node["A/B"].as_double() == data[0]);
