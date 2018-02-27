@@ -34,7 +34,7 @@ ArborMultimeter::ArborMultimeter(const std::string& name) : Device(name) {}
 
 void ArborMultimeter::Update() { SetTimestepNode(); }
 
-std::vector<std::string> ArborMultimeter::GetNodeIds(
+std::vector<std::string> ArborMultimeter::GetNeuronIds(
     double time, const std::string& attribute) {
   const conduit::Node* const root_node{GetNode()};
   const conduit::Node* const device_node{GetChildNode(root_node, GetName())};
