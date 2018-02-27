@@ -40,6 +40,9 @@ class ArborMultimeter : public niv::consumer::Device {
 
   void Update() override;
 
+  std::vector<std::string> GetNodeIds(double time,
+                                      const std::string& attribute);
+
   ArborMultimeter& operator=(const ArborMultimeter&) = default;
   ArborMultimeter& operator=(ArborMultimeter&&) = default;
 

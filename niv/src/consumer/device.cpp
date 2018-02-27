@@ -80,5 +80,9 @@ void Device::Print() const {
 
 const conduit::Node* Device::GetTimestepNode() const { return timestep_node_; }
 
+const conduit::Node* Device::GetNode() const { return node_; }
+
+const std::string Device::GetName() const { return name_; }
+
 }  // namespace consumer
 }  // namespace niv

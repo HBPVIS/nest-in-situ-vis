@@ -20,8 +20,12 @@
 //------------------------------------------------------------------------------
 
 #include <string>
+#include <vector>
+
+#include "conduit/conduit_node.hpp"
 
 #include "niv/consumer/arbor_multimeter.hpp"
+#include "niv/nest_test_data.hpp"
 
 namespace niv {
 namespace consumer {
@@ -29,6 +33,36 @@ namespace consumer {
 ArborMultimeter::ArborMultimeter(const std::string& name) : Device(name) {}
 
 void ArborMultimeter::Update() { SetTimestepNode(); }
+
+std::vector<std::string> ArborMultimeter::GetNodeIds(
+    double time, const std::string& attribute) {
+  const conduit::Node* node{GetNode()};
+
+  const conduit::Node* device_node{nullptr};
+  try {
+    device_node = &node->fetch_child(GetName());
+  } catch (...) {
+    return std::vector<std::string>();
+  }
+
+  std::stringstream time_stream;
+  time_stream << time;
+  const conduit::Node* timestep_node{nullptr};
+  try {
+    timestep_node = &(device_node->fetch_child(time_stream.str()));
+  } catch (...) {
+    return std::vector<std::string>();
+  }
+
+  const conduit::Node* attribute_node{nullptr};
+  try {
+    attribute_node = &(timestep_node->fetch_child(attribute));
+  } catch (...) {
+    return std::vector<std::string>();
+  }
+
+  return attribute_node->child_names();
+}
 
 }  // namespace consumer
 }  // namespace niv
