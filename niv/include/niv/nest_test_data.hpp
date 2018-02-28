@@ -51,6 +51,15 @@ static const char* ANY_MULTIMETER_NAME{"multimeter A"};
 static const char* NOT_A_MULTIMETER_NAME{"NOT_A_MULTIMETER_NAME"};
 
 static const std::vector<double> ANY_TIMES{0.1, 0.2, 0.3};
+inline std::vector<std::string> AnyTimesString() {
+  std::vector<std::string> retval;
+  for (auto time : ANY_TIMES) {
+    std::stringstream s;
+    s << time;
+    retval.push_back(s.str());
+  }
+  return retval;
+}
 static const double ANY_TIME{ANY_TIMES[0]};
 static const double ANOTHER_TIME{ANY_TIMES[1]};
 static const double THIRD_TIME{ANY_TIMES[2]};

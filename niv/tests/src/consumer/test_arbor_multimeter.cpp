@@ -24,6 +24,35 @@
 #include "niv/consumer/arbor_multimeter.hpp"
 #include "niv/nest_test_data.hpp"
 
+SCENARIO("ArborMultimeter lists the timesteps",
+         "[niv][niv::consumer][niv::consumer::ArborMultimeter]") {
+  GIVEN("a multimeter providing access to some data") {
+    niv::consumer::ArborMultimeter multimeter(
+        niv::testing::ANY_MULTIMETER_NAME);
+    multimeter.SetNode(&niv::testing::ANY_NEST_DATA);
+
+    WHEN("timesteps are requested") {
+      auto timesteps{multimeter.GetTimestepsString()};
+      THEN("they are correct") {
+        REQUIRE(timesteps == niv::testing::AnyTimesString());
+      }
+    }
+  }
+
+  GIVEN("a multimeter with an incorrect name providing access to some data") {
+    niv::consumer::ArborMultimeter multimeter(
+        niv::testing::NOT_A_MULTIMETER_NAME);
+    multimeter.SetNode(&niv::testing::ANY_NEST_DATA);
+
+    WHEN("timesteps are requested") {
+      auto timesteps{multimeter.GetTimestepsString()};
+      THEN("the multimeter does not provide timesteps") {
+        REQUIRE(timesteps.empty());
+      }
+    }
+  }
+}
+
 SCENARIO(
     "ArborMultimeter lists the neuron ids stored for an attribute in a "
     "timestep",

@@ -36,6 +36,12 @@ ArborMultimeter::ArborMultimeter(const std::string& name) : Device(name) {}
 
 void ArborMultimeter::Update() {}
 
+std::vector<std::string> ArborMultimeter::GetTimestepsString() const {
+  const std::string path{ConstructPath()};
+  const conduit::Node* node{GetNode(path)};
+  return GetChildNames(node);
+}
+
 std::vector<std::string> ArborMultimeter::GetNeuronIds(
     double time, const std::string& attribute) const {
   const std::string path{ConstructPath(time, attribute)};
@@ -62,9 +68,15 @@ std::string ArborMultimeter::ConstructPath(double time,
 std::string ArborMultimeter::ConstructPath(double time,
                                            const std::string& attribute) const {
   std::stringstream path;
-  path << GetName() << "/";
+  path << ConstructPath() << "/";
   path << time << "/";
   path << attribute;
+  return path.str();
+}
+
+std::string ArborMultimeter::ConstructPath() const {
+  std::stringstream path;
+  path << GetName();
   return path.str();
 }
 
