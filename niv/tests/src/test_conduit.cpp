@@ -376,3 +376,51 @@ SCENARIO("create conduit::Node from data and schema (stringstream)",
     }
   }
 }
+
+SCENARIO("conduit::Node::getch_child(path) behaves as intended", "[conduit]") {
+  GIVEN("a const ptr to a node with some data") {
+    conduit::Node node;
+    node["A/B/C"] = niv::testing::ANY_VALUE;
+    const conduit::Node* const node_ptr{&node};
+
+    WHEN("fetch_child is called with a correct path") {
+      THEN("it does not throw and yield the correct datum") {
+        const conduit::Node* retrieved_node_ptr{nullptr};
+        REQUIRE_NOTHROW(retrieved_node_ptr = &node_ptr->fetch_child("A/B/C"));
+        REQUIRE(retrieved_node_ptr->as_double() == niv::testing::ANY_VALUE);
+      }
+    }
+
+    WHEN("fetch_child is called with an incorrect path; completely off") {
+      THEN("it throws") {
+        const conduit::Node* retrieved_node_ptr{nullptr};
+        REQUIRE_THROWS(retrieved_node_ptr =
+                           &node_ptr->fetch_child("FOO/BAR/FOOBAR"));
+      }
+    }
+
+    WHEN("fetch_child is called with an incorrect path; error at front") {
+      THEN("it throws") {
+        const conduit::Node* retrieved_node_ptr{nullptr};
+        REQUIRE_THROWS(retrieved_node_ptr =
+                           &node_ptr->fetch_child("ERROR/B/C"));
+      }
+    }
+
+    WHEN("fetch_child is called with an incorrect path; error at middle") {
+      THEN("it throws") {
+        const conduit::Node* retrieved_node_ptr{nullptr};
+        REQUIRE_THROWS(retrieved_node_ptr =
+                           &node_ptr->fetch_child("A/ERROR/C"));
+      }
+    }
+
+    WHEN("fetch_child is called with an incorrect path; error at end") {
+      THEN("it throws") {
+        const conduit::Node* retrieved_node_ptr{nullptr};
+        REQUIRE_THROWS(retrieved_node_ptr =
+                           &node_ptr->fetch_child("A/B/ERROR"));
+      }
+    }
+  }
+}
