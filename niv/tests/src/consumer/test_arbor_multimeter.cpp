@@ -31,11 +31,9 @@ SCENARIO("ArborMultimeter lists the timesteps",
         niv::testing::ANY_MULTIMETER_NAME);
     multimeter.SetNode(&niv::testing::ANY_NEST_DATA);
 
-    WHEN("timesteps are requested") {
-      auto timesteps{multimeter.GetTimestepsString()};
-      THEN("they are correct") {
-        REQUIRE(timesteps == niv::testing::AnyTimesString());
-      }
+    THEN("the multimeter provides correct timesteps") {
+      REQUIRE(multimeter.GetTimestepsString() ==
+              niv::testing::AnyTimesString());
     }
   }
 
@@ -44,11 +42,8 @@ SCENARIO("ArborMultimeter lists the timesteps",
         niv::testing::NOT_A_MULTIMETER_NAME);
     multimeter.SetNode(&niv::testing::ANY_NEST_DATA);
 
-    WHEN("timesteps are requested") {
-      auto timesteps{multimeter.GetTimestepsString()};
-      THEN("the multimeter does not provide timesteps") {
-        REQUIRE(timesteps.empty());
-      }
+    THEN("the multimeter does not provide timesteps") {
+      REQUIRE(multimeter.GetTimestepsString().empty());
     }
   }
 }
