@@ -56,7 +56,7 @@ class Device {
   void SetTimestepNode();
   const conduit::Node* GetTimestepNode() const;
 
-  const conduit::Node* GetNode() const;
+  const conduit::Node* GetRootNode() const;
   const std::string GetName() const;
 
  private:

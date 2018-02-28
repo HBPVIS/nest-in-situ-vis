@@ -41,7 +41,9 @@ class ArborMultimeter : public niv::consumer::Device {
   void Update() override;
 
   std::vector<std::string> GetNeuronIds(double time,
-                                        const std::string& attribute);
+                                        const std::string& attribute) const;
+  double GetDatum(double time, const std::string& attribute,
+                  const std::string& neuron_id) const;
 
   ArborMultimeter& operator=(const ArborMultimeter&) = default;
   ArborMultimeter& operator=(ArborMultimeter&&) = default;
@@ -53,6 +55,9 @@ class ArborMultimeter : public niv::consumer::Device {
                                            const std::string& child_name);
 
   static std::vector<std::string> GetChildNames(const conduit::Node* node);
+
+  std::string ConstructPath(double time, const std::string& attribute,
+                            const std::string& neuron_id) const;
 };
 
 }  // namespace consumer

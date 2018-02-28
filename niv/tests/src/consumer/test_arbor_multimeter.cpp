@@ -75,3 +75,47 @@ SCENARIO("ArborMultimeter reports no neuron ids if these cannot be found",
     }
   }
 }
+
+SCENARIO("ArborMultimeter retrieves datum for time, attribute, neuron",
+         "[niv][niv::consumer][niv::consumer::ArborMultimeter]") {
+  GIVEN("a multimeter providing access to some data") {
+    niv::consumer::ArborMultimeter multimeter(
+        niv::testing::ANY_MULTIMETER_NAME);
+    multimeter.SetNode(&niv::testing::ANY_NEST_DATA);
+
+    WHEN("requesting data") {
+      const double datum = multimeter.GetDatum(niv::testing::ANY_TIME,
+                                               niv::testing::ANOTHER_ATTRIBUTE,
+                                               niv::testing::THIRD_ID);
+      THEN("it is correct") {
+        const std::size_t ANY_TIME_OFFSET{0 * 9};
+        const std::size_t ANOTHER_ATTRIBUTE_OFFSET{1 * 3};
+        const std::size_t THIRD_ID_OFFSET{2};
+        const std::size_t DATUM_OFFSET{
+            ANY_TIME_OFFSET + ANOTHER_ATTRIBUTE_OFFSET + THIRD_ID_OFFSET};
+        REQUIRE(datum == Approx(niv::testing::ANY_VALUES[DATUM_OFFSET]));
+      }
+    }
+
+    WHEN("requesting datum at an invalid time") {
+      const double datum = multimeter.GetDatum(niv::testing::NOT_A_TIME,
+                                               niv::testing::ANOTHER_ATTRIBUTE,
+                                               niv::testing::THIRD_ID);
+      THEN("nan is returned") { REQUIRE(std::isnan(datum)); }
+    }
+
+    WHEN("requesting datum for an invalid attribute") {
+      const double datum = multimeter.GetDatum(niv::testing::ANY_TIME,
+                                               niv::testing::NOT_AN_ATTRIBUTE,
+                                               niv::testing::THIRD_ID);
+      THEN("nan is returned") { REQUIRE(std::isnan(datum)); }
+    }
+
+    WHEN("requesting datum for an invalid neuron id") {
+      const double datum = multimeter.GetDatum(niv::testing::ANY_TIME,
+                                               niv::testing::ANOTHER_ATTRIBUTE,
+                                               niv::testing::NOT_AN_ID);
+      THEN("nan is returned") { REQUIRE(std::isnan(datum)); }
+    }
+  }
+}

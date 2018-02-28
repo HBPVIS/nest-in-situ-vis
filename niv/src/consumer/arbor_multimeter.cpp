@@ -19,6 +19,8 @@
 // limitations under the License.
 //------------------------------------------------------------------------------
 
+#include <cmath>
+
 #include <string>
 #include <vector>
 
@@ -35,8 +37,8 @@ ArborMultimeter::ArborMultimeter(const std::string& name) : Device(name) {}
 void ArborMultimeter::Update() { SetTimestepNode(); }
 
 std::vector<std::string> ArborMultimeter::GetNeuronIds(
-    double time, const std::string& attribute) {
-  const conduit::Node* const root_node{GetNode()};
+    double time, const std::string& attribute) const {
+  const conduit::Node* const root_node{GetRootNode()};
   const conduit::Node* const device_node{GetChildNode(root_node, GetName())};
   const conduit::Node* const timestep_node{
       GetChildNode(device_node, TimeToString(time))};
@@ -72,6 +74,32 @@ std::vector<std::string> ArborMultimeter::GetChildNames(
     return std::vector<std::string>();
   }
   return node->child_names();
+}
+
+double ArborMultimeter::GetDatum(double time, const std::string& attribute,
+                                 const std::string& neuron_id) const {
+  const std::string path{ConstructPath(time, attribute, neuron_id)};
+
+  const conduit::Node* const root_node{GetRootNode()};
+  const conduit::Node* data_node{nullptr};
+  try {
+    data_node = &root_node->fetch_child(path);
+  } catch (...) {
+    return std::nan("");
+  }
+
+  return data_node->as_double();
+}
+
+std::string ArborMultimeter::ConstructPath(double time,
+                                           const std::string& attribute,
+                                           const std::string& neuron_id) const {
+  std::stringstream path;
+  path << GetName() << "/";
+  path << time << "/";
+  path << attribute << "/";
+  path << neuron_id;
+  return path.str();
 }
 
 }  // namespace consumer
