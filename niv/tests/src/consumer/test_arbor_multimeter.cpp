@@ -19,10 +19,33 @@
 // limitations under the License.
 //------------------------------------------------------------------------------
 
+#include <string>
+#include <vector>
+
 #include "catch/Catch.hpp"
 
 #include "niv/consumer/arbor_multimeter.hpp"
 #include "niv/nest_test_data.hpp"
+
+namespace Catch {
+namespace Matchers {
+
+class VectorAllNan : public Catch::MatcherBase<std::vector<double>> {
+ public:
+  bool match(const std::vector<double>& values) const override {
+    bool retval = true;
+    for (double v : values) {
+      retval &= std::isnan(v);
+    }
+    return retval;
+  }
+  std::string describe() const override { return ""; }
+};
+
+}  // namespace Matchers
+}  // namespace Catch
+
+using Catch::Matchers::VectorAllNan;
 
 SCENARIO("ArborMultimeter lists the timesteps",
          "[niv][niv::consumer][niv::consumer::ArborMultimeter]") {
@@ -139,9 +162,10 @@ SCENARIO("ArborMultimeter retrieves datum for time, attribute, neuron",
                                                niv::testing::ANOTHER_ATTRIBUTE,
                                                niv::testing::THIRD_ID);
       THEN("it is correct") {
-        const std::size_t ANY_TIME_OFFSET{0 * 9};
-        const std::size_t ANOTHER_ATTRIBUTE_OFFSET{1 * 3};
-        const std::size_t THIRD_ID_OFFSET{2};
+        const std::size_t ANY_TIME_OFFSET{0 * niv::testing::TIME_STRIDE};
+        const std::size_t ANOTHER_ATTRIBUTE_OFFSET{
+            1 * niv::testing::ATTRIBUTE_STRIDE};
+        const std::size_t THIRD_ID_OFFSET{2 * niv::testing::ID_STRIDE};
         const std::size_t DATUM_OFFSET{
             ANY_TIME_OFFSET + ANOTHER_ATTRIBUTE_OFFSET + THIRD_ID_OFFSET};
         REQUIRE(datum == Approx(niv::testing::ANY_VALUES[DATUM_OFFSET]));
@@ -167,6 +191,69 @@ SCENARIO("ArborMultimeter retrieves datum for time, attribute, neuron",
                                                niv::testing::ANOTHER_ATTRIBUTE,
                                                niv::testing::NOT_AN_ID);
       THEN("nan is returned") { REQUIRE(std::isnan(datum)); }
+    }
+  }
+}
+
+SCENARIO("ArborMultimeter provides time series data",
+         "[niv][niv::consumer][niv::consumer::ArborMultimeter]") {
+  std::vector<double> expected;
+  for (std::size_t i = 0; i < niv::testing::ANY_TIMES.size(); ++i) {
+    const auto TIME_OFFSET{i * niv::testing::TIME_STRIDE};
+    const auto ATTRIBUTE_OFFSET{1 * niv::testing::ATTRIBUTE_STRIDE};
+    const auto ID_OFFSET{2 * niv::testing::ID_STRIDE};
+    const auto DATUM_INDEX{TIME_OFFSET + ATTRIBUTE_OFFSET + ID_OFFSET};
+    expected.push_back(niv::testing::ANY_VALUES[DATUM_INDEX]);
+  }
+  const std::vector<double> nans(niv::testing::ANY_TIMES.size(), std::nan(""));
+
+  GIVEN("a multimeter providing access to some data") {
+    niv::consumer::ArborMultimeter multimeter(
+        niv::testing::ANY_MULTIMETER_NAME);
+    multimeter.SetNode(&niv::testing::ANY_NEST_DATA);
+
+    WHEN("requesting time series data for an attribute and a neuron id") {
+      const std::vector<double> values{multimeter.GetTimeSeries(
+          niv::testing::ANOTHER_ATTRIBUTE, niv::testing::THIRD_ID)};
+
+      THEN("the time series is correct") { REQUIRE(values == expected); }
+    }
+
+    WHEN(
+        "requesting time series data for an invalid attribute and a neuron "
+        "id") {
+      const std::vector<double> values{multimeter.GetTimeSeries(
+          niv::testing::NOT_AN_ATTRIBUTE, niv::testing::THIRD_ID)};
+
+      THEN("the time series is all nans") {
+        REQUIRE_THAT(values, VectorAllNan());
+      }
+    }
+
+    WHEN(
+        "requesting time series data for an  attribute and an invalid neuron "
+        "id") {
+      const std::vector<double> values{multimeter.GetTimeSeries(
+          niv::testing::ANOTHER_ATTRIBUTE, niv::testing::NOT_AN_ID)};
+
+      THEN("the time series is all nans") {
+        REQUIRE_THAT(values, VectorAllNan());
+      }
+    }
+  }
+
+  GIVEN("a multimeter with an incorrect name providing access to some data") {
+    niv::consumer::ArborMultimeter multimeter(
+        niv::testing::NOT_A_MULTIMETER_NAME);
+    multimeter.SetNode(&niv::testing::ANY_NEST_DATA);
+
+    WHEN("requesting time series data for an attribute and a neuron id") {
+      const std::vector<double> values{multimeter.GetTimeSeries(
+          niv::testing::ANOTHER_ATTRIBUTE, niv::testing::THIRD_ID)};
+
+      THEN("the time series is all nans") {
+        REQUIRE_THAT(values, VectorAllNan());
+      }
     }
   }
 }

@@ -89,6 +89,9 @@ static const std::vector<double> ANY_VALUES{
   0.311, 0.312, 0.313,  0.321, 0.322, 0.323,  0.331, 0.332, 0.333};
 // clang-format on
 static const double ANY_VALUE{ANY_VALUES[0]};
+static const std::size_t TIME_STRIDE{9};
+static const std::size_t ATTRIBUTE_STRIDE{3};
+static const std::size_t ID_STRIDE{1};
 
 template <typename T>
 inline std::string OpenTag(T tag) {
