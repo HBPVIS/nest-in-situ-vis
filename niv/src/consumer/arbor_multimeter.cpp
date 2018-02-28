@@ -34,7 +34,7 @@ namespace consumer {
 
 ArborMultimeter::ArborMultimeter(const std::string& name) : Device(name) {}
 
-void ArborMultimeter::Update() { SetTimestepNode(); }
+void ArborMultimeter::Update() {}
 
 std::vector<std::string> ArborMultimeter::GetNeuronIds(
     double time, const std::string& attribute) const {
