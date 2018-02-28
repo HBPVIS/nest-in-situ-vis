@@ -59,10 +59,10 @@ class ArborMultimeter : public niv::consumer::Device {
   std::string ConstructPath(double time) const;
   std::string ConstructPath() const;
 
-  const conduit::Node* GetNode(const std::string& path) const;
+  std::vector<std::string> GetChildNames(const std::string& path) const;
+  double GetValue(const std::string& path) const;
 
-  static std::vector<std::string> GetChildNames(const conduit::Node* node);
-  static double GetValue(const conduit::Node* node);
+  const conduit::Node* GetNode(const std::string& path) const;
 };
 
 }  // namespace consumer

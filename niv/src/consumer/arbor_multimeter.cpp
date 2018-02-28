@@ -37,29 +37,21 @@ ArborMultimeter::ArborMultimeter(const std::string& name) : Device(name) {}
 void ArborMultimeter::Update() {}
 
 std::vector<std::string> ArborMultimeter::GetTimestepsString() const {
-  const std::string path{ConstructPath()};
-  const conduit::Node* node{GetNode(path)};
-  return GetChildNames(node);
+  return GetChildNames(ConstructPath());
 }
 
 std::vector<std::string> ArborMultimeter::GetAttributes(double time) const {
-  const std::string path{ConstructPath(time)};
-  const conduit::Node* node{GetNode(path)};
-  return GetChildNames(node);
+  return GetChildNames(ConstructPath(time));
 }
 
 std::vector<std::string> ArborMultimeter::GetNeuronIds(
     double time, const std::string& attribute) const {
-  const std::string path{ConstructPath(time, attribute)};
-  const conduit::Node* node{GetNode(path)};
-  return GetChildNames(node);
+  return GetChildNames(ConstructPath(time, attribute));
 }
 
 double ArborMultimeter::GetDatum(double time, const std::string& attribute,
                                  const std::string& neuron_id) const {
-  const std::string path{ConstructPath(time, attribute, neuron_id)};
-  const conduit::Node* node{GetNode(path)};
-  return GetValue(node);
+  return GetValue(ConstructPath(time, attribute, neuron_id));
 }
 
 std::string ArborMultimeter::ConstructPath(double time,
@@ -85,6 +77,17 @@ std::string ArborMultimeter::ConstructPath(double time) const {
 
 std::string ArborMultimeter::ConstructPath() const { return GetName(); }
 
+std::vector<std::string> ArborMultimeter::GetChildNames(
+    const std::string& path) const {
+  const conduit::Node* node{GetNode(path)};
+  return (node != nullptr) ? node->child_names() : std::vector<std::string>();
+}
+
+double ArborMultimeter::GetValue(const std::string& path) const {
+  const conduit::Node* node{GetNode(path)};
+  return (node != nullptr) ? node->as_double() : std::nan("");
+}
+
 const conduit::Node* ArborMultimeter::GetNode(const std::string& path) const {
   const conduit::Node* node{nullptr};
   try {
@@ -92,21 +95,6 @@ const conduit::Node* ArborMultimeter::GetNode(const std::string& path) const {
   } catch (...) {
   }
   return node;
-}
-
-std::vector<std::string> ArborMultimeter::GetChildNames(
-    const conduit::Node* node) {
-  if (node == nullptr) {
-    return std::vector<std::string>();
-  }
-  return node->child_names();
-}
-
-double ArborMultimeter::GetValue(const conduit::Node* node) {
-  if (node == nullptr) {
-    return std::nan("");
-  }
-  return node->as_double();
 }
 
 }  // namespace consumer
