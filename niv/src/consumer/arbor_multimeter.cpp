@@ -38,34 +38,43 @@ void ArborMultimeter::Update() { SetTimestepNode(); }
 
 std::vector<std::string> ArborMultimeter::GetNeuronIds(
     double time, const std::string& attribute) const {
-  const conduit::Node* const root_node{GetRootNode()};
-  const conduit::Node* const device_node{GetChildNode(root_node, GetName())};
-  const conduit::Node* const timestep_node{
-      GetChildNode(device_node, TimeToString(time))};
-  const conduit::Node* const attribute_node{
-      GetChildNode(timestep_node, attribute)};
-
-  return GetChildNames(attribute_node);
+  const std::string path{ConstructPath(time, attribute)};
+  const conduit::Node* node{GetNode(path)};
+  return GetChildNames(node);
 }
 
-std::string ArborMultimeter::TimeToString(double time) {
-  std::stringstream s;
-  s << time;
-  return s.str();
+double ArborMultimeter::GetDatum(double time, const std::string& attribute,
+                                 const std::string& neuron_id) const {
+  const std::string path{ConstructPath(time, attribute, neuron_id)};
+  const conduit::Node* node{GetNode(path)};
+  return GetValue(node);
 }
 
-const conduit::Node* ArborMultimeter::GetChildNode(
-    const conduit::Node* parent, const std::string& child_name) {
-  if (parent == nullptr) {
-    return nullptr;
-  }
+std::string ArborMultimeter::ConstructPath(double time,
+                                           const std::string& attribute,
+                                           const std::string& neuron_id) const {
+  std::stringstream path;
+  path << ConstructPath(time, attribute) << "/";
+  path << neuron_id;
+  return path.str();
+}
 
-  const conduit::Node* child{nullptr};
+std::string ArborMultimeter::ConstructPath(double time,
+                                           const std::string& attribute) const {
+  std::stringstream path;
+  path << GetName() << "/";
+  path << time << "/";
+  path << attribute;
+  return path.str();
+}
+
+const conduit::Node* ArborMultimeter::GetNode(const std::string& path) const {
+  const conduit::Node* node{nullptr};
   try {
-    child = &parent->fetch_child(child_name);
+    node = &GetRootNode()->fetch_child(path);
   } catch (...) {
   }
-  return child;
+  return node;
 }
 
 std::vector<std::string> ArborMultimeter::GetChildNames(
@@ -76,30 +85,11 @@ std::vector<std::string> ArborMultimeter::GetChildNames(
   return node->child_names();
 }
 
-double ArborMultimeter::GetDatum(double time, const std::string& attribute,
-                                 const std::string& neuron_id) const {
-  const std::string path{ConstructPath(time, attribute, neuron_id)};
-
-  const conduit::Node* const root_node{GetRootNode()};
-  const conduit::Node* data_node{nullptr};
-  try {
-    data_node = &root_node->fetch_child(path);
-  } catch (...) {
+double ArborMultimeter::GetValue(const conduit::Node* node) {
+  if (node == nullptr) {
     return std::nan("");
   }
-
-  return data_node->as_double();
-}
-
-std::string ArborMultimeter::ConstructPath(double time,
-                                           const std::string& attribute,
-                                           const std::string& neuron_id) const {
-  std::stringstream path;
-  path << GetName() << "/";
-  path << time << "/";
-  path << attribute << "/";
-  path << neuron_id;
-  return path.str();
+  return node->as_double();
 }
 
 }  // namespace consumer

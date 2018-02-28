@@ -49,15 +49,14 @@ class ArborMultimeter : public niv::consumer::Device {
   ArborMultimeter& operator=(ArborMultimeter&&) = default;
 
  private:
-  static std::string TimeToString(double time);
-
-  static const conduit::Node* GetChildNode(const conduit::Node* parent,
-                                           const std::string& child_name);
-
-  static std::vector<std::string> GetChildNames(const conduit::Node* node);
-
   std::string ConstructPath(double time, const std::string& attribute,
                             const std::string& neuron_id) const;
+  std::string ConstructPath(double time, const std::string& attribute) const;
+
+  const conduit::Node* GetNode(const std::string& path) const;
+
+  static std::vector<std::string> GetChildNames(const conduit::Node* node);
+  static double GetValue(const conduit::Node* node);
 };
 
 }  // namespace consumer
