@@ -48,6 +48,42 @@ SCENARIO("ArborMultimeter lists the timesteps",
   }
 }
 
+SCENARIO("ArborMultimeter lists attributes for a timestep",
+         "[niv][niv::consumer][niv::consumer::ArborMultimeter]") {
+  GIVEN("a multimeter providing access to some data") {
+    niv::consumer::ArborMultimeter multimeter(
+        niv::testing::ANY_MULTIMETER_NAME);
+    multimeter.SetNode(&niv::testing::ANY_NEST_DATA);
+
+    WHEN("attributes are requested") {
+      auto attributes{multimeter.GetAttributes(niv::testing::ANY_TIME)};
+      THEN("the multimeter provides the attributes") {
+        REQUIRE(attributes == niv::testing::ANY_ATTRIBUTES);
+      }
+    }
+
+    WHEN("attributes are requested for an invalid timestep") {
+      auto attributes{multimeter.GetAttributes(niv::testing::NOT_A_TIME)};
+      THEN("the multimeter does not provide attributes") {
+        REQUIRE(attributes.empty());
+      }
+    }
+  }
+
+  GIVEN("a multimeter with an incorrect name providing access to some data") {
+    niv::consumer::ArborMultimeter multimeter(
+        niv::testing::NOT_A_MULTIMETER_NAME);
+    multimeter.SetNode(&niv::testing::ANY_NEST_DATA);
+
+    WHEN("attributes are requested") {
+      auto attributes{multimeter.GetAttributes(niv::testing::ANY_TIME)};
+      THEN("the multimeter does not provide attributes") {
+        REQUIRE(attributes.empty());
+      }
+    }
+  }
+}
+
 SCENARIO(
     "ArborMultimeter lists the neuron ids stored for an attribute in a "
     "timestep",
