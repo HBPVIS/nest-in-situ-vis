@@ -25,7 +25,7 @@
 #include <string>
 #include <vector>
 
-#include "niv/producer/multimeter.hpp"
+#include "niv/producer/nest_multimeter.hpp"
 
 namespace niv {
 

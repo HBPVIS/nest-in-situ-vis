@@ -61,8 +61,8 @@ std::string AnyMultimeterName() { return "multimeter A"; }
 
 conduit::Node AnyNestData() {
   conduit::Node node;
-  niv::producer::Multimeter multimeter(AnyMultimeterName(), AnyValueNames(),
-                                       &node);
+  niv::producer::NestMultimeter multimeter(AnyMultimeterName(), AnyValueNames(),
+                                           &node);
   multimeter.SetRecordingTime(ANY_TIME);
   for (auto i = 0u; i < AnyAttributesValues().size(); ++i) {
     multimeter.Record(i, std::vector<double>{AnyAttributesValues()[i],

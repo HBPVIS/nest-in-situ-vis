@@ -19,8 +19,8 @@
 // limitations under the License.
 //------------------------------------------------------------------------------
 
-#ifndef NIV_INCLUDE_NIV_PRODUCER_MULTIMETER_HPP_
-#define NIV_INCLUDE_NIV_PRODUCER_MULTIMETER_HPP_
+#ifndef NIV_INCLUDE_NIV_PRODUCER_NEST_MULTIMETER_HPP_
+#define NIV_INCLUDE_NIV_PRODUCER_NEST_MULTIMETER_HPP_
 
 #include <memory>
 #include <sstream>
@@ -32,20 +32,21 @@
 namespace niv {
 namespace producer {
 
-class Multimeter final : public Device {
+class NestMultimeter final : public Device {
  public:
-  Multimeter(const std::string& name,
-             const std::vector<std::string>& value_names, conduit::Node* node);
-  Multimeter(const Multimeter&) = default;
-  Multimeter(Multimeter&&) = default;
-  virtual ~Multimeter() = default;
+  NestMultimeter(const std::string& name,
+                 const std::vector<std::string>& value_names,
+                 conduit::Node* node);
+  NestMultimeter(const NestMultimeter&) = default;
+  NestMultimeter(NestMultimeter&&) = default;
+  virtual ~NestMultimeter() = default;
 
   void Record(std::size_t id, const std::vector<double>& values) override;
 
-  Multimeter& operator=(const Multimeter&) = default;
-  Multimeter& operator=(Multimeter&&) = default;
+  NestMultimeter& operator=(const NestMultimeter&) = default;
+  NestMultimeter& operator=(NestMultimeter&&) = default;
 
-  static std::unique_ptr<Multimeter> New(
+  static std::unique_ptr<NestMultimeter> New(
       const std::string& name, const std::vector<std::string>& value_names,
       conduit::Node* node);
 
@@ -60,4 +61,4 @@ class Multimeter final : public Device {
 }  // namespace producer
 }  // namespace niv
 
-#endif  // NIV_INCLUDE_NIV_PRODUCER_MULTIMETER_HPP_
+#endif  // NIV_INCLUDE_NIV_PRODUCER_NEST_MULTIMETER_HPP_

@@ -23,41 +23,41 @@
 #include <string>
 #include <vector>
 
-#include "niv/producer/multimeter.hpp"
+#include "niv/producer/nest_multimeter.hpp"
 
 namespace niv {
 namespace producer {
 
-Multimeter::Multimeter(const std::string& name,
-                       const std::vector<std::string>& value_names,
-                       conduit::Node* node)
+NestMultimeter::NestMultimeter(const std::string& name,
+                               const std::vector<std::string>& value_names,
+                               conduit::Node* node)
     : Device{name, node}, value_names_{value_names} {}
 
-void Multimeter::Record(std::size_t id, const std::vector<double>& values) {
+void NestMultimeter::Record(std::size_t id, const std::vector<double>& values) {
   const std::string id_string{IdString(id)};
   for (std::size_t i = 0; i < value_names_.size(); ++i) {
     RecordValue(id_string, values, i);
   }
 }
 
-void Multimeter::RecordValue(std::string id_string,
-                             const std::vector<double> values,
-                             std::size_t value_index) {
+void NestMultimeter::RecordValue(std::string id_string,
+                                 const std::vector<double> values,
+                                 std::size_t value_index) {
   const std::string& value_name = value_names_[value_index];
   const double value = values[value_index];
   GetTimestepNode()[value_name][id_string] = value;
 }
 
-std::string Multimeter::IdString(std::size_t id) const {
+std::string NestMultimeter::IdString(std::size_t id) const {
   std::stringstream id_stream;
   id_stream << id;
   return id_stream.str();
 }
 
-std::unique_ptr<Multimeter> Multimeter::New(
+std::unique_ptr<NestMultimeter> NestMultimeter::New(
     const std::string& name, const std::vector<std::string>& value_names,
     conduit::Node* node) {
-  return std::make_unique<Multimeter>(name, value_names, node);
+  return std::make_unique<NestMultimeter>(name, value_names, node);
 }
 
 }  // namespace producer
