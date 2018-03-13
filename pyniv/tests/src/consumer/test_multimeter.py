@@ -23,7 +23,7 @@ import pyniv
 
 def test_multimeter_provides_access_to_data_stored_in_a_conduit_node():
     nest_data = pyniv.testing.AnyNestData()
-    multimeter = pyniv.consumer.Multimeter(pyniv.testing.AnyMultimeterName())
+    multimeter = pyniv.consumer.NestMultimeter(pyniv.testing.AnyMultimeterName())
     multimeter.SetNode(nest_data)
 
     multimeter.SetTime(pyniv.testing.ANY_TIME)

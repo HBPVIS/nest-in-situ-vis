@@ -19,8 +19,8 @@
 // limitations under the License.
 //------------------------------------------------------------------------------
 
-#ifndef NIV_INCLUDE_NIV_CONSUMER_MULTIMETER_HPP_
-#define NIV_INCLUDE_NIV_CONSUMER_MULTIMETER_HPP_
+#ifndef NIV_INCLUDE_NIV_CONSUMER_NEST_MULTIMETER_HPP_
+#define NIV_INCLUDE_NIV_CONSUMER_NEST_MULTIMETER_HPP_
 
 #include <string>
 #include <vector>
@@ -32,16 +32,16 @@
 namespace niv {
 namespace consumer {
 
-class Multimeter : public consumer::Device {
+class NestMultimeter : public consumer::Device {
  public:
-  Multimeter() = delete;
-  explicit Multimeter(const std::string& name);
-  Multimeter(const Multimeter&) = default;
-  Multimeter(Multimeter&&) = default;
-  ~Multimeter() = default;
+  NestMultimeter() = delete;
+  explicit NestMultimeter(const std::string& name);
+  NestMultimeter(const NestMultimeter&) = default;
+  NestMultimeter(NestMultimeter&&) = default;
+  ~NestMultimeter() = default;
 
-  Multimeter& operator=(const Multimeter&) = default;
-  Multimeter& operator=(Multimeter&&) = default;
+  NestMultimeter& operator=(const NestMultimeter&) = default;
+  NestMultimeter& operator=(NestMultimeter&&) = default;
 
   void SetAttribute(const std::string& attribute);
 
@@ -59,4 +59,4 @@ class Multimeter : public consumer::Device {
 }  // namespace consumer
 }  // namespace niv
 
-#endif  // NIV_INCLUDE_NIV_CONSUMER_MULTIMETER_HPP_
+#endif  // NIV_INCLUDE_NIV_CONSUMER_NEST_MULTIMETER_HPP_

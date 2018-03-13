@@ -25,14 +25,14 @@
 
 #include "conduit/conduit_node.hpp"
 
-#include "niv/consumer/multimeter.hpp"
+#include "niv/consumer/nest_multimeter.hpp"
 #include "niv/nest_test_data.hpp"
 
 SCENARIO("a Multimeter provides access to data stored in a conduit node",
          "[niv][niv::consumer][niv::consumer::Multimeter]") {
   GIVEN("A Multimeter with some data") {
     const conduit::Node nest_data{niv::testing::AnyNestData()};
-    niv::consumer::Multimeter multimeter(niv::testing::AnyMultimeterName());
+    niv::consumer::NestMultimeter multimeter(niv::testing::AnyMultimeterName());
     multimeter.SetNode(&nest_data);
 
     WHEN("The time step is set") {

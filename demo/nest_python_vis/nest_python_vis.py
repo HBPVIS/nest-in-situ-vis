@@ -40,10 +40,10 @@ class MainWindow:
     def SetupStreaming(self):
         self.receiver = pyniv.consumer.Receiver()
         
-        self.multimeter_a = pyniv.consumer.Multimeter("multimeter A")
+        self.multimeter_a = pyniv.consumer.NestMultimeter("multimeter A")
         self.multimeter_a.SetAttribute("V_m")
 
-        self.multimeter_b = pyniv.consumer.Multimeter("multimeter B")
+        self.multimeter_b = pyniv.consumer.NestMultimeter("multimeter B")
         self.multimeter_b.SetAttribute("V_m")
 
         self.backend = pyniv.consumer.Backend();

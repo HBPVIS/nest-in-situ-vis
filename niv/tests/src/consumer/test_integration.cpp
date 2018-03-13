@@ -24,7 +24,7 @@
 #include "catch/catch.hpp"
 
 #include "niv/consumer/backend.hpp"
-#include "niv/consumer/multimeter.hpp"
+#include "niv/consumer/nest_multimeter.hpp"
 #include "niv/consumer/receiver.hpp"
 #include "niv/nest_test_data.hpp"
 
@@ -35,7 +35,7 @@ SCENARIO("Consumer integration", "[niv][integration]") {
     niv::consumer::Receiver receiver;
     backend.Connect(&receiver);
 
-    niv::consumer::Multimeter multimeter(niv::testing::AnyMultimeterName());
+    niv::consumer::NestMultimeter multimeter(niv::testing::AnyMultimeterName());
     multimeter.SetAttribute(niv::testing::AnyValueNames()[0]);
     backend.Connect(&multimeter);
 

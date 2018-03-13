@@ -30,15 +30,15 @@ SUPPRESS_WARNINGS_BEGIN
 SUPPRESS_WARNINGS_END
 
 #include "niv/consumer/device.hpp"
-#include "niv/consumer/multimeter.hpp"
+#include "niv/consumer/nest_multimeter.hpp"
 
 namespace pyniv {
 namespace consumer {
 
 boost::python::numpy::ndarray GetValues(
-    const niv::consumer::Multimeter& multimeter);
+    const niv::consumer::NestMultimeter& multimeter);
 boost::python::numpy::ndarray GetValues(
-    const niv::consumer::Multimeter& multimeter) {
+    const niv::consumer::NestMultimeter& multimeter) {
   const auto& values{multimeter.GetValues()};
 
   return boost::python::numpy::from_data(
@@ -50,13 +50,13 @@ boost::python::numpy::ndarray GetValues(
 }  // namespace consumer
 
 template <>
-void expose<niv::consumer::Multimeter>() {
-  class_<niv::consumer::Multimeter, bases<niv::consumer::Device>>(
-      "Multimeter", init<std::string>())
+void expose<niv::consumer::NestMultimeter>() {
+  class_<niv::consumer::NestMultimeter, bases<niv::consumer::Device>>(
+      "NestMultimeter", init<std::string>())
       .def("GetValues", &pyniv::consumer::GetValues)
-      .def("SetAttribute", &niv::consumer::Multimeter::SetAttribute)
-      .def("Update", &niv::consumer::Multimeter::Update)
-      .def("Print", &niv::consumer::Multimeter::Print);
+      .def("SetAttribute", &niv::consumer::NestMultimeter::SetAttribute)
+      .def("Update", &niv::consumer::NestMultimeter::Update)
+      .def("Print", &niv::consumer::NestMultimeter::Print);
 }
 
 }  // namespace pyniv

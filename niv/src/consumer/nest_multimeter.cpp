@@ -19,7 +19,7 @@
 // limitations under the License.
 //------------------------------------------------------------------------------
 
-#include "niv/consumer/multimeter.hpp"
+#include "niv/consumer/nest_multimeter.hpp"
 
 #include <string>
 #include <vector>
@@ -27,18 +27,19 @@
 namespace niv {
 namespace consumer {
 
-Multimeter::Multimeter(const std::string& name) : consumer::Device{name} {}
+NestMultimeter::NestMultimeter(const std::string& name)
+    : consumer::Device{name} {}
 
-void Multimeter::SetAttribute(const std::string& attribute) {
+void NestMultimeter::SetAttribute(const std::string& attribute) {
   attribute_ = attribute;
 }
 
-void Multimeter::Update() {
+void NestMultimeter::Update() {
   SetTimestepNode();
   SetValues();
 }
 
-void Multimeter::SetValues() {
+void NestMultimeter::SetValues() {
   values_.clear();
   if (GetTimestepNode() == nullptr) {
     return;
@@ -53,7 +54,7 @@ void Multimeter::SetValues() {
   }
 }
 
-const std::vector<double>& Multimeter::GetValues() const { return values_; }
+const std::vector<double>& NestMultimeter::GetValues() const { return values_; }
 
 }  // namespace consumer
 }  // namespace niv
