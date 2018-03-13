@@ -30,7 +30,7 @@
 namespace Catch {
 namespace Matchers {
 
-class VectorAllNan : public Catch::MatcherBase<std::vector<double>> {
+class VectorAllNanOrEmpty : public Catch::MatcherBase<std::vector<double>> {
  public:
   bool match(const std::vector<double>& values) const override {
     bool retval = true;
@@ -45,7 +45,7 @@ class VectorAllNan : public Catch::MatcherBase<std::vector<double>> {
 }  // namespace Matchers
 }  // namespace Catch
 
-using Catch::Matchers::VectorAllNan;
+using Catch::Matchers::VectorAllNanOrEmpty;
 
 SCENARIO("ArborMultimeter lists the timesteps",
          "[niv][niv::consumer][niv::consumer::ArborMultimeter]") {
@@ -213,7 +213,7 @@ SCENARIO("ArborMultimeter provides time series data",
     multimeter.SetNode(&niv::testing::ANY_NEST_DATA);
 
     WHEN("requesting time series data for an attribute and a neuron id") {
-      const std::vector<double> values{multimeter.GetTimeSeries(
+      const std::vector<double> values{multimeter.GetTimeSeriesData(
           niv::testing::ANOTHER_ATTRIBUTE, niv::testing::THIRD_ID)};
 
       THEN("the time series is correct") { REQUIRE(values == expected); }
@@ -222,22 +222,22 @@ SCENARIO("ArborMultimeter provides time series data",
     WHEN(
         "requesting time series data for an invalid attribute and a neuron "
         "id") {
-      const std::vector<double> values{multimeter.GetTimeSeries(
+      const std::vector<double> values{multimeter.GetTimeSeriesData(
           niv::testing::NOT_AN_ATTRIBUTE, niv::testing::THIRD_ID)};
 
-      THEN("the time series is all nans") {
-        REQUIRE_THAT(values, VectorAllNan());
+      THEN("the time series is all nans or empty") {
+        REQUIRE_THAT(values, VectorAllNanOrEmpty());
       }
     }
 
     WHEN(
         "requesting time series data for an  attribute and an invalid neuron "
         "id") {
-      const std::vector<double> values{multimeter.GetTimeSeries(
+      const std::vector<double> values{multimeter.GetTimeSeriesData(
           niv::testing::ANOTHER_ATTRIBUTE, niv::testing::NOT_AN_ID)};
 
-      THEN("the time series is all nans") {
-        REQUIRE_THAT(values, VectorAllNan());
+      THEN("the time series is all nans or empty") {
+        REQUIRE_THAT(values, VectorAllNanOrEmpty());
       }
     }
   }
@@ -248,11 +248,70 @@ SCENARIO("ArborMultimeter provides time series data",
     multimeter.SetNode(&niv::testing::ANY_NEST_DATA);
 
     WHEN("requesting time series data for an attribute and a neuron id") {
-      const std::vector<double> values{multimeter.GetTimeSeries(
+      const std::vector<double> values{multimeter.GetTimeSeriesData(
           niv::testing::ANOTHER_ATTRIBUTE, niv::testing::THIRD_ID)};
 
-      THEN("the time series is all nans") {
-        REQUIRE_THAT(values, VectorAllNan());
+      THEN("the time series is all nans or empty") {
+        REQUIRE_THAT(values, VectorAllNanOrEmpty());
+      }
+    }
+  }
+}
+
+SCENARIO("ArborMultimeter provides time step data for all neurons",
+         "[niv][niv::consumer][niv::consumer::ArborMultimeter]") {
+  std::vector<double> expected;
+  const auto THIRD_TIME{niv::testing::THIRD_TIME};
+  const auto TIME_OFFSET{2 * niv::testing::TIME_STRIDE};
+  const auto ATTRIBUTE_OFFSET{1 * niv::testing::ATTRIBUTE_STRIDE};
+  for (std::size_t i = 0; i < niv::testing::ANY_IDS.size(); ++i) {
+    const auto ID_OFFSET{i * niv::testing::ID_STRIDE};
+    const auto DATUM_INDEX{TIME_OFFSET + ATTRIBUTE_OFFSET + ID_OFFSET};
+    expected.push_back(niv::testing::ANY_VALUES[DATUM_INDEX]);
+  }
+
+  GIVEN("a multimeter providing access to some data") {
+    niv::consumer::ArborMultimeter multimeter(
+        niv::testing::ANY_MULTIMETER_NAME);
+    multimeter.SetNode(&niv::testing::ANY_NEST_DATA);
+
+    WHEN("requesting time step data for an attribute") {
+      const std::vector<double> values{multimeter.GetTimestepData(
+          THIRD_TIME, niv::testing::ANOTHER_ATTRIBUTE)};
+
+      THEN("the time step data is correct") { REQUIRE(values == expected); }
+    }
+
+    WHEN("requesting time step data for an invalid time step") {
+      const std::vector<double> values{multimeter.GetTimestepData(
+          niv::testing::NOT_A_TIME, niv::testing::ANOTHER_ATTRIBUTE)};
+
+      THEN("the time step data is all nans or empty") {
+        REQUIRE_THAT(values, VectorAllNanOrEmpty());
+      }
+    }
+
+    WHEN("requesting time step data for an invalid attribute") {
+      const std::vector<double> values{multimeter.GetTimestepData(
+          THIRD_TIME, niv::testing::NOT_AN_ATTRIBUTE)};
+
+      THEN("the time step data is all nans or empty") {
+        REQUIRE_THAT(values, VectorAllNanOrEmpty());
+      }
+    }
+  }
+
+  GIVEN("a multimeter with an incorrect name providing access to some data") {
+    niv::consumer::ArborMultimeter multimeter(
+        niv::testing::NOT_A_MULTIMETER_NAME);
+    multimeter.SetNode(&niv::testing::ANY_NEST_DATA);
+
+    WHEN("requesting time step data for an attribute") {
+      const std::vector<double> values{multimeter.GetTimestepData(
+          THIRD_TIME, niv::testing::ANOTHER_ATTRIBUTE)};
+
+      THEN("the time step data is all nans or empty") {
+        REQUIRE_THAT(values, VectorAllNanOrEmpty());
       }
     }
   }

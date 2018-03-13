@@ -49,7 +49,17 @@ std::vector<std::string> ArborMultimeter::GetNeuronIds(
   return GetChildNames(ConstructPath(time, attribute));
 }
 
-std::vector<double> ArborMultimeter::GetTimeSeries(
+std::vector<double> ArborMultimeter::GetTimestepData(
+    double time, const std::string& attribute) const {
+  std::vector<double> retval;
+  const auto neuron_ids{GetNeuronIds(time, attribute)};
+  for (auto curr_neuron_id : neuron_ids) {
+    retval.push_back(GetDatum(time, attribute, curr_neuron_id));
+  }
+  return retval;
+}
+
+std::vector<double> ArborMultimeter::GetTimeSeriesData(
     const std::string& attribute, const std::string& neuron_id) const {
   std::vector<double> retval;
   const auto timesteps = GetTimestepsString();
@@ -68,7 +78,6 @@ double ArborMultimeter::GetDatum(double time, const std::string& attribute,
 double ArborMultimeter::GetDatum(const std::string& time,
                                  const std::string& attribute,
                                  const std::string& neuron_id) const {
-  std::cout << ConstructPath(time, attribute, neuron_id) << std::endl;
   return GetValue(ConstructPath(time, attribute, neuron_id));
 }
 
