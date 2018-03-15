@@ -271,12 +271,10 @@ SCENARIO("ArborMultimeter provides time series data",
 SCENARIO("ArborMultimeter provides time step data for all neurons",
          "[niv][niv::consumer][niv::consumer::ArborMultimeter]") {
   std::vector<double> expected;
-  const auto THIRD_TIME{niv::testing::THIRD_TIME};
-  const auto TIME_OFFSET{2 * niv::testing::TIME_STRIDE};
-  const auto ATTRIBUTE_OFFSET{1 * niv::testing::ATTRIBUTE_STRIDE};
   for (std::size_t i = 0; i < niv::testing::ANY_IDS.size(); ++i) {
     const auto ID_OFFSET{i * niv::testing::ID_STRIDE};
-    const auto DATUM_INDEX{TIME_OFFSET + ATTRIBUTE_OFFSET + ID_OFFSET};
+    const auto DATUM_INDEX{niv::testing::THIRD_TIME_OFFSET +
+                           niv::testing::ANOTHER_ATTRIBUTE_OFFSET + ID_OFFSET};
     expected.push_back(niv::testing::ANY_VALUES[DATUM_INDEX]);
   }
 
@@ -287,7 +285,7 @@ SCENARIO("ArborMultimeter provides time step data for all neurons",
 
     WHEN("requesting time step data for an attribute") {
       const std::vector<double> values{multimeter.GetTimestepData(
-          THIRD_TIME, niv::testing::ANOTHER_ATTRIBUTE)};
+          niv::testing::THIRD_TIME, niv::testing::ANOTHER_ATTRIBUTE)};
 
       THEN("the time step data is correct") { REQUIRE(values == expected); }
     }
@@ -303,7 +301,7 @@ SCENARIO("ArborMultimeter provides time step data for all neurons",
 
     WHEN("requesting time step data for an invalid attribute") {
       const std::vector<double> values{multimeter.GetTimestepData(
-          THIRD_TIME, niv::testing::NOT_AN_ATTRIBUTE)};
+          niv::testing::THIRD_TIME, niv::testing::NOT_AN_ATTRIBUTE)};
 
       THEN("the time step data is all nans or empty") {
         REQUIRE_THAT(values, VectorAllNanOrEmpty());
@@ -318,7 +316,7 @@ SCENARIO("ArborMultimeter provides time step data for all neurons",
 
     WHEN("requesting time step data for an attribute") {
       const std::vector<double> values{multimeter.GetTimestepData(
-          THIRD_TIME, niv::testing::ANOTHER_ATTRIBUTE)};
+          niv::testing::THIRD_TIME, niv::testing::ANOTHER_ATTRIBUTE)};
 
       THEN("the time step data is all nans or empty") {
         REQUIRE_THAT(values, VectorAllNanOrEmpty());
