@@ -209,11 +209,10 @@ SCENARIO("ArborMultimeter retrieves datum for time, attribute, neuron",
 SCENARIO("ArborMultimeter provides time series data",
          "[niv][niv::consumer][niv::consumer::ArborMultimeter]") {
   std::vector<double> expected;
-  for (std::size_t i = 0; i < niv::testing::ANY_TIMES.size(); ++i) {
-    const auto TIME_OFFSET{i * niv::testing::TIME_STRIDE};
-    const auto ATTRIBUTE_OFFSET{1 * niv::testing::ATTRIBUTE_STRIDE};
-    const auto ID_OFFSET{2 * niv::testing::ID_STRIDE};
-    const auto DATUM_INDEX{TIME_OFFSET + ATTRIBUTE_OFFSET + ID_OFFSET};
+  for (auto time_offset : niv::testing::TIME_OFFSETS) {
+    const auto DATUM_INDEX{time_offset +
+                           niv::testing::ANOTHER_ATTRIBUTE_OFFSET +
+                           niv::testing::THIRD_ID_OFFSET};
     expected.push_back(niv::testing::ANY_VALUES[DATUM_INDEX]);
   }
   const std::vector<double> nans(niv::testing::ANY_TIMES.size(), std::nan(""));

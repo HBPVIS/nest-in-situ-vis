@@ -96,6 +96,10 @@ static const std::size_t ATTRIBUTE_STRIDE{3};
 static const std::size_t ID_STRIDE{1};
 
 static const std::size_t ANY_TIME_OFFSET{0 * niv::testing::TIME_STRIDE};
+static const std::size_t ANOTHER_TIME_OFFSET{1 * niv::testing::TIME_STRIDE};
+static const std::size_t THIRD_TIME_OFFSET{2 * niv::testing::TIME_STRIDE};
+static const std::vector<std::size_t> TIME_OFFSETS{
+    ANY_TIME_OFFSET, ANOTHER_TIME_OFFSET, THIRD_TIME_OFFSET};
 static const std::size_t ANOTHER_ATTRIBUTE_OFFSET{
     1 * niv::testing::ATTRIBUTE_STRIDE};
 static const std::size_t THIRD_ID_OFFSET{2 * niv::testing::ID_STRIDE};
