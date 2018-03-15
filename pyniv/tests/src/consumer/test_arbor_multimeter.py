@@ -104,3 +104,29 @@ def test_arbor_multimeter_retrieves_datum_for_time_attribute_neuron():
                                 pyniv.testing.ANOTHER_ATTRIBUTE,
                                 pyniv.testing.THIRD_ID)
     assert np.isnan(datum)
+
+def test_arbor_multimeter_provides_time_series_data():
+    data_offsets = [(time_offset +
+                     pyniv.testing.ANOTHER_ATTRIBUTE_OFFSET +
+                     pyniv.testing.THIRD_ID_OFFSET)
+                    for time_offset in pyniv.testing.TIME_OFFSETS()]
+    expected = np.array([pyniv.testing.ANY_VALUES[o] for o in data_offsets])
+
+    multimeter, nest_data = setup_multimeter()
+    values = multimeter.GetTimeSeriesData(pyniv.testing.ANOTHER_ATTRIBUTE,
+                                          pyniv.testing.THIRD_ID)
+    assert (values == expected).all()
+
+    values = multimeter.GetTimeSeriesData(pyniv.testing.NOT_AN_ATTRIBUTE,
+                                          pyniv.testing.THIRD_ID)
+    assert np.isnan(values).all()
+
+    values = multimeter.GetTimeSeriesData(pyniv.testing.ANOTHER_ATTRIBUTE,
+                                          pyniv.testing.NOT_AN_ID)
+    assert np.isnan(values).all()
+
+    multimeter, nest_data = setup_multimeter(
+        name = pyniv.testing.NOT_A_MULTIMETER_NAME)
+    values = multimeter.GetTimeSeriesData(pyniv.testing.ANOTHER_ATTRIBUTE,
+                                          pyniv.testing.THIRD_ID)
+    assert np.isnan(values).all()

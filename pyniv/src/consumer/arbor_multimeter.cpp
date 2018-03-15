@@ -61,6 +61,16 @@ boost::python::list GetNeuronIds(
   return retval;
 }
 
+boost::python::list GetTimeSeriesData(
+    const niv::consumer::ArborMultimeter& multimeter,
+    const std::string& attribute, const std::string& neuron_id) {
+  boost::python::list ret_val;
+  for (auto v : multimeter.GetTimeSeriesData(attribute, neuron_id)) {
+    ret_val.append(v);
+  }
+  return ret_val;
+}
+
 }  // namespace arbor_multimeter
 }  // namespace consumer
 
@@ -75,7 +85,9 @@ void expose<niv::consumer::ArborMultimeter>() {
       .def("GetDatum",
            static_cast<double (niv::consumer::ArborMultimeter::*)(  // NOLINT
                double, const std::string&, const std::string&) const>(
-               &niv::consumer::ArborMultimeter::GetDatum));
+               &niv::consumer::ArborMultimeter::GetDatum))
+      .def("GetTimeSeriesData",
+           &pyniv::consumer::arbor_multimeter::GetTimeSeriesData);
 }
 
 }  // namespace pyniv

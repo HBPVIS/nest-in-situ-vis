@@ -74,6 +74,14 @@ boost::python::numpy::ndarray AnotherAttributesValues() {
 BOOST_PYTHON_FUNCTION_OVERLOADS(AnyAttributesValuesOverloads,
                                 AnyAttributesValues, 0, 1)
 
+boost::python::list TimeOffsets() {
+  boost::python::list ret_val;
+  for (auto t : niv::testing::TIME_OFFSETS) {
+    ret_val.append(t);
+  }
+  return ret_val;
+}
+
 }  // namespace testing
 
 #ifndef EXPOSE_CONSTANT
@@ -116,6 +124,7 @@ void expose<niv::Testing>() {
   EXPOSE_CONSTANT(ANOTHER_ATTRIBUTE_OFFSET);
   EXPOSE_CONSTANT(THIRD_ID_OFFSET);
 
+  def("TIME_OFFSETS", &pyniv::testing::TimeOffsets);
   def("AnyAttributesValues", &pyniv::testing::AnyAttributesValues,
       pyniv::testing::AnyAttributesValuesOverloads());
   def("AnotherAttributesValues", &pyniv::testing::AnotherAttributesValues);
