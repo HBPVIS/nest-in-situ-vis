@@ -40,6 +40,16 @@ boost::python::list GetTimestepsString(
   return retval;
 }
 
+boost::python::list GetAttributes(
+    const niv::consumer::ArborMultimeter& multimeter, double time) {
+  boost::python::list retval;
+  const auto attributes = multimeter.GetAttributes(time);
+  for (auto a : attributes) {
+    retval.append(a);
+  }
+  return retval;
+}
+
 }  // namespace arbor_multimeter
 }  // namespace consumer
 
@@ -48,7 +58,8 @@ void expose<niv::consumer::ArborMultimeter>() {
   class_<niv::consumer::ArborMultimeter, bases<niv::consumer::Device>>(
       "ArborMultimeter", init<std::string>())
       .def("GetTimestepsString",
-           &pyniv::consumer::arbor_multimeter::GetTimestepsString);
+           &pyniv::consumer::arbor_multimeter::GetTimestepsString)
+      .def("GetAttributes", &pyniv::consumer::arbor_multimeter::GetAttributes);
 }
 
 }  // namespace pyniv
