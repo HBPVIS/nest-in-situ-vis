@@ -51,6 +51,11 @@ static const char* ANY_MULTIMETER_NAME{"multimeter A"};
 static const char* NOT_A_MULTIMETER_NAME{"NOT_A_MULTIMETER_NAME"};
 
 static const std::vector<double> ANY_TIMES{0.1, 0.2, 0.3};
+static const double ANY_TIME{ANY_TIMES[0]};
+static const double ANOTHER_TIME{ANY_TIMES[1]};
+static const double THIRD_TIME{ANY_TIMES[2]};
+static const double NOT_A_TIME{ANY_TIMES.back() + 1.0};
+
 inline std::vector<std::string> AnyTimesString() {
   std::vector<std::string> retval;
   for (auto time : ANY_TIMES) {
@@ -60,10 +65,12 @@ inline std::vector<std::string> AnyTimesString() {
   }
   return retval;
 }
-static const double ANY_TIME{ANY_TIMES[0]};
-static const double ANOTHER_TIME{ANY_TIMES[1]};
-static const double THIRD_TIME{ANY_TIMES[2]};
-static const double NOT_A_TIME{ANY_TIMES.back() + 1.0};
+static const std::vector<std::string> ANY_TIMES_STRING{
+    AnyTimesString()[0], AnyTimesString()[1], AnyTimesString()[2]};
+static const char* ANY_TIME_STRING{ANY_TIMES_STRING[0].c_str()};
+static const char* ANOTHER_TIME_STRING{ANY_TIMES_STRING[1].c_str()};
+static const char* THIRD_TIME_STRING{ANY_TIMES_STRING[2].c_str()};
+static const char* NOT_A_TIME_STRING{"NOT_A_TIME"};
 
 static const std::vector<double> ANY_TIME_OFFSETS{0.0123, 0.0234, 0.0345};
 static const double ANY_TIME_OFFSET{ANY_TIME_OFFSETS[0]};
