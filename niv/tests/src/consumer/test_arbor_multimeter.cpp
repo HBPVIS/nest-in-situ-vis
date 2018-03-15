@@ -268,7 +268,7 @@ SCENARIO("ArborMultimeter provides time series data",
   }
 }
 
-SCENARIO("ArborMultimeter provides time step data for all neurons",
+SCENARIO("ArborMultimeter provides timestep data for all neurons",
          "[niv][niv::consumer][niv::consumer::ArborMultimeter]") {
   std::vector<double> expected;
   for (std::size_t i = 0; i < niv::testing::ANY_IDS.size(); ++i) {

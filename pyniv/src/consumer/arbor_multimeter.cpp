@@ -71,6 +71,16 @@ boost::python::list GetTimeSeriesData(
   return ret_val;
 }
 
+boost::python::list GetTimestepData(
+    const niv::consumer::ArborMultimeter& multimeter, double time,
+    const std::string& attribute) {
+  boost::python::list ret_val;
+  for (auto v : multimeter.GetTimestepData(time, attribute)) {
+    ret_val.append(v);
+  }
+  return ret_val;
+}
+
 }  // namespace arbor_multimeter
 }  // namespace consumer
 
@@ -87,7 +97,9 @@ void expose<niv::consumer::ArborMultimeter>() {
                double, const std::string&, const std::string&) const>(
                &niv::consumer::ArborMultimeter::GetDatum))
       .def("GetTimeSeriesData",
-           &pyniv::consumer::arbor_multimeter::GetTimeSeriesData);
+           &pyniv::consumer::arbor_multimeter::GetTimeSeriesData)
+      .def("GetTimestepData",
+           &pyniv::consumer::arbor_multimeter::GetTimestepData);
 }
 
 }  // namespace pyniv

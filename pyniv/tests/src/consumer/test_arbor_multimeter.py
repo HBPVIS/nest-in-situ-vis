@@ -130,3 +130,28 @@ def test_arbor_multimeter_provides_time_series_data():
     values = multimeter.GetTimeSeriesData(pyniv.testing.ANOTHER_ATTRIBUTE,
                                           pyniv.testing.THIRD_ID)
     assert np.isnan(values).all()
+
+def test_arbor_multimeter_provides_timestep_data_for_all_neurons():
+    data_offsets = [(pyniv.testing.THIRD_TIME_OFFSET +
+                     pyniv.testing.ANOTHER_ATTRIBUTE_OFFSET +
+                     id_offset) for id_offset in pyniv.testing.ID_OFFSETS()]
+    expected = np.array([pyniv.testing.ANY_VALUES[o] for o in data_offsets])
+
+    multimeter, nest_data = setup_multimeter()
+    values = multimeter.GetTimestepData(
+        pyniv.testing.THIRD_TIME, pyniv.testing.ANOTHER_ATTRIBUTE)
+    assert (values == expected).all()
+
+    values = multimeter.GetTimestepData(
+        pyniv.testing.NOT_A_TIME, pyniv.testing.ANOTHER_ATTRIBUTE)
+    assert np.isnan(values).all()
+
+    values = multimeter.GetTimestepData(
+        pyniv.testing.THIRD_TIME, pyniv.testing.NOT_AN_ATTRIBUTE)
+    assert np.isnan(values).all()
+
+    multimeter, nest_data = setup_multimeter(
+        name = pyniv.testing.NOT_A_MULTIMETER_NAME)
+    values = multimeter.GetTimestepData(
+        pyniv.testing.THIRD_TIME, pyniv.testing.ANOTHER_ATTRIBUTE)
+    assert np.isnan(values).all()

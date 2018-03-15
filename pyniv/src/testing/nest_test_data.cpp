@@ -82,6 +82,14 @@ boost::python::list TimeOffsets() {
   return ret_val;
 }
 
+boost::python::list IdOffsets() {
+  boost::python::list ret_val;
+  for (auto i : niv::testing::ID_OFFSETS) {
+    ret_val.append(i);
+  }
+  return ret_val;
+}
+
 }  // namespace testing
 
 #ifndef EXPOSE_CONSTANT
@@ -121,10 +129,14 @@ void expose<niv::Testing>() {
   EXPOSE_CONSTANT(ID_STRIDE);
 
   EXPOSE_CONSTANT(ANY_TIME_OFFSET);
+  EXPOSE_CONSTANT(ANOTHER_TIME_OFFSET);
+  EXPOSE_CONSTANT(THIRD_TIME_OFFSET);
+
   EXPOSE_CONSTANT(ANOTHER_ATTRIBUTE_OFFSET);
   EXPOSE_CONSTANT(THIRD_ID_OFFSET);
 
   def("TIME_OFFSETS", &pyniv::testing::TimeOffsets);
+  def("ID_OFFSETS", &pyniv::testing::IdOffsets);
   def("AnyAttributesValues", &pyniv::testing::AnyAttributesValues,
       pyniv::testing::AnyAttributesValuesOverloads());
   def("AnotherAttributesValues", &pyniv::testing::AnotherAttributesValues);
