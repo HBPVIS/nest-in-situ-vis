@@ -72,11 +72,6 @@ static const char* ANOTHER_TIME_STRING{ANY_TIMES_STRING[1].c_str()};
 static const char* THIRD_TIME_STRING{ANY_TIMES_STRING[2].c_str()};
 static const char* NOT_A_TIME_STRING{"NOT_A_TIME"};
 
-static const std::vector<double> ANY_TIME_OFFSETS{0.0123, 0.0234, 0.0345};
-static const double ANY_TIME_OFFSET{ANY_TIME_OFFSETS[0]};
-static const double ANOTHER_TIME_OFFSET{ANY_TIME_OFFSETS[1]};
-static const double THIRD_TIME_OFFSET{ANY_TIME_OFFSETS[2]};
-
 static const std::vector<std::string> ANY_ATTRIBUTES{"V_m", "g_e", "g_i"};
 static const char* ANY_ATTRIBUTE{ANY_ATTRIBUTES[0].c_str()};
 static const char* ANOTHER_ATTRIBUTE{ANY_ATTRIBUTES[1].c_str()};
@@ -99,6 +94,11 @@ static const double ANY_VALUE{ANY_VALUES[0]};
 static const std::size_t TIME_STRIDE{9};
 static const std::size_t ATTRIBUTE_STRIDE{3};
 static const std::size_t ID_STRIDE{1};
+
+static const std::size_t ANY_TIME_OFFSET{0 * niv::testing::TIME_STRIDE};
+static const std::size_t ANOTHER_ATTRIBUTE_OFFSET{
+    1 * niv::testing::ATTRIBUTE_STRIDE};
+static const std::size_t THIRD_ID_OFFSET{2 * niv::testing::ID_STRIDE};
 
 template <typename T>
 inline std::string OpenTag(T tag) {

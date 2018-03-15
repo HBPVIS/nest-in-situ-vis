@@ -162,12 +162,9 @@ SCENARIO("ArborMultimeter retrieves datum for time, attribute, neuron",
                                                niv::testing::ANOTHER_ATTRIBUTE,
                                                niv::testing::THIRD_ID);
       THEN("it is correct") {
-        const std::size_t ANY_TIME_OFFSET{0 * niv::testing::TIME_STRIDE};
-        const std::size_t ANOTHER_ATTRIBUTE_OFFSET{
-            1 * niv::testing::ATTRIBUTE_STRIDE};
-        const std::size_t THIRD_ID_OFFSET{2 * niv::testing::ID_STRIDE};
-        const std::size_t DATUM_OFFSET{
-            ANY_TIME_OFFSET + ANOTHER_ATTRIBUTE_OFFSET + THIRD_ID_OFFSET};
+        const std::size_t DATUM_OFFSET{niv::testing::ANY_TIME_OFFSET +
+                                       niv::testing::ANOTHER_ATTRIBUTE_OFFSET +
+                                       niv::testing::THIRD_ID_OFFSET};
         REQUIRE(datum == Approx(niv::testing::ANY_VALUES[DATUM_OFFSET]));
       }
     }
