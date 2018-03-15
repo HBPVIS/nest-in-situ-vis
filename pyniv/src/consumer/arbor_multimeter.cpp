@@ -21,20 +21,34 @@
 
 #include "pyniv.hpp"
 
+#include <string>  // NOLINT
+
 #include "niv/consumer/arbor_multimeter.hpp"
-#include "niv/consumer/backend.hpp"
-#include "niv/consumer/device.hpp"
-#include "niv/consumer/nest_multimeter.hpp"
-#include "niv/consumer/receiver.hpp"
 
 namespace pyniv {
 
-BOOST_PYTHON_MODULE(_consumer) {
-  pyniv::expose<niv::consumer::ArborMultimeter>();
-  pyniv::expose<niv::consumer::Backend>();
-  pyniv::expose<niv::consumer::Device>();
-  pyniv::expose<niv::consumer::Receiver>();
-  pyniv::expose<niv::consumer::NestMultimeter>();
+namespace consumer {
+namespace arbor_multimeter {
+
+boost::python::list GetTimestepsString(
+    const niv::consumer::ArborMultimeter& multimeter) {
+  boost::python::list retval;
+  const auto timesteps = multimeter.GetTimestepsString();
+  for (auto t : timesteps) {
+    retval.append(t);
+  }
+  return retval;
+}
+
+}  // namespace arbor_multimeter
+}  // namespace consumer
+
+template <>
+void expose<niv::consumer::ArborMultimeter>() {
+  class_<niv::consumer::ArborMultimeter, bases<niv::consumer::Device>>(
+      "ArborMultimeter", init<std::string>())
+      .def("GetTimestepsString",
+           &pyniv::consumer::arbor_multimeter::GetTimestepsString);
 }
 
 }  // namespace pyniv
