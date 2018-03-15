@@ -50,6 +50,17 @@ boost::python::list GetAttributes(
   return retval;
 }
 
+boost::python::list GetNeuronIds(
+    const niv::consumer::ArborMultimeter& multimeter, double time,
+    const std::string& attribute) {
+  boost::python::list retval;
+  const auto ids = multimeter.GetNeuronIds(time, attribute);
+  for (auto i : ids) {
+    retval.append(i);
+  }
+  return retval;
+}
+
 }  // namespace arbor_multimeter
 }  // namespace consumer
 
@@ -59,7 +70,8 @@ void expose<niv::consumer::ArborMultimeter>() {
       "ArborMultimeter", init<std::string>())
       .def("GetTimestepsString",
            &pyniv::consumer::arbor_multimeter::GetTimestepsString)
-      .def("GetAttributes", &pyniv::consumer::arbor_multimeter::GetAttributes);
+      .def("GetAttributes", &pyniv::consumer::arbor_multimeter::GetAttributes)
+      .def("GetNeuronIds", &pyniv::consumer::arbor_multimeter::GetNeuronIds);
 }
 
 }  // namespace pyniv

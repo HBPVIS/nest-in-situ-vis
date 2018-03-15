@@ -49,3 +49,24 @@ def test_arbor_multimeter_lists_attributes_for_a_timestep():
         name = pyniv.testing.NOT_A_MULTIMETER_NAME)
     attributes = multimeter.GetAttributes(pyniv.testing.ANY_TIME)
     assert attributes == []
+
+def test_arbor_multimeter_lists_neuron_ids_for_an_attribute_in_a_timestep():
+    multimeter, nest_data = setup_multimeter()
+    ids = multimeter.GetNeuronIds(pyniv.testing.ANY_TIME,
+                                  pyniv.testing.ANY_ATTRIBUTE)
+    assert ids == pyniv.testing.ANY_IDS
+
+    
+    ids = multimeter.GetNeuronIds(pyniv.testing.NOT_A_TIME,
+                                  pyniv.testing.ANY_ATTRIBUTE)
+    assert ids == []
+    
+    ids = multimeter.GetNeuronIds(pyniv.testing.ANY_TIME,
+                                  pyniv.testing.NOT_AN_ATTRIBUTE)
+    assert ids == []
+    
+    multimeter, nest_data = setup_multimeter(
+        name = pyniv.testing.NOT_A_MULTIMETER_NAME)
+    ids = multimeter.GetNeuronIds(pyniv.testing.ANY_TIME,
+                                  pyniv.testing.ANY_ATTRIBUTE)
+    assert ids == []
