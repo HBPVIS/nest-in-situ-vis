@@ -112,6 +112,10 @@ void expose<niv::Testing>() {
   EXPOSE_CONSTANT(ATTRIBUTE_STRIDE);
   EXPOSE_CONSTANT(ID_STRIDE);
 
+  EXPOSE_CONSTANT(ANY_TIME_OFFSET);
+  EXPOSE_CONSTANT(ANOTHER_ATTRIBUTE_OFFSET);
+  EXPOSE_CONSTANT(THIRD_ID_OFFSET);
+
   def("AnyAttributesValues", &pyniv::testing::AnyAttributesValues,
       pyniv::testing::AnyAttributesValuesOverloads());
   def("AnotherAttributesValues", &pyniv::testing::AnotherAttributesValues);

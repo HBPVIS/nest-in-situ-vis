@@ -71,7 +71,11 @@ void expose<niv::consumer::ArborMultimeter>() {
       .def("GetTimestepsString",
            &pyniv::consumer::arbor_multimeter::GetTimestepsString)
       .def("GetAttributes", &pyniv::consumer::arbor_multimeter::GetAttributes)
-      .def("GetNeuronIds", &pyniv::consumer::arbor_multimeter::GetNeuronIds);
+      .def("GetNeuronIds", &pyniv::consumer::arbor_multimeter::GetNeuronIds)
+      .def("GetDatum",
+           static_cast<double (niv::consumer::ArborMultimeter::*)(  // NOLINT
+               double, const std::string&, const std::string&) const>(
+               &niv::consumer::ArborMultimeter::GetDatum));
 }
 
 }  // namespace pyniv
