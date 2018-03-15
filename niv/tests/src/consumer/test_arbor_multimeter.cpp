@@ -190,6 +190,20 @@ SCENARIO("ArborMultimeter retrieves datum for time, attribute, neuron",
       THEN("nan is returned") { REQUIRE(std::isnan(datum)); }
     }
   }
+
+  GIVEN("a multimeter with an incorrect name providing access to some data") {
+    niv::consumer::ArborMultimeter multimeter(
+        niv::testing::NOT_A_MULTIMETER_NAME);
+    multimeter.SetNode(&niv::testing::ANY_NEST_DATA);
+
+    WHEN("requesting data") {
+      const double datum = multimeter.GetDatum(niv::testing::ANY_TIME,
+                                               niv::testing::ANOTHER_ATTRIBUTE,
+                                               niv::testing::THIRD_ID);
+
+      THEN("nan is returned") { REQUIRE(std::isnan(datum)); }
+    }
+  }
 }
 
 SCENARIO("ArborMultimeter provides time series data",
