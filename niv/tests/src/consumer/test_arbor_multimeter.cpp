@@ -118,7 +118,7 @@ SCENARIO(
     multimeter.SetNode(&niv::testing::ANY_NEST_DATA);
 
     WHEN("neuron ids are requested") {
-      auto ids{multimeter.GetNeuronIds(niv::testing::ANY_TIME,
+      auto ids{multimeter.GetNeuronIds(niv::testing::ANY_TIME_STRING,
                                        niv::testing::ANY_ATTRIBUTE)};
       THEN("the multimeter provides the ids") {
         REQUIRE(ids == niv::testing::ANY_IDS);
@@ -126,13 +126,13 @@ SCENARIO(
     }
 
     WHEN("neuron ids are requested for an invalid timestep") {
-      auto ids{multimeter.GetNeuronIds(niv::testing::NOT_A_TIME,
+      auto ids{multimeter.GetNeuronIds(niv::testing::NOT_A_TIME_STRING,
                                        niv::testing::ANY_ATTRIBUTE)};
       THEN("the multimeter does not provide ids") { REQUIRE(ids.empty()); }
     }
 
     WHEN("neuron ids are requested for an invalid attribute") {
-      auto ids{multimeter.GetNeuronIds(niv::testing::ANY_TIME,
+      auto ids{multimeter.GetNeuronIds(niv::testing::ANY_TIME_STRING,
                                        niv::testing::NOT_AN_ATTRIBUTE)};
       THEN("the multimeter does not provide ids") { REQUIRE(ids.empty()); }
     }
@@ -144,7 +144,7 @@ SCENARIO(
     multimeter.SetNode(&niv::testing::ANY_NEST_DATA);
 
     WHEN("neuron ids are requested") {
-      auto ids{multimeter.GetNeuronIds(niv::testing::ANY_TIME,
+      auto ids{multimeter.GetNeuronIds(niv::testing::ANY_TIME_STRING,
                                        niv::testing::ANY_ATTRIBUTE)};
       THEN("the multimeter does not provide ids") { REQUIRE(ids.empty()); }
     }
@@ -286,14 +286,14 @@ SCENARIO("ArborMultimeter provides timestep data for all neurons",
 
     WHEN("requesting time step data for an attribute") {
       const std::vector<double> values{multimeter.GetTimestepData(
-          niv::testing::THIRD_TIME, niv::testing::ANOTHER_ATTRIBUTE)};
+          niv::testing::THIRD_TIME_STRING, niv::testing::ANOTHER_ATTRIBUTE)};
 
       THEN("the time step data is correct") { REQUIRE(values == expected); }
     }
 
     WHEN("requesting time step data for an invalid time step") {
       const std::vector<double> values{multimeter.GetTimestepData(
-          niv::testing::NOT_A_TIME, niv::testing::ANOTHER_ATTRIBUTE)};
+          niv::testing::NOT_A_TIME_STRING, niv::testing::ANOTHER_ATTRIBUTE)};
 
       THEN("the time step data is all nans or empty") {
         REQUIRE_THAT(values, VectorAllNanOrEmpty());
@@ -302,7 +302,7 @@ SCENARIO("ArborMultimeter provides timestep data for all neurons",
 
     WHEN("requesting time step data for an invalid attribute") {
       const std::vector<double> values{multimeter.GetTimestepData(
-          niv::testing::THIRD_TIME, niv::testing::NOT_AN_ATTRIBUTE)};
+          niv::testing::THIRD_TIME_STRING, niv::testing::NOT_AN_ATTRIBUTE)};
 
       THEN("the time step data is all nans or empty") {
         REQUIRE_THAT(values, VectorAllNanOrEmpty());
@@ -317,7 +317,7 @@ SCENARIO("ArborMultimeter provides timestep data for all neurons",
 
     WHEN("requesting time step data for an attribute") {
       const std::vector<double> values{multimeter.GetTimestepData(
-          niv::testing::THIRD_TIME, niv::testing::ANOTHER_ATTRIBUTE)};
+          niv::testing::THIRD_TIME_STRING, niv::testing::ANOTHER_ATTRIBUTE)};
 
       THEN("the time step data is all nans or empty") {
         REQUIRE_THAT(values, VectorAllNanOrEmpty());

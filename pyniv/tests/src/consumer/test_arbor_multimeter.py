@@ -54,22 +54,22 @@ def test_arbor_multimeter_lists_attributes_for_a_timestep():
 
 def test_arbor_multimeter_lists_neuron_ids_for_an_attribute_in_a_timestep():
     multimeter, nest_data = setup_multimeter()
-    ids = multimeter.GetNeuronIds(pyniv.testing.ANY_TIME,
+    ids = multimeter.GetNeuronIds(pyniv.testing.ANY_TIME_STRING,
                                   pyniv.testing.ANY_ATTRIBUTE)
     assert ids == pyniv.testing.ANY_IDS
 
     
-    ids = multimeter.GetNeuronIds(pyniv.testing.NOT_A_TIME,
+    ids = multimeter.GetNeuronIds(pyniv.testing.NOT_A_TIME_STRING,
                                   pyniv.testing.ANY_ATTRIBUTE)
     assert ids == []
     
-    ids = multimeter.GetNeuronIds(pyniv.testing.ANY_TIME,
+    ids = multimeter.GetNeuronIds(pyniv.testing.ANY_TIME_STRING,
                                   pyniv.testing.NOT_AN_ATTRIBUTE)
     assert ids == []
     
     multimeter, nest_data = setup_multimeter(
         name = pyniv.testing.NOT_A_MULTIMETER_NAME)
-    ids = multimeter.GetNeuronIds(pyniv.testing.ANY_TIME,
+    ids = multimeter.GetNeuronIds(pyniv.testing.ANY_TIME_STRING,
                                   pyniv.testing.ANY_ATTRIBUTE)
     assert ids == []
 
@@ -139,19 +139,19 @@ def test_arbor_multimeter_provides_timestep_data_for_all_neurons():
 
     multimeter, nest_data = setup_multimeter()
     values = multimeter.GetTimestepData(
-        pyniv.testing.THIRD_TIME, pyniv.testing.ANOTHER_ATTRIBUTE)
+        pyniv.testing.THIRD_TIME_STRING, pyniv.testing.ANOTHER_ATTRIBUTE)
     assert (values == expected).all()
 
     values = multimeter.GetTimestepData(
-        pyniv.testing.NOT_A_TIME, pyniv.testing.ANOTHER_ATTRIBUTE)
+        pyniv.testing.NOT_A_TIME_STRING, pyniv.testing.ANOTHER_ATTRIBUTE)
     assert np.isnan(values).all()
 
     values = multimeter.GetTimestepData(
-        pyniv.testing.THIRD_TIME, pyniv.testing.NOT_AN_ATTRIBUTE)
+        pyniv.testing.THIRD_TIME_STRING, pyniv.testing.NOT_AN_ATTRIBUTE)
     assert np.isnan(values).all()
 
     multimeter, nest_data = setup_multimeter(
         name = pyniv.testing.NOT_A_MULTIMETER_NAME)
     values = multimeter.GetTimestepData(
-        pyniv.testing.THIRD_TIME, pyniv.testing.ANOTHER_ATTRIBUTE)
+        pyniv.testing.THIRD_TIME_STRING, pyniv.testing.ANOTHER_ATTRIBUTE)
     assert np.isnan(values).all()

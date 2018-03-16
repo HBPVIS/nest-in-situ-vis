@@ -51,7 +51,7 @@ boost::python::list GetAttributes(
 }
 
 boost::python::list GetNeuronIds(
-    const niv::consumer::ArborMultimeter& multimeter, double time,
+    const niv::consumer::ArborMultimeter& multimeter, const std::string& time,
     const std::string& attribute) {
   boost::python::list retval;
   const auto ids = multimeter.GetNeuronIds(time, attribute);
@@ -72,7 +72,7 @@ boost::python::list GetTimeSeriesData(
 }
 
 boost::python::list GetTimestepData(
-    const niv::consumer::ArborMultimeter& multimeter, double time,
+    const niv::consumer::ArborMultimeter& multimeter, const std::string& time,
     const std::string& attribute) {
   boost::python::list ret_val;
   for (auto v : multimeter.GetTimestepData(time, attribute)) {

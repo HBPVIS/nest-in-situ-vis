@@ -44,10 +44,10 @@ class ArborMultimeter : public niv::consumer::Device {
 
   std::vector<std::string> GetAttributes(const std::string& time) const;
 
-  std::vector<std::string> GetNeuronIds(double time,
+  std::vector<std::string> GetNeuronIds(const std::string& time,
                                         const std::string& attribute) const;
 
-  std::vector<double> GetTimestepData(double time,
+  std::vector<double> GetTimestepData(const std::string& time,
                                       const std::string& attribute) const;
 
   std::vector<double> GetTimeSeriesData(const std::string& attribute,
@@ -69,6 +69,8 @@ class ArborMultimeter : public niv::consumer::Device {
                             const std::string& neuron_id) const;
   std::string ConstructPath(double time, const std::string& attribute) const;
   std::string ConstructPath(double time) const;
+  std::string ConstructPath(const std::string& time,
+                            const std::string& attribute) const;
   std::string ConstructPath(const std::string& time) const;
   std::string ConstructPath() const;
 
