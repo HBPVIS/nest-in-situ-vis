@@ -41,15 +41,15 @@ def test_arbor_multimeter_lists_the_timesteps():
 
 def test_arbor_multimeter_lists_attributes_for_a_timestep():
     multimeter, nest_data = setup_multimeter()
-    attributes = multimeter.GetAttributes(pyniv.testing.ANY_TIME)
+    attributes = multimeter.GetAttributes(pyniv.testing.ANY_TIME_STRING)
     assert attributes == pyniv.testing.ANY_ATTRIBUTES
 
-    attributes = multimeter.GetAttributes(pyniv.testing.NOT_A_TIME)
+    attributes = multimeter.GetAttributes(pyniv.testing.NOT_A_TIME_STRING)
     assert attributes == []
 
     multimeter, nest_data = setup_multimeter(
         name = pyniv.testing.NOT_A_MULTIMETER_NAME)
-    attributes = multimeter.GetAttributes(pyniv.testing.ANY_TIME)
+    attributes = multimeter.GetAttributes(pyniv.testing.ANY_TIME_STRING)
     assert attributes == []
 
 def test_arbor_multimeter_lists_neuron_ids_for_an_attribute_in_a_timestep():

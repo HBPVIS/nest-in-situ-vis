@@ -79,14 +79,15 @@ SCENARIO("ArborMultimeter lists attributes for a timestep",
     multimeter.SetNode(&niv::testing::ANY_NEST_DATA);
 
     WHEN("attributes are requested") {
-      auto attributes{multimeter.GetAttributes(niv::testing::ANY_TIME)};
+      auto attributes{multimeter.GetAttributes(niv::testing::ANY_TIME_STRING)};
       THEN("the multimeter provides the attributes") {
         REQUIRE(attributes == niv::testing::ANY_ATTRIBUTES);
       }
     }
 
     WHEN("attributes are requested for an invalid timestep") {
-      auto attributes{multimeter.GetAttributes(niv::testing::NOT_A_TIME)};
+      auto attributes{
+          multimeter.GetAttributes(niv::testing::NOT_A_TIME_STRING)};
       THEN("the multimeter does not provide attributes") {
         REQUIRE(attributes.empty());
       }
@@ -99,7 +100,7 @@ SCENARIO("ArborMultimeter lists attributes for a timestep",
     multimeter.SetNode(&niv::testing::ANY_NEST_DATA);
 
     WHEN("attributes are requested") {
-      auto attributes{multimeter.GetAttributes(niv::testing::ANY_TIME)};
+      auto attributes{multimeter.GetAttributes(niv::testing::ANY_TIME_STRING)};
       THEN("the multimeter does not provide attributes") {
         REQUIRE(attributes.empty());
       }

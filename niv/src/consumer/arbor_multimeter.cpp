@@ -40,7 +40,8 @@ std::vector<std::string> ArborMultimeter::GetTimestepsString() const {
   return GetChildNames(ConstructPath());
 }
 
-std::vector<std::string> ArborMultimeter::GetAttributes(double time) const {
+std::vector<std::string> ArborMultimeter::GetAttributes(
+    const std::string& time) const {
   return GetChildNames(ConstructPath(time));
 }
 
@@ -106,6 +107,10 @@ std::string ArborMultimeter::ConstructPath(double time) const {
   std::stringstream path;
   path << ConstructPath() << "/" << time;
   return path.str();
+}
+
+std::string ArborMultimeter::ConstructPath(const std::string& time) const {
+  return ConstructPath() + '/' + time;
 }
 
 std::string ArborMultimeter::ConstructPath() const { return GetName(); }

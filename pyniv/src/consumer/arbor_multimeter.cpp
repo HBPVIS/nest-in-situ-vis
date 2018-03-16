@@ -41,7 +41,7 @@ boost::python::list GetTimestepsString(
 }
 
 boost::python::list GetAttributes(
-    const niv::consumer::ArborMultimeter& multimeter, double time) {
+    const niv::consumer::ArborMultimeter& multimeter, const std::string& time) {
   boost::python::list retval;
   const auto attributes = multimeter.GetAttributes(time);
   for (auto a : attributes) {
