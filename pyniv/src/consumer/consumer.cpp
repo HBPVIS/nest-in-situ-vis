@@ -30,10 +30,11 @@
 namespace pyniv {
 
 BOOST_PYTHON_MODULE(_consumer) {
-  pyniv::expose<niv::consumer::ArborMultimeter>();
   pyniv::expose<niv::consumer::Backend>();
-  pyniv::expose<niv::consumer::Device>();
   pyniv::expose<niv::consumer::Receiver>();
+
+  pyniv::expose<niv::consumer::Device>();
+  pyniv::expose<niv::consumer::ArborMultimeter>();
   pyniv::expose<niv::consumer::NestMultimeter>();
 }
 
