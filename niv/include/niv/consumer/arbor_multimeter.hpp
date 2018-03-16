@@ -53,8 +53,6 @@ class ArborMultimeter : public niv::consumer::Device {
   std::vector<double> GetTimeSeriesData(const std::string& attribute,
                                         const std::string& neuron_id) const;
 
-  double GetDatum(double time, const std::string& attribute,
-                  const std::string& neuron_id) const;
   double GetDatum(const std::string& time, const std::string& attribute,
                   const std::string& neuron_id) const;
 

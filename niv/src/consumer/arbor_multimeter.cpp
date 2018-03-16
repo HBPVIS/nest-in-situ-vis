@@ -71,11 +71,6 @@ std::vector<double> ArborMultimeter::GetTimeSeriesData(
   return retval;
 }
 
-double ArborMultimeter::GetDatum(double time, const std::string& attribute,
-                                 const std::string& neuron_id) const {
-  return GetValue(ConstructPath(time, attribute, neuron_id));
-}
-
 double ArborMultimeter::GetDatum(const std::string& time,
                                  const std::string& attribute,
                                  const std::string& neuron_id) const {

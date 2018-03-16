@@ -92,10 +92,7 @@ void expose<niv::consumer::ArborMultimeter>() {
            &pyniv::consumer::arbor_multimeter::GetTimestepsString)
       .def("GetAttributes", &pyniv::consumer::arbor_multimeter::GetAttributes)
       .def("GetNeuronIds", &pyniv::consumer::arbor_multimeter::GetNeuronIds)
-      .def("GetDatum",
-           static_cast<double (niv::consumer::ArborMultimeter::*)(  // NOLINT
-               double, const std::string&, const std::string&) const>(
-               &niv::consumer::ArborMultimeter::GetDatum))
+      .def("GetDatum", &niv::consumer::ArborMultimeter::GetDatum)
       .def("GetTimeSeriesData",
            &pyniv::consumer::arbor_multimeter::GetTimeSeriesData)
       .def("GetTimestepData",

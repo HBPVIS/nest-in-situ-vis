@@ -159,7 +159,7 @@ SCENARIO("ArborMultimeter retrieves datum for time, attribute, neuron",
     multimeter.SetNode(&niv::testing::ANY_NEST_DATA);
 
     WHEN("requesting data") {
-      const double datum = multimeter.GetDatum(niv::testing::ANY_TIME,
+      const double datum = multimeter.GetDatum(niv::testing::ANY_TIME_STRING,
                                                niv::testing::ANOTHER_ATTRIBUTE,
                                                niv::testing::THIRD_ID);
       THEN("it is correct") {
@@ -171,21 +171,21 @@ SCENARIO("ArborMultimeter retrieves datum for time, attribute, neuron",
     }
 
     WHEN("requesting datum at an invalid time") {
-      const double datum = multimeter.GetDatum(niv::testing::NOT_A_TIME,
+      const double datum = multimeter.GetDatum(niv::testing::NOT_A_TIME_STRING,
                                                niv::testing::ANOTHER_ATTRIBUTE,
                                                niv::testing::THIRD_ID);
       THEN("nan is returned") { REQUIRE(std::isnan(datum)); }
     }
 
     WHEN("requesting datum for an invalid attribute") {
-      const double datum = multimeter.GetDatum(niv::testing::ANY_TIME,
+      const double datum = multimeter.GetDatum(niv::testing::ANY_TIME_STRING,
                                                niv::testing::NOT_AN_ATTRIBUTE,
                                                niv::testing::THIRD_ID);
       THEN("nan is returned") { REQUIRE(std::isnan(datum)); }
     }
 
     WHEN("requesting datum for an invalid neuron id") {
-      const double datum = multimeter.GetDatum(niv::testing::ANY_TIME,
+      const double datum = multimeter.GetDatum(niv::testing::ANY_TIME_STRING,
                                                niv::testing::ANOTHER_ATTRIBUTE,
                                                niv::testing::NOT_AN_ID);
       THEN("nan is returned") { REQUIRE(std::isnan(datum)); }
@@ -198,7 +198,7 @@ SCENARIO("ArborMultimeter retrieves datum for time, attribute, neuron",
     multimeter.SetNode(&niv::testing::ANY_NEST_DATA);
 
     WHEN("requesting data") {
-      const double datum = multimeter.GetDatum(niv::testing::ANY_TIME,
+      const double datum = multimeter.GetDatum(niv::testing::ANY_TIME_STRING,
                                                niv::testing::ANOTHER_ATTRIBUTE,
                                                niv::testing::THIRD_ID);
 
@@ -216,7 +216,8 @@ SCENARIO("ArborMultimeter provides time series data",
                            niv::testing::THIRD_ID_OFFSET};
     expected.push_back(niv::testing::ANY_VALUES[DATUM_INDEX]);
   }
-  const std::vector<double> nans(niv::testing::ANY_TIMES.size(), std::nan(""));
+  const std::vector<double> nans(niv::testing::ANY_TIMES_STRING.size(),
+                                 std::nan(""));
 
   GIVEN("a multimeter providing access to some data") {
     niv::consumer::ArborMultimeter multimeter(
