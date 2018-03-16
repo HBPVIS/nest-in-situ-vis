@@ -39,8 +39,7 @@ class MainWindow:
     def SetupStreaming(self):
         self.receiver = pyniv.consumer.Receiver()
         
-        self.multimeter = pyniv.consumer.NestMultimeter("multimeter")
-        self.multimeter.SetAttribute("v")
+        self.multimeter = pyniv.consumer.ArborMultimeter("multimeter")
 
         self.backend = pyniv.consumer.Backend();
         self.backend.Connect(self.receiver);
@@ -56,7 +55,15 @@ class MainWindow:
         self.update_timer.start(1)
 
     def PrintButtonClicked(self):
-        self.multimeter.Print()
+        print 60 * '='
+        timesteps = self.multimeter.GetTimestepsString()
+        for t in timesteps:
+            print 't = {}'.format(t)
+            attributes = self.multimeter.GetAttributes(t)
+            for a in attributes:
+                values = self.multimeter.GetTimestepData(t, a)
+                print a + ': ' + ', '.join(['{}'.format(v) for v in values])
+            print 40 * '-'
         
     def Show(self):
         self.print_button.show()
