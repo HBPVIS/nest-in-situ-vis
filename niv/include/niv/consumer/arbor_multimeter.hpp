@@ -63,10 +63,6 @@ class ArborMultimeter : public niv::consumer::Device {
   std::string ConstructPath(const std::string& time,
                             const std::string& attribute,
                             const std::string& neuron_id) const;
-  std::string ConstructPath(double time, const std::string& attribute,
-                            const std::string& neuron_id) const;
-  std::string ConstructPath(double time, const std::string& attribute) const;
-  std::string ConstructPath(double time) const;
   std::string ConstructPath(const std::string& time,
                             const std::string& attribute) const;
   std::string ConstructPath(const std::string& time) const;

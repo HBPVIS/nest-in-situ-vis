@@ -77,36 +77,15 @@ double ArborMultimeter::GetDatum(const std::string& time,
   return GetValue(ConstructPath(time, attribute, neuron_id));
 }
 
-std::string ArborMultimeter::ConstructPath(double time,
-                                           const std::string& attribute,
-                                           const std::string& neuron_id) const {
-  std::stringstream path;
-  path << ConstructPath(time, attribute) << "/" << neuron_id;
-  return path.str();
-}
-
 std::string ArborMultimeter::ConstructPath(const std::string& time,
                                            const std::string& attribute,
                                            const std::string& neuron_id) const {
   return ConstructPath() + "/" + time + "/" + attribute + "/" + neuron_id;
 }
 
-std::string ArborMultimeter::ConstructPath(double time,
-                                           const std::string& attribute) const {
-  std::stringstream path;
-  path << ConstructPath(time) << "/" << attribute;
-  return path.str();
-}
-
 std::string ArborMultimeter::ConstructPath(const std::string& time,
                                            const std::string& attribute) const {
   return ConstructPath(time) + '/' + attribute;
-}
-
-std::string ArborMultimeter::ConstructPath(double time) const {
-  std::stringstream path;
-  path << ConstructPath() << "/" << time;
-  return path.str();
 }
 
 std::string ArborMultimeter::ConstructPath(const std::string& time) const {
