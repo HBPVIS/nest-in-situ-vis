@@ -37,10 +37,6 @@ void Device::SetRecordingTime(double time) {
   timestep_node_ = &(*node_)[name_][time_stream.str()];
 }
 
-void Device::Record(std::size_t) {}
-
-void Device::RecordImplementation(const Datum& /*datum*/) {}
-
 conduit::Node& Device::GetTimestepNode() {
   if (timestep_node_ == nullptr) {
     SetRecordingTime(0.0);

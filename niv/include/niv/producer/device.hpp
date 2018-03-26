@@ -55,9 +55,7 @@ class Device {
 
   virtual void Record(std::size_t);
   template <typename Datum_t>
-  void Record(const Datum_t& datum) {
-    static_cast<typename Datum_t::Device_t*>(this)->RecordImplementation(datum);
-  }
+  void Record(const Datum_t& datum);
 
   Device& operator=(const Device&) = default;
   Device& operator=(Device&&) = default;
@@ -71,12 +69,18 @@ class Device {
   conduit::Node& GetNode(const std::string& path);
 
  private:
-  void RecordImplementation(const Datum& datum);
-
   conduit::Node* node_{nullptr};
   conduit::Node* timestep_node_{nullptr};
   std::string name_{"recorder"};
 };
+
+template <>
+inline void Device::Record(const Datum& /*datum*/) {}
+
+template <typename Datum_t>
+inline void Device::Record(const Datum_t& datum) {
+  static_cast<typename Datum_t::Device_t*>(this)->Record(datum);
+}
 
 }  // namespace producer
 }  // namespace niv

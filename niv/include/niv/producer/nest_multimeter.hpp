@@ -52,7 +52,7 @@ class NestMultimeter final : public Device {
                  conduit::Node* node);
   NestMultimeter(const NestMultimeter&) = default;
   NestMultimeter(NestMultimeter&&) = default;
-  virtual ~NestMultimeter() = default;
+  ~NestMultimeter() override = default;
 
   NestMultimeter& operator=(const NestMultimeter&) = default;
   NestMultimeter& operator=(NestMultimeter&&) = default;
@@ -61,8 +61,7 @@ class NestMultimeter final : public Device {
       const std::string& name, const std::vector<std::string>& value_names,
       conduit::Node* node);
 
-  void Record(const Datum& datum) { RecordImplementation(datum); }
-  void RecordImplementation(const Datum& datum);
+  void Record(const Datum& datum);
 
  private:
   static std::string IdString(std::size_t id);
