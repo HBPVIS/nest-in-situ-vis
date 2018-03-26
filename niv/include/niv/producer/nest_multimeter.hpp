@@ -40,9 +40,7 @@ class NestMultimeter final : public Device {
     Datum(double time, std::string neuron_id, const std::vector<double>& values)
         : Device::Datum{time}, neuron_id{neuron_id}, values{values} {}
     Datum(double time, std::size_t neuron_id, const std::vector<double>& values)
-        : Device::Datum{time},
-          neuron_id{NestMultimeter::IdString(neuron_id)},
-          values{values} {}
+        : Datum{time, NestMultimeter::IdString(neuron_id), values} {}
     std::string neuron_id;
     std::vector<double> values;
   };
