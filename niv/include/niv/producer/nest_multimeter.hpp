@@ -63,6 +63,7 @@ class NestMultimeter final : public Device {
 
   std::string ConstructPath(const Datum& datum, std::size_t attribute_index);
 
+  conduit::Node* node_;
   std::vector<std::string> value_names_;
 };  // namespace producer
 

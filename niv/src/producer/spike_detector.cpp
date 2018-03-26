@@ -29,14 +29,14 @@ namespace niv {
 namespace producer {
 
 SpikeDetector::SpikeDetector(const std::string& name, conduit::Node* node)
-    : Device{name, node} {}
+    : Device{name}, node_{node} {}
 
 void SpikeDetector::Record(const Datum& datum) {
-  const std::string path{ConstructPath(datum)};
+  auto& recording_node = node_->fetch(ConstructPath(datum));
 
-  std::vector<std::size_t> data{GetData(GetNode(path))};
+  std::vector<std::size_t> data{GetData(recording_node)};
   data.push_back(datum.neuron_id);
-  GetNode(path).set_uint64_vector(data);
+  recording_node.set_uint64_vector(data);
 }
 
 std::vector<std::size_t> SpikeDetector::GetData(const conduit::Node& node) {

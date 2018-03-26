@@ -59,15 +59,13 @@ class Device {
   void Record(const Datum_t& datum);
 
  protected:
-  Device(const std::string& name, conduit::Node* node);
+  explicit Device(const std::string& name);
 
   std::string ConstructPath(const Datum& datum);
 
   const std::string& GetName() { return name_; }
-  conduit::Node& GetNode(const std::string& path);
 
  private:
-  conduit::Node* node_{nullptr};
   std::string name_{"recorder"};
 };
 

@@ -24,13 +24,21 @@
 
 #include <string>
 
+#include "niv/producer/device.hpp"
+
 namespace niv {
 namespace producer {
 
-class ArborMultimeter final {
+class ArborMultimeter final : public Device {
  public:
-  struct Datum {
-    double time;
+  struct Datum : public Device::Datum {
+    Datum(double time, std::string attribute, std::string id, double value)
+        : Device::Datum{std::round(10.0 * time) / 10.0},
+          exact_time{time},
+          attribute{attribute},
+          id{id},
+          value{value} {}
+    double exact_time;
     std::string attribute;
     std::string id;
     double value;
@@ -49,9 +57,7 @@ class ArborMultimeter final {
  private:
   std::string ConstructPath(const Datum& datum);
   double ConstructTimestep(const Datum& datum);
-
-  std::string name_;
-};
+};  // namespace producer
 
 }  // namespace producer
 }  // namespace niv

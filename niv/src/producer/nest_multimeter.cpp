@@ -33,14 +33,14 @@ namespace producer {
 NestMultimeter::NestMultimeter(const std::string& name,
                                const std::vector<std::string>& value_names,
                                conduit::Node* node)
-    : Device{name, node}, value_names_{value_names} {}
+    : Device{name}, node_{node}, value_names_{value_names} {}
 
 void NestMultimeter::Record(const Datum& datum) {
   assert(datum.values.size() == value_names_.size());
 
   for (std::size_t i = 0u; i < datum.values.size(); ++i) {
     const std::string path{ConstructPath(datum, i)};
-    GetNode(path) = datum.values[i];
+    node_->fetch(path) = datum.values[i];
   }
 }
 

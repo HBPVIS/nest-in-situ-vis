@@ -33,19 +33,18 @@
 namespace niv {
 namespace producer {
 
-ArborMultimeter::ArborMultimeter(const std::string& name) : name_{name} {}
+ArborMultimeter::ArborMultimeter(const std::string& name) : Device{name} {}
 
 void ArborMultimeter::Record(const ArborMultimeter::Datum& datum,
                              conduit::Node* node) {
   const std::string path{ConstructPath(datum)};
-  (*node)[path] = datum.value;
+  node->fetch(path) = datum.value;
 }
 
 std::string ArborMultimeter::ConstructPath(
     const ArborMultimeter::Datum& datum) {
   std::stringstream path;
-  path << name_ << '/';
-  path << ConstructTimestep(datum) << '/';
+  path << Device::ConstructPath(datum) << '/';
   path << datum.attribute << '/';
   path << datum.id;
   return path.str();

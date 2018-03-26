@@ -56,6 +56,8 @@ class SpikeDetector final : public Device {
  private:
   std::vector<std::size_t> GetData(const conduit::Node& node);
   std::vector<std::size_t> AsVector(const conduit::uint64_array& array);
+
+  conduit::Node* node_;
 };
 
 }  // namespace producer
