@@ -47,29 +47,25 @@ class Device {
     double time;
   };
 
+  Device() = delete;
   Device(const Device&) = default;
   Device(Device&&) = default;
   virtual ~Device() = default;
 
-  void SetRecordingTime(double time);
+  Device& operator=(const Device&) = default;
+  Device& operator=(Device&&) = default;
 
   template <typename Datum_t>
   void Record(const Datum_t& datum);
 
-  Device& operator=(const Device&) = default;
-  Device& operator=(Device&&) = default;
-
  protected:
   Device(const std::string& name, conduit::Node* node);
-
-  conduit::Node& GetTimestepNode();
 
   const std::string& GetName() { return name_; }
   conduit::Node& GetNode(const std::string& path);
 
  private:
   conduit::Node* node_{nullptr};
-  conduit::Node* timestep_node_{nullptr};
   std::string name_{"recorder"};
 };
 

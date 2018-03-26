@@ -31,19 +31,6 @@ namespace producer {
 Device::Device(const std::string& name, conduit::Node* node)
     : node_(node), name_(name) {}
 
-void Device::SetRecordingTime(double time) {
-  std::stringstream time_stream;
-  time_stream << time;
-  timestep_node_ = &(*node_)[name_][time_stream.str()];
-}
-
-conduit::Node& Device::GetTimestepNode() {
-  if (timestep_node_ == nullptr) {
-    SetRecordingTime(0.0);
-  }
-  return *timestep_node_;
-}
-
 conduit::Node& Device::GetNode(const std::string& path) {
   return (*node_)[path];
 }
