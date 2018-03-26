@@ -22,19 +22,39 @@
 import pyniv
 
 def test_nest_multimeter_provides_access_to_data_stored_in_a_conduit_node():
-    nest_data = pyniv.testing.AnyNestData()
+    nest_data = pyniv.testing.ANY_NEST_DATA
     multimeter = pyniv.consumer.NestMultimeter(pyniv.testing.AnyMultimeterName())
     multimeter.SetNode(nest_data)
 
     multimeter.SetTime(pyniv.testing.ANY_TIME)
 
-    multimeter.SetAttribute(pyniv.testing.AnyValueNames(0))
+    multimeter.SetAttribute(pyniv.testing.ANY_ATTRIBUTE)
     multimeter.Update()
     result = multimeter.GetValues()
-    assert (result == pyniv.testing.AnyAttributesValues()).all()
+    expected = [
+        pyniv.testing.ValueAt(pyniv.testing.ANY_TIME_INDEX,
+                              pyniv.testing.ANY_ATTRIBUTE_INDEX,
+                              pyniv.testing.ANY_ID_INDEX),
+        pyniv.testing.ValueAt(pyniv.testing.ANY_TIME_INDEX,
+                              pyniv.testing.ANY_ATTRIBUTE_INDEX,
+                              pyniv.testing.ANOTHER_ID_INDEX),
+        pyniv.testing.ValueAt(pyniv.testing.ANY_TIME_INDEX,
+                              pyniv.testing.ANY_ATTRIBUTE_INDEX,
+                              pyniv.testing.THIRD_ID_INDEX)]
+    assert (result == expected).all()
 
-    multimeter.SetAttribute(pyniv.testing.AnyValueNames(1))
+    multimeter.SetAttribute(pyniv.testing.ANOTHER_ATTRIBUTE)
     multimeter.Update()
     result = multimeter.GetValues()
-    assert (result == pyniv.testing.AnotherAttributesValues()).all()
+    expected = [
+        pyniv.testing.ValueAt(pyniv.testing.ANY_TIME_INDEX,
+                              pyniv.testing.ANOTHER_ATTRIBUTE_INDEX,
+                              pyniv.testing.ANY_ID_INDEX),
+        pyniv.testing.ValueAt(pyniv.testing.ANY_TIME_INDEX,
+                              pyniv.testing.ANOTHER_ATTRIBUTE_INDEX,
+                              pyniv.testing.ANOTHER_ID_INDEX),
+        pyniv.testing.ValueAt(pyniv.testing.ANY_TIME_INDEX,
+                              pyniv.testing.ANOTHER_ATTRIBUTE_INDEX,
+                              pyniv.testing.THIRD_ID_INDEX)]
+    assert (result == expected).all()
     

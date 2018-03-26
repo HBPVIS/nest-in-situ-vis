@@ -80,15 +80,15 @@ Vector::EqualsApproxMatcher<T> EqualsApprox(std::vector<T> const& comparator) {
 SCENARIO("A consumer::Device can list its timesteps",
          "[niv][niv::consumer][niv::consumer::Device]") {
   GIVEN("A device accessing a node") {
-    conduit::Node any_data{niv::testing::AnyNestData()};
+    conduit::Node any_data{niv::testing::ANY_NEST_DATA};
     ::Device device(niv::testing::AnyMultimeterName());
     device.SetNode(&any_data);
     WHEN("The device is asked for the timesteps") {
       auto timesteps(device.GetTimesteps());
       THEN("the list of timesteps is correct") {
         REQUIRE_THAT(timesteps,
-                     Catch::Matchers::EqualsApprox(std::vector<double>{
-                         niv::testing::ANY_TIME, niv::testing::ANOTHER_TIME}));
+                     Catch::Matchers::EqualsApprox(
+                         std::vector<double>{niv::testing::ANY_TIMES}));
       }
     }
   }

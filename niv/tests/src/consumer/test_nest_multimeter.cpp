@@ -31,53 +31,87 @@
 SCENARIO("a Multimeter provides access to data stored in a conduit node",
          "[niv][niv::consumer][niv::consumer::Multimeter]") {
   GIVEN("A Multimeter with some data") {
-    const conduit::Node nest_data{niv::testing::AnyNestData()};
+    const conduit::Node nest_data{niv::testing::ANY_NEST_DATA};
     niv::consumer::NestMultimeter multimeter(niv::testing::AnyMultimeterName());
     multimeter.SetNode(&nest_data);
 
     WHEN("The time step is set") {
       multimeter.SetTime(niv::testing::ANY_TIME);
       WHEN("one attribute is queried") {
-        multimeter.SetAttribute(niv::testing::AnyValueNames()[0]);
+        multimeter.SetAttribute(niv::testing::ANY_ATTRIBUTE);
         multimeter.Update();
         auto result = multimeter.GetValues();
         THEN("the result is correct") {
-          REQUIRE_THAT(result, Catch::Matchers::Equals(
-                                   niv::testing::AnyAttributesValues()));
+          const std::vector<double> expected{
+              niv::testing::ValueAt(niv::testing::ANY_TIME_INDEX,
+                                    niv::testing::ANY_ATTRIBUTE_INDEX,
+                                    niv::testing::ANY_ID_INDEX),
+              niv::testing::ValueAt(niv::testing::ANY_TIME_INDEX,
+                                    niv::testing::ANY_ATTRIBUTE_INDEX,
+                                    niv::testing::ANOTHER_ID_INDEX),
+              niv::testing::ValueAt(niv::testing::ANY_TIME_INDEX,
+                                    niv::testing::ANY_ATTRIBUTE_INDEX,
+                                    niv::testing::THIRD_ID_INDEX)};
+          REQUIRE(result == expected);
         }
       }
       WHEN("another attribute is queried") {
-        multimeter.SetAttribute(niv::testing::AnyValueNames()[1]);
+        multimeter.SetAttribute(niv::testing::ANOTHER_ATTRIBUTE);
         multimeter.Update();
 
         auto result = multimeter.GetValues();
         THEN("the result is correct") {
-          REQUIRE_THAT(result, Catch::Matchers::Equals(
-                                   niv::testing::AnotherAttributesValues()));
+          const std::vector<double> expected{
+              niv::testing::ValueAt(niv::testing::ANY_TIME_INDEX,
+                                    niv::testing::ANOTHER_ATTRIBUTE_INDEX,
+                                    niv::testing::ANY_ID_INDEX),
+              niv::testing::ValueAt(niv::testing::ANY_TIME_INDEX,
+                                    niv::testing::ANOTHER_ATTRIBUTE_INDEX,
+                                    niv::testing::ANOTHER_ID_INDEX),
+              niv::testing::ValueAt(niv::testing::ANY_TIME_INDEX,
+                                    niv::testing::ANOTHER_ATTRIBUTE_INDEX,
+                                    niv::testing::THIRD_ID_INDEX)};
+          REQUIRE(result == expected);
         }
       }
 
       WHEN("The time step is set to another value") {
         multimeter.SetTime(niv::testing::ANOTHER_TIME);
         WHEN("one attribute is queried") {
-          multimeter.SetAttribute(niv::testing::AnyValueNames()[0]);
+          multimeter.SetAttribute(niv::testing::ANY_ATTRIBUTE);
           multimeter.Update();
           auto result = multimeter.GetValues();
           THEN("the result is correct") {
-            REQUIRE_THAT(result, Catch::Matchers::Equals(
-                                     niv::testing::AnyAttributesValues(
-                                         niv::testing::ANOTHER_TIME)));
+            const std::vector<double> expected{
+                niv::testing::ValueAt(niv::testing::ANOTHER_TIME_INDEX,
+                                      niv::testing::ANY_ATTRIBUTE_INDEX,
+                                      niv::testing::ANY_ID_INDEX),
+                niv::testing::ValueAt(niv::testing::ANOTHER_TIME_INDEX,
+                                      niv::testing::ANY_ATTRIBUTE_INDEX,
+                                      niv::testing::ANOTHER_ID_INDEX),
+                niv::testing::ValueAt(niv::testing::ANOTHER_TIME_INDEX,
+                                      niv::testing::ANY_ATTRIBUTE_INDEX,
+                                      niv::testing::THIRD_ID_INDEX)};
+            REQUIRE(result == expected);
           }
         }
         WHEN("another attribute is queried") {
-          multimeter.SetAttribute(niv::testing::AnyValueNames()[1]);
+          multimeter.SetAttribute(niv::testing::ANOTHER_ATTRIBUTE);
           multimeter.Update();
 
           auto result = multimeter.GetValues();
           THEN("the result is correct") {
-            REQUIRE_THAT(result, Catch::Matchers::Equals(
-                                     niv::testing::AnotherAttributesValues(
-                                         niv::testing::ANOTHER_TIME)));
+            const std::vector<double> expected{
+                niv::testing::ValueAt(niv::testing::ANOTHER_TIME_INDEX,
+                                      niv::testing::ANOTHER_ATTRIBUTE_INDEX,
+                                      niv::testing::ANY_ID_INDEX),
+                niv::testing::ValueAt(niv::testing::ANOTHER_TIME_INDEX,
+                                      niv::testing::ANOTHER_ATTRIBUTE_INDEX,
+                                      niv::testing::ANOTHER_ID_INDEX),
+                niv::testing::ValueAt(niv::testing::ANOTHER_TIME_INDEX,
+                                      niv::testing::ANOTHER_ATTRIBUTE_INDEX,
+                                      niv::testing::THIRD_ID_INDEX)};
+            REQUIRE(result == expected);
           }
         }
       }

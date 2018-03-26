@@ -33,16 +33,36 @@ def test_integration_consumer():
     multimeter.SetAttribute(pyniv.testing.AnyValueNames(0))
     backend.Connect(multimeter)
 
-    pyniv.testing.Send(pyniv.testing.AnyNestData())
+    pyniv.testing.Send(pyniv.testing.ANY_NEST_DATA)
 
     backend.Receive()
     
     multimeter.SetTime(pyniv.testing.ANY_TIME)
     multimeter.Update()
     values_at_t0 = multimeter.GetValues()
-    assert np.isclose(values_at_t0, pyniv.testing.AnyAttributesValues()).all()
+    expected_at_t0 = [
+        pyniv.testing.ValueAt(pyniv.testing.ANY_TIME_INDEX,
+                              pyniv.testing.ANY_ATTRIBUTE_INDEX,
+                              pyniv.testing.ANY_ID_INDEX),
+        pyniv.testing.ValueAt(pyniv.testing.ANY_TIME_INDEX,
+                              pyniv.testing.ANY_ATTRIBUTE_INDEX,
+                              pyniv.testing.ANOTHER_ID_INDEX),
+        pyniv.testing.ValueAt(pyniv.testing.ANY_TIME_INDEX,
+                              pyniv.testing.ANY_ATTRIBUTE_INDEX,
+                              pyniv.testing.THIRD_ID_INDEX)]
+    assert np.isclose(values_at_t0, expected_at_t0).all()
 
     multimeter.SetTime(pyniv.testing.ANOTHER_TIME)
     multimeter.Update()
     values_at_t1 = multimeter.GetValues()
-    assert np.isclose(values_at_t1, pyniv.testing.AnyAttributesValues(pyniv.testing.ANOTHER_TIME)).all()
+    expected_at_t1 = [
+        pyniv.testing.ValueAt(pyniv.testing.ANOTHER_TIME_INDEX,
+                              pyniv.testing.ANY_ATTRIBUTE_INDEX,
+                              pyniv.testing.ANY_ID_INDEX),
+        pyniv.testing.ValueAt(pyniv.testing.ANOTHER_TIME_INDEX,
+                              pyniv.testing.ANY_ATTRIBUTE_INDEX,
+                              pyniv.testing.ANOTHER_ID_INDEX),
+        pyniv.testing.ValueAt(pyniv.testing.ANOTHER_TIME_INDEX,
+                              pyniv.testing.ANY_ATTRIBUTE_INDEX,
+                              pyniv.testing.THIRD_ID_INDEX)]
+    assert np.isclose(values_at_t0, expected_at_t1).all()

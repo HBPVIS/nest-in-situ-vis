@@ -35,12 +35,12 @@ SCENARIO("Consumer integration", "[niv][integration]") {
     niv::consumer::Receiver receiver;
     backend.Connect(&receiver);
 
-    niv::consumer::NestMultimeter multimeter(niv::testing::AnyMultimeterName());
-    multimeter.SetAttribute(niv::testing::AnyValueNames()[0]);
+    niv::consumer::NestMultimeter multimeter(niv::testing::ANY_MULTIMETER_NAME);
+    multimeter.SetAttribute(niv::testing::ANY_ATTRIBUTE);
     backend.Connect(&multimeter);
 
     WHEN("The data producer sends data") {
-      niv::testing::Send(niv::testing::AnyNestData());
+      niv::testing::Send(niv::testing::ANY_NEST_DATA);
 
       WHEN("the consuming side receives") {
         backend.Receive();
@@ -55,9 +55,28 @@ SCENARIO("Consumer integration", "[niv][integration]") {
           std::vector<double> values_at_t1{multimeter.GetValues()};
 
           THEN("the received values are correct") {
-            REQUIRE(values_at_t0 == niv::testing::AnyAttributesValues());
-            REQUIRE(values_at_t1 == niv::testing::AnyAttributesValues(
-                                        niv::testing::ANOTHER_TIME));
+            const std::vector<double> expected_at_t0{
+                niv::testing::ValueAt(niv::testing::ANY_TIME_INDEX,
+                                      niv::testing::ANY_ATTRIBUTE_INDEX,
+                                      niv::testing::ANY_ID_INDEX),
+                niv::testing::ValueAt(niv::testing::ANY_TIME_INDEX,
+                                      niv::testing::ANY_ATTRIBUTE_INDEX,
+                                      niv::testing::ANOTHER_ID_INDEX),
+                niv::testing::ValueAt(niv::testing::ANY_TIME_INDEX,
+                                      niv::testing::ANY_ATTRIBUTE_INDEX,
+                                      niv::testing::THIRD_ID_INDEX)};
+            REQUIRE(values_at_t0 == expected_at_t0);
+            const std::vector<double> expected_at_t1{
+                niv::testing::ValueAt(niv::testing::ANOTHER_TIME_INDEX,
+                                      niv::testing::ANY_ATTRIBUTE_INDEX,
+                                      niv::testing::ANY_ID_INDEX),
+                niv::testing::ValueAt(niv::testing::ANOTHER_TIME_INDEX,
+                                      niv::testing::ANY_ATTRIBUTE_INDEX,
+                                      niv::testing::ANOTHER_ID_INDEX),
+                niv::testing::ValueAt(niv::testing::ANOTHER_TIME_INDEX,
+                                      niv::testing::ANY_ATTRIBUTE_INDEX,
+                                      niv::testing::THIRD_ID_INDEX)};
+            REQUIRE(values_at_t1 == expected_at_t1);
           }
         }
       }

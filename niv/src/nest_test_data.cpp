@@ -59,28 +59,6 @@ std::vector<double> ThirdAttributesValues(double time) {
 
 std::string AnyMultimeterName() { return "multimeter A"; }
 
-conduit::Node AnyNestData() {
-  conduit::Node node;
-  niv::producer::NestMultimeter multimeter(AnyMultimeterName(), AnyValueNames(),
-                                           &node);
-  multimeter.SetRecordingTime(ANY_TIME);
-  for (auto i = 0u; i < AnyAttributesValues().size(); ++i) {
-    multimeter.Record(i, std::vector<double>{AnyAttributesValues()[i],
-                                             AnotherAttributesValues()[i],
-                                             ThirdAttributesValues()[i]});
-  }
-
-  multimeter.SetRecordingTime(ANOTHER_TIME);
-  for (auto i = 0u; i < AnyAttributesValues().size(); ++i) {
-    multimeter.Record(
-        i, std::vector<double>{AnyAttributesValues(ANOTHER_TIME)[i],
-                               AnotherAttributesValues(ANOTHER_TIME)[i],
-                               ThirdAttributesValues(ANOTHER_TIME)[i]});
-  }
-
-  return node;
-}
-
 void Send(const conduit::Node& node) {
   exchange::RelaySharedMemory relay;
   relay.Send(node);

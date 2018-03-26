@@ -101,6 +101,22 @@ void expose<niv::Testing>() {
   EXPOSE_CONSTANT(ANY_MULTIMETER_NAME);
   EXPOSE_CONSTANT(NOT_A_MULTIMETER_NAME);
 
+  EXPOSE_CONSTANT(ANY_INDEX);
+  EXPOSE_CONSTANT(ANOTHER_INDEX);
+  EXPOSE_CONSTANT(THIRD_INDEX);
+
+  EXPOSE_CONSTANT(ANY_TIME_INDEX);
+  EXPOSE_CONSTANT(ANOTHER_TIME_INDEX);
+  EXPOSE_CONSTANT(THIRD_TIME_INDEX);
+
+  EXPOSE_CONSTANT(ANY_ATTRIBUTE_INDEX);
+  EXPOSE_CONSTANT(ANOTHER_ATTRIBUTE_INDEX);
+  EXPOSE_CONSTANT(THIRD_ATTRIBUTE_INDEX);
+
+  EXPOSE_CONSTANT(ANY_ID_INDEX);
+  EXPOSE_CONSTANT(ANOTHER_ID_INDEX);
+  EXPOSE_CONSTANT(THIRD_ID_INDEX);
+
   EXPOSE_CONSTANT(ANY_TIME);
   EXPOSE_CONSTANT(ANOTHER_TIME);
   EXPOSE_CONSTANT(THIRD_TIME);
@@ -135,6 +151,8 @@ void expose<niv::Testing>() {
   EXPOSE_CONSTANT(ANOTHER_ATTRIBUTE_OFFSET);
   EXPOSE_CONSTANT(THIRD_ID_OFFSET);
 
+  EXPOSE_CONSTANT(ANY_NEST_DATA);
+
   def("TIME_OFFSETS", &pyniv::testing::TimeOffsets);
   def("ID_OFFSETS", &pyniv::testing::IdOffsets);
   def("AnyAttributesValues", &pyniv::testing::AnyAttributesValues,
@@ -143,7 +161,6 @@ void expose<niv::Testing>() {
   def("ThirdAttributesValues", &niv::testing::ThirdAttributesValues);
   def("AnyValueNames", &pyniv::testing::AnyValueNames);
   def("AnyMultimeterName", &niv::testing::AnyMultimeterName);
-  def("AnyNestData", &niv::testing::AnyNestData);
   def("Send", &niv::testing::Send);
   def("AnyNode", &niv::testing::AnyNode);
   def("AnotherNode", &niv::testing::AnotherNode);
@@ -151,6 +168,7 @@ void expose<niv::Testing>() {
   def("UpdatedNode", &niv::testing::UpdatedNode);
   def("ADifferentNode", &niv::testing::ADifferentNode);
   def("Equal", &pyniv::testing::Equal);
+  def("ValueAt", &niv::testing::ValueAt);
 }
 
 }  // namespace pyniv
