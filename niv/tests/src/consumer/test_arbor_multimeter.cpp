@@ -121,7 +121,7 @@ SCENARIO(
       auto ids{multimeter.GetNeuronIds(niv::testing::ANY_TIME_STRING,
                                        niv::testing::ANY_ATTRIBUTE)};
       THEN("the multimeter provides the ids") {
-        REQUIRE(ids == niv::testing::ANY_IDS);
+        REQUIRE(ids == niv::testing::ANY_IDS_STRING);
       }
     }
 
@@ -161,7 +161,7 @@ SCENARIO("ArborMultimeter retrieves datum for time, attribute, neuron",
     WHEN("requesting data") {
       const double datum = multimeter.GetDatum(niv::testing::ANY_TIME_STRING,
                                                niv::testing::ANOTHER_ATTRIBUTE,
-                                               niv::testing::THIRD_ID);
+                                               niv::testing::THIRD_ID_STRING);
       THEN("it is correct") {
         const std::size_t DATUM_OFFSET{niv::testing::ANY_TIME_OFFSET +
                                        niv::testing::ANOTHER_ATTRIBUTE_OFFSET +
@@ -173,21 +173,21 @@ SCENARIO("ArborMultimeter retrieves datum for time, attribute, neuron",
     WHEN("requesting datum at an invalid time") {
       const double datum = multimeter.GetDatum(niv::testing::NOT_A_TIME_STRING,
                                                niv::testing::ANOTHER_ATTRIBUTE,
-                                               niv::testing::THIRD_ID);
+                                               niv::testing::THIRD_ID_STRING);
       THEN("nan is returned") { REQUIRE(std::isnan(datum)); }
     }
 
     WHEN("requesting datum for an invalid attribute") {
       const double datum = multimeter.GetDatum(niv::testing::ANY_TIME_STRING,
                                                niv::testing::NOT_AN_ATTRIBUTE,
-                                               niv::testing::THIRD_ID);
+                                               niv::testing::THIRD_ID_STRING);
       THEN("nan is returned") { REQUIRE(std::isnan(datum)); }
     }
 
     WHEN("requesting datum for an invalid neuron id") {
       const double datum = multimeter.GetDatum(niv::testing::ANY_TIME_STRING,
                                                niv::testing::ANOTHER_ATTRIBUTE,
-                                               niv::testing::NOT_AN_ID);
+                                               niv::testing::NOT_AN_ID_STRING);
       THEN("nan is returned") { REQUIRE(std::isnan(datum)); }
     }
   }
@@ -200,7 +200,7 @@ SCENARIO("ArborMultimeter retrieves datum for time, attribute, neuron",
     WHEN("requesting data") {
       const double datum = multimeter.GetDatum(niv::testing::ANY_TIME_STRING,
                                                niv::testing::ANOTHER_ATTRIBUTE,
-                                               niv::testing::THIRD_ID);
+                                               niv::testing::THIRD_ID_STRING);
 
       THEN("nan is returned") { REQUIRE(std::isnan(datum)); }
     }
@@ -226,7 +226,7 @@ SCENARIO("ArborMultimeter provides time series data",
 
     WHEN("requesting time series data for an attribute and a neuron id") {
       const std::vector<double> values{multimeter.GetTimeSeriesData(
-          niv::testing::ANOTHER_ATTRIBUTE, niv::testing::THIRD_ID)};
+          niv::testing::ANOTHER_ATTRIBUTE, niv::testing::THIRD_ID_STRING)};
 
       THEN("the time series is correct") { REQUIRE(values == expected); }
     }
@@ -235,7 +235,7 @@ SCENARIO("ArborMultimeter provides time series data",
         "requesting time series data for an invalid attribute and a neuron "
         "id") {
       const std::vector<double> values{multimeter.GetTimeSeriesData(
-          niv::testing::NOT_AN_ATTRIBUTE, niv::testing::THIRD_ID)};
+          niv::testing::NOT_AN_ATTRIBUTE, niv::testing::THIRD_ID_STRING)};
 
       THEN("the time series is all nans or empty") {
         REQUIRE_THAT(values, VectorAllNanOrEmpty());
@@ -246,7 +246,7 @@ SCENARIO("ArborMultimeter provides time series data",
         "requesting time series data for an  attribute and an invalid neuron "
         "id") {
       const std::vector<double> values{multimeter.GetTimeSeriesData(
-          niv::testing::ANOTHER_ATTRIBUTE, niv::testing::NOT_AN_ID)};
+          niv::testing::ANOTHER_ATTRIBUTE, niv::testing::NOT_AN_ID_STRING)};
 
       THEN("the time series is all nans or empty") {
         REQUIRE_THAT(values, VectorAllNanOrEmpty());
@@ -261,7 +261,7 @@ SCENARIO("ArborMultimeter provides time series data",
 
     WHEN("requesting time series data for an attribute and a neuron id") {
       const std::vector<double> values{multimeter.GetTimeSeriesData(
-          niv::testing::ANOTHER_ATTRIBUTE, niv::testing::THIRD_ID)};
+          niv::testing::ANOTHER_ATTRIBUTE, niv::testing::THIRD_ID_STRING)};
 
       THEN("the time series is all nans or empty") {
         REQUIRE_THAT(values, VectorAllNanOrEmpty());

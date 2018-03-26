@@ -40,7 +40,7 @@ SCENARIO("A multimeter records to a conduit node",
     WHEN("recording data") {
       niv::producer::ArborMultimeter::Datum datum{
           niv::testing::ANY_TIME + niv::testing::ANY_TIME_OFFSET,
-          niv::testing::ANY_ATTRIBUTE, niv::testing::ANY_ID,
+          niv::testing::ANY_ATTRIBUTE, niv::testing::ANY_ID_STRING,
           niv::testing::ANY_VALUE};
       multimeter.Record(datum, &node);
       THEN("the data is properly recorded") {

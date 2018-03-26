@@ -56,7 +56,7 @@ def test_arbor_multimeter_lists_neuron_ids_for_an_attribute_in_a_timestep():
     multimeter, nest_data = setup_multimeter()
     ids = multimeter.GetNeuronIds(pyniv.testing.ANY_TIME_STRING,
                                   pyniv.testing.ANY_ATTRIBUTE)
-    assert ids == pyniv.testing.ANY_IDS
+    assert ids == pyniv.testing.ANY_IDS_STRING
 
     
     ids = multimeter.GetNeuronIds(pyniv.testing.NOT_A_TIME_STRING,
@@ -77,7 +77,7 @@ def test_arbor_multimeter_retrieves_datum_for_time_attribute_neuron():
     multimeter, nest_data = setup_multimeter()
     datum = multimeter.GetDatum(pyniv.testing.ANY_TIME_STRING,
                                 pyniv.testing.ANOTHER_ATTRIBUTE,
-                                pyniv.testing.THIRD_ID)
+                                pyniv.testing.THIRD_ID_STRING)
     datum_offset = (pyniv.testing.ANY_TIME_OFFSET +
                     pyniv.testing.ANOTHER_ATTRIBUTE_OFFSET +
                     pyniv.testing.THIRD_ID_OFFSET);
@@ -85,24 +85,24 @@ def test_arbor_multimeter_retrieves_datum_for_time_attribute_neuron():
 
     datum = multimeter.GetDatum(pyniv.testing.NOT_A_TIME_STRING,
                                 pyniv.testing.ANOTHER_ATTRIBUTE,
-                                pyniv.testing.THIRD_ID)
+                                pyniv.testing.THIRD_ID_STRING)
     assert np.isnan(datum)
 
     datum = multimeter.GetDatum(pyniv.testing.ANY_TIME_STRING,
                                 pyniv.testing.NOT_AN_ATTRIBUTE,
-                                pyniv.testing.THIRD_ID)
+                                pyniv.testing.THIRD_ID_STRING)
     assert np.isnan(datum)
 
     datum = multimeter.GetDatum(pyniv.testing.ANY_TIME_STRING,
                                 pyniv.testing.ANOTHER_ATTRIBUTE,
-                                pyniv.testing.NOT_AN_ID)
+                                pyniv.testing.NOT_AN_ID_STRING)
     assert np.isnan(datum)
 
     multimeter, nest_data = setup_multimeter(
         name = pyniv.testing.NOT_A_MULTIMETER_NAME)
     datum = multimeter.GetDatum(pyniv.testing.ANY_TIME_STRING,
                                 pyniv.testing.ANOTHER_ATTRIBUTE,
-                                pyniv.testing.THIRD_ID)
+                                pyniv.testing.THIRD_ID_STRING)
     assert np.isnan(datum)
 
 def test_arbor_multimeter_provides_time_series_data():
@@ -114,21 +114,21 @@ def test_arbor_multimeter_provides_time_series_data():
 
     multimeter, nest_data = setup_multimeter()
     values = multimeter.GetTimeSeriesData(pyniv.testing.ANOTHER_ATTRIBUTE,
-                                          pyniv.testing.THIRD_ID)
+                                          pyniv.testing.THIRD_ID_STRING)
     assert (values == expected).all()
 
     values = multimeter.GetTimeSeriesData(pyniv.testing.NOT_AN_ATTRIBUTE,
-                                          pyniv.testing.THIRD_ID)
+                                          pyniv.testing.THIRD_ID_STRING)
     assert np.isnan(values).all()
 
     values = multimeter.GetTimeSeriesData(pyniv.testing.ANOTHER_ATTRIBUTE,
-                                          pyniv.testing.NOT_AN_ID)
+                                          pyniv.testing.NOT_AN_ID_STRING)
     assert np.isnan(values).all()
 
     multimeter, nest_data = setup_multimeter(
         name = pyniv.testing.NOT_A_MULTIMETER_NAME)
     values = multimeter.GetTimeSeriesData(pyniv.testing.ANOTHER_ATTRIBUTE,
-                                          pyniv.testing.THIRD_ID)
+                                          pyniv.testing.THIRD_ID_STRING)
     assert np.isnan(values).all()
 
 def test_arbor_multimeter_provides_timestep_data_for_all_neurons():

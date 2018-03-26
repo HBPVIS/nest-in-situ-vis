@@ -50,6 +50,9 @@ namespace testing {
 static const char* ANY_MULTIMETER_NAME{"multimeter A"};
 static const char* NOT_A_MULTIMETER_NAME{"NOT_A_MULTIMETER_NAME"};
 
+static const char* ANY_SPIKE_DETECTOR_NAME{"spikes A"};
+static const char* NOT_A_SPIKE_DETECTOR_NAME{"NOT_A_SPIKE_DETECTOR_NAME"};
+
 static const std::size_t ANY_INDEX{0};
 static const std::size_t ANOTHER_INDEX{1};
 static const std::size_t THIRD_INDEX{2};
@@ -83,8 +86,8 @@ inline std::vector<std::string> AnyTimesString() {
   return retval;
 }
 static const std::vector<std::string> ANY_TIMES_STRING{
-    AnyTimesString()[ANY_INDEX], AnyTimesString()[ANOTHER_INDEX],
-    AnyTimesString()[THIRD_INDEX]};
+    AnyTimesString()[ANY_TIME_INDEX], AnyTimesString()[ANOTHER_TIME_INDEX],
+    AnyTimesString()[THIRD_TIME_INDEX]};
 static const char* ANY_TIME_STRING{ANY_TIMES_STRING[ANY_TIME_INDEX].c_str()};
 static const char* ANOTHER_TIME_STRING{
     ANY_TIMES_STRING[ANOTHER_TIME_INDEX].c_str()};
@@ -100,11 +103,17 @@ static const char* THIRD_ATTRIBUTE{
     ANY_ATTRIBUTES[THIRD_ATTRIBUTE_INDEX].c_str()};
 static const char* NOT_AN_ATTRIBUTE{"NOT_AN_ATTRIBUTE"};
 
-static const std::vector<std::string> ANY_IDS{"1", "2", "3"};
-static const char* ANY_ID{ANY_IDS[ANY_ID_INDEX].c_str()};
-static const char* ANOTHER_ID{ANY_IDS[ANOTHER_ID_INDEX].c_str()};
-static const char* THIRD_ID{ANY_IDS[THIRD_ID_INDEX].c_str()};
-static const char* NOT_AN_ID{"NOT_AN_ID"};
+static const std::vector<std::size_t> ANY_IDS{1ul, 2ul, 3ul};
+static const std::size_t ANY_ID{ANY_IDS[ANY_ID_INDEX]};
+static const std::size_t ANOTHER_ID{ANY_IDS[ANOTHER_ID_INDEX]};
+static const std::size_t THIRD_ID{ANY_IDS[THIRD_ID_INDEX]};
+static const std::size_t NOT_AN_ID{THIRD_ID + 1};
+
+static const std::vector<std::string> ANY_IDS_STRING{"1", "2", "3"};
+static const char* ANY_ID_STRING{ANY_IDS_STRING[ANY_ID_INDEX].c_str()};
+static const char* ANOTHER_ID_STRING{ANY_IDS_STRING[ANOTHER_ID_INDEX].c_str()};
+static const char* THIRD_ID_STRING{ANY_IDS_STRING[THIRD_ID_INDEX].c_str()};
+static const char* NOT_AN_ID_STRING{"NOT_AN_ID"};
 
 // clang-format off
 static const std::vector<double> ANY_VALUES{
