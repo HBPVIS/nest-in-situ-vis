@@ -31,6 +31,13 @@ namespace producer {
 Device::Device(const std::string& name, conduit::Node* node)
     : node_(node), name_(name) {}
 
+std::string Device::ConstructPath(const Datum& datum) {
+  std::stringstream path;
+  path << name_ << '/';
+  path << datum.time;
+  return path.str();
+}
+
 conduit::Node& Device::GetNode(const std::string& path) {
   return (*node_)[path];
 }

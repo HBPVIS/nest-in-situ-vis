@@ -61,6 +61,8 @@ class Device {
  protected:
   Device(const std::string& name, conduit::Node* node);
 
+  std::string ConstructPath(const Datum& datum);
+
   const std::string& GetName() { return name_; }
   conduit::Node& GetNode(const std::string& path);
 

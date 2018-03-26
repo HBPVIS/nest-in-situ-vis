@@ -39,13 +39,6 @@ void SpikeDetector::Record(const Datum& datum) {
   GetNode(path).set_uint64_vector(data);
 }
 
-std::string SpikeDetector::ConstructPath(const SpikeDetector::Datum& datum) {
-  std::stringstream path;
-  path << GetName() << '/';
-  path << datum.time;
-  return path.str();
-}
-
 std::vector<std::size_t> SpikeDetector::GetData(const conduit::Node& node) {
   if (node.total_bytes_allocated() != 0) {
     return AsVector(node.as_uint64_array());

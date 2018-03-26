@@ -53,8 +53,7 @@ std::string NestMultimeter::IdString(std::size_t id) {
 std::string NestMultimeter::ConstructPath(const NestMultimeter::Datum& datum,
                                           std::size_t attribute_index) {
   std::stringstream path;
-  path << GetName() << '/';
-  path << datum.time << '/';
+  path << Device::ConstructPath(datum) << '/';
   path << value_names_[attribute_index] << '/';
   path << datum.neuron_id;
   return path.str();

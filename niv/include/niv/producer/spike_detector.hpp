@@ -46,7 +46,7 @@ class SpikeDetector final : public Device {
   SpikeDetector(const std::string& name, conduit::Node* node);
   SpikeDetector(const SpikeDetector&) = default;
   SpikeDetector(SpikeDetector&&) = default;
-  virtual ~SpikeDetector() = default;
+  ~SpikeDetector() override = default;
 
   SpikeDetector& operator=(const SpikeDetector&) = default;
   SpikeDetector& operator=(SpikeDetector&&) = default;
@@ -54,7 +54,6 @@ class SpikeDetector final : public Device {
   void Record(const Datum& datum);
 
  private:
-  std::string ConstructPath(const SpikeDetector::Datum& datum);
   std::vector<std::size_t> GetData(const conduit::Node& node);
   std::vector<std::size_t> AsVector(const conduit::uint64_array& array);
 };
