@@ -41,6 +41,12 @@ namespace producer {
 
 class Device {
  public:
+  struct Datum {
+    using Device_t = Device;
+
+    double time;
+  };
+
   Device(const Device&) = default;
   Device(Device&&) = default;
   virtual ~Device() = default;
@@ -48,7 +54,10 @@ class Device {
   void SetRecordingTime(double time);
 
   virtual void Record(std::size_t);
-  virtual void Record(std::size_t, const std::vector<double>&);
+  template <typename Datum_t>
+  void Record(const Datum_t& datum) {
+    static_cast<typename Datum_t::Device_t*>(this)->RecordImplementation(datum);
+  }
 
   Device& operator=(const Device&) = default;
   Device& operator=(Device&&) = default;
@@ -62,6 +71,8 @@ class Device {
   conduit::Node& GetNode(const std::string& path);
 
  private:
+  void RecordImplementation(const Datum& datum);
+
   conduit::Node* node_{nullptr};
   conduit::Node* timestep_node_{nullptr};
   std::string name_{"recorder"};

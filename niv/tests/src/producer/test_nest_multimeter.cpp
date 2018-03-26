@@ -27,6 +27,7 @@
 
 #include "conduit/conduit_node.hpp"
 
+#include "niv/nest_test_data.hpp"
 #include "niv/producer/nest_multimeter.hpp"
 
 SCENARIO("A unique multimeter ptr can be constructed via its factory",
@@ -39,30 +40,49 @@ SCENARIO("A unique multimeter ptr can be constructed via its factory",
   }
 }
 
-SCENARIO("A multimeter records to a conduit node", "[niv][niv::Multimeter]") {
-  const std::string any_name{"multimeter1"};
-  constexpr double any_time{1.5};
-  const std::string any_time_string{"1.5"};
-  constexpr std::size_t any_id{3};
-  const std::string any_id_string{"3"};
-  const std::vector<std::string> any_value_names{"A", "B", "C"};
-  const std::vector<double> any_values{3.1415, 4.123, 42.0};
-
-  GIVEN("a conduit node and a multimeter") {
+SCENARIO("A multimeter records to a conduit node",
+         "[niv][niv::NestMultimeter]") {
+  GIVEN("A conduit node and a multimeter") {
     conduit::Node node;
-    niv::producer::NestMultimeter multimeter(any_name, any_value_names, &node);
+    niv::producer::NestMultimeter multimeter{
+        niv::testing::ANY_MULTIMETER_NAME, niv::testing::ANY_ATTRIBUTES, &node};
+    WHEN("recording data") {
+      niv::producer::NestMultimeter::Datum datum{
+          niv::testing::ANY_TIME, niv::testing::ANY_ID,
+          niv::testing::ANY_VALUES_FOR_ATTRIBUTES};
+      multimeter.Record(datum);
+      THEN("data is properly recorded") {
+        std::stringstream path0;
+        path0 << niv::testing::ANY_MULTIMETER_NAME << '/';
+        path0 << niv::testing::ANY_TIME << '/';
+        path0 << niv::testing::ANY_ATTRIBUTE << '/';
+        path0 << niv::testing::ANY_ID;
+        REQUIRE(node[path0.str()].as_double() ==
+                Approx(niv::testing::ValueAt(niv::testing::ANY_TIME_INDEX,
+                                             niv::testing::ANY_ATTRIBUTE_INDEX,
+                                             niv::testing::ANY_ID_INDEX)));
 
-    WHEN("setting the recording time") {
-      multimeter.SetRecordingTime(any_time);
-      WHEN("recording") {
-        multimeter.Record(any_id, any_values);
-        THEN("data is recorded in the node") {
-          for (std::size_t i = 0; i < any_value_names.size(); ++i) {
-            REQUIRE(node[any_name][any_time_string][any_value_names[i]]
-                        [any_id_string]
-                            .to_double() == Approx(any_values[i]));
-          }
-        }
+        std::stringstream path1;
+        path1 << niv::testing::ANY_MULTIMETER_NAME << '/';
+        path1 << niv::testing::ANY_TIME << '/';
+        path1 << niv::testing::ANOTHER_ATTRIBUTE << '/';
+        path1 << niv::testing::ANY_ID;
+        REQUIRE(
+            node[path1.str()].as_double() ==
+            Approx(niv::testing::ValueAt(niv::testing::ANY_TIME_INDEX,
+                                         niv::testing::ANOTHER_ATTRIBUTE_INDEX,
+                                         niv::testing::ANY_ID_INDEX)));
+
+        std::stringstream path2;
+        path2 << niv::testing::ANY_MULTIMETER_NAME << '/';
+        path2 << niv::testing::ANY_TIME << '/';
+        path2 << niv::testing::THIRD_ATTRIBUTE << '/';
+        path2 << niv::testing::ANY_ID;
+        REQUIRE(
+            node[path2.str()].as_double() ==
+            Approx(niv::testing::ValueAt(niv::testing::ANY_TIME_INDEX,
+                                         niv::testing::THIRD_ATTRIBUTE_INDEX,
+                                         niv::testing::ANY_ID_INDEX)));
       }
     }
   }

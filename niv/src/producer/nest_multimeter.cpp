@@ -19,6 +19,8 @@
 // limitations under the License.
 //------------------------------------------------------------------------------
 
+#include <cassert>
+
 #include <memory>
 #include <string>
 #include <vector>
@@ -33,25 +35,29 @@ NestMultimeter::NestMultimeter(const std::string& name,
                                conduit::Node* node)
     : Device{name, node}, value_names_{value_names} {}
 
-void NestMultimeter::Record(std::size_t id, const std::vector<double>& values) {
-  const std::string id_string{IdString(id)};
-  for (std::size_t i = 0; i < value_names_.size(); ++i) {
-    RecordValue(id_string, values, i);
+void NestMultimeter::RecordImplementation(const Datum& datum) {
+  assert(datum.values.size() == value_names_.size());
+
+  for (std::size_t i = 0u; i < datum.values.size(); ++i) {
+    const std::string path{ConstructPath(datum, i)};
+    GetNode(path) = datum.values[i];
   }
 }
 
-void NestMultimeter::RecordValue(std::string id_string,
-                                 const std::vector<double> values,
-                                 std::size_t value_index) {
-  const std::string& value_name = value_names_[value_index];
-  const double value = values[value_index];
-  GetTimestepNode()[value_name][id_string] = value;
-}
-
-std::string NestMultimeter::IdString(std::size_t id) const {
+std::string NestMultimeter::IdString(std::size_t id) {
   std::stringstream id_stream;
   id_stream << id;
   return id_stream.str();
+}
+
+std::string NestMultimeter::ConstructPath(const NestMultimeter::Datum& datum,
+                                          std::size_t attribute_index) {
+  std::stringstream path;
+  path << GetName() << '/';
+  path << datum.time << '/';
+  path << value_names_[attribute_index] << '/';
+  path << datum.neuron_id;
+  return path.str();
 }
 
 std::unique_ptr<NestMultimeter> NestMultimeter::New(

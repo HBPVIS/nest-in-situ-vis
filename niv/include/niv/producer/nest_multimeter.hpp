@@ -34,14 +34,25 @@ namespace producer {
 
 class NestMultimeter final : public Device {
  public:
+  struct Datum : public Device::Datum {
+    using Device_t = NestMultimeter;
+
+    Datum(double time, std::string neuron_id, const std::vector<double>& values)
+        : Device::Datum{time}, neuron_id{neuron_id}, values{values} {}
+    Datum(double time, std::size_t neuron_id, const std::vector<double>& values)
+        : Device::Datum{time},
+          neuron_id{NestMultimeter::IdString(neuron_id)},
+          values{values} {}
+    std::string neuron_id;
+    std::vector<double> values;
+  };
+
   NestMultimeter(const std::string& name,
                  const std::vector<std::string>& value_names,
                  conduit::Node* node);
   NestMultimeter(const NestMultimeter&) = default;
   NestMultimeter(NestMultimeter&&) = default;
   virtual ~NestMultimeter() = default;
-
-  void Record(std::size_t id, const std::vector<double>& values) override;
 
   NestMultimeter& operator=(const NestMultimeter&) = default;
   NestMultimeter& operator=(NestMultimeter&&) = default;
@@ -50,13 +61,16 @@ class NestMultimeter final : public Device {
       const std::string& name, const std::vector<std::string>& value_names,
       conduit::Node* node);
 
+  void Record(const Datum& datum) { RecordImplementation(datum); }
+  void RecordImplementation(const Datum& datum);
+
  private:
-  void RecordValue(std::string id_string, const std::vector<double> values,
-                   std::size_t value_index);
-  std::string IdString(std::size_t id) const;
+  static std::string IdString(std::size_t id);
+
+  std::string ConstructPath(const Datum& datum, std::size_t attribute_index);
 
   std::vector<std::string> value_names_;
-};
+};  // namespace producer
 
 }  // namespace producer
 }  // namespace niv
