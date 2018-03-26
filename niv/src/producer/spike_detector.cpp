@@ -31,10 +31,19 @@ namespace producer {
 SpikeDetector::SpikeDetector(const std::string& name, conduit::Node* node)
     : Device{name, node} {}
 
-void SpikeDetector::Record(std::size_t id) {
-  std::vector<std::size_t> data(GetData(GetTimestepNode()));
-  data.push_back(id);
-  GetTimestepNode().set_uint64_vector(data);
+void SpikeDetector::Record(const Datum& datum) {
+  const std::string path{ConstructPath(datum)};
+
+  std::vector<std::size_t> data{GetData(GetNode(path))};
+  data.push_back(datum.neuron_id);
+  GetNode(path).set_uint64_vector(data);
+}
+
+std::string SpikeDetector::ConstructPath(const SpikeDetector::Datum& datum) {
+  std::stringstream path;
+  path << GetName() << '/';
+  path << datum.time;
+  return path.str();
 }
 
 std::vector<std::size_t> SpikeDetector::GetData(const conduit::Node& node) {

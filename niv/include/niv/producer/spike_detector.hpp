@@ -33,20 +33,30 @@ namespace producer {
 
 class SpikeDetector final : public Device {
  public:
+  struct Datum : public Device::Datum {
+    using Device_t = SpikeDetector;
+
+    Datum(double time, std::size_t neuron_id)
+        : Device::Datum{time}, neuron_id{neuron_id} {}
+
+    std::size_t neuron_id;
+  };
+
   SpikeDetector(const std::string& name, conduit::Node* node);
   SpikeDetector(const SpikeDetector&) = default;
   SpikeDetector(SpikeDetector&&) = default;
   virtual ~SpikeDetector() = default;
 
-  void Record(std::size_t id) override;
-
   SpikeDetector& operator=(const SpikeDetector&) = default;
   SpikeDetector& operator=(SpikeDetector&&) = default;
+
+  void Record(const Datum& datum);
 
   static std::unique_ptr<SpikeDetector> New(const std::string& name,
                                             conduit::Node* node);
 
  private:
+  std::string ConstructPath(const SpikeDetector::Datum& datum);
   std::vector<std::size_t> GetData(const conduit::Node& node);
   std::vector<std::size_t> AsVector(const conduit::uint64_array& array);
 };

@@ -53,7 +53,6 @@ class Device {
 
   void SetRecordingTime(double time);
 
-  virtual void Record(std::size_t);
   template <typename Datum_t>
   void Record(const Datum_t& datum);
 
