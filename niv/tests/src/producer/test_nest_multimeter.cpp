@@ -30,16 +30,6 @@
 #include "niv/nest_test_data.hpp"
 #include "niv/producer/nest_multimeter.hpp"
 
-SCENARIO("A unique multimeter ptr can be constructed via its factory",
-         "[niv][niv::Multimeter]") {
-  WHEN("a new multimeter is constructed") {
-    std::unique_ptr<niv::producer::NestMultimeter> multimeter{
-        niv::producer::NestMultimeter::New("name", std::vector<std::string>(),
-                                           nullptr)};
-    THEN("a pointer was obtained") { REQUIRE(multimeter.get() != nullptr); }
-  }
-}
-
 SCENARIO("A multimeter records to a conduit node",
          "[niv][niv::NestMultimeter]") {
   GIVEN("A conduit node and a multimeter") {

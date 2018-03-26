@@ -52,9 +52,6 @@ class SpikeDetector final : public Device {
 
   void Record(const Datum& datum);
 
-  static std::unique_ptr<SpikeDetector> New(const std::string& name,
-                                            conduit::Node* node);
-
  private:
   std::string ConstructPath(const SpikeDetector::Datum& datum);
   std::vector<std::size_t> GetData(const conduit::Node& node);

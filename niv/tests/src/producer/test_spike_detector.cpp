@@ -29,15 +29,6 @@
 #include "niv/nest_test_data.hpp"
 #include "niv/producer/spike_detector.hpp"
 
-SCENARIO("A unique spike detector ptr can be constructed via its factory",
-         "[niv][niv::SpikeDetector]") {
-  WHEN("a new spike detector is constructed") {
-    std::unique_ptr<niv::producer::SpikeDetector> spike_detector{
-        niv::producer::SpikeDetector::New("name", nullptr)};
-    THEN("a pointer was obtained") { REQUIRE(spike_detector.get() != nullptr); }
-  }
-}
-
 SCENARIO("A spike detector records to a conduit node",
          "[niv][niv::SpikeDetector]") {
   GIVEN("a conduit node and a spike detector") {

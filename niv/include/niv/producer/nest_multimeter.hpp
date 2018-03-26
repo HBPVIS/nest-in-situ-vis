@@ -55,10 +55,6 @@ class NestMultimeter final : public Device {
   NestMultimeter& operator=(const NestMultimeter&) = default;
   NestMultimeter& operator=(NestMultimeter&&) = default;
 
-  static std::unique_ptr<NestMultimeter> New(
-      const std::string& name, const std::vector<std::string>& value_names,
-      conduit::Node* node);
-
   void Record(const Datum& datum);
 
  private:

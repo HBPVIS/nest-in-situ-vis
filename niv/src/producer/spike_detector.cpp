@@ -62,10 +62,5 @@ std::vector<std::size_t> SpikeDetector::AsVector(
   return std::vector<std::size_t>(begin, end);
 }
 
-std::unique_ptr<SpikeDetector> SpikeDetector::New(const std::string& name,
-                                                  conduit::Node* node) {
-  return std::make_unique<SpikeDetector>(name, node);
-}
-
 }  // namespace producer
 }  // namespace niv

@@ -60,11 +60,5 @@ std::string NestMultimeter::ConstructPath(const NestMultimeter::Datum& datum,
   return path.str();
 }
 
-std::unique_ptr<NestMultimeter> NestMultimeter::New(
-    const std::string& name, const std::vector<std::string>& value_names,
-    conduit::Node* node) {
-  return std::make_unique<NestMultimeter>(name, value_names, node);
-}
-
 }  // namespace producer
 }  // namespace niv
