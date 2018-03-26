@@ -45,6 +45,7 @@ class NestMultimeter final : public Device {
     std::vector<double> values;
   };
 
+  NestMultimeter() = delete;
   NestMultimeter(const std::string& name,
                  const std::vector<std::string>& value_names,
                  conduit::Node* node);

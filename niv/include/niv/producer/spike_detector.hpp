@@ -42,6 +42,7 @@ class SpikeDetector final : public Device {
     std::size_t neuron_id;
   };
 
+  SpikeDetector() = delete;
   SpikeDetector(const std::string& name, conduit::Node* node);
   SpikeDetector(const SpikeDetector&) = default;
   SpikeDetector(SpikeDetector&&) = default;
