@@ -36,14 +36,12 @@ struct DeviceWrap : niv::consumer::Device, wrapper<niv::consumer::Device> {
   explicit DeviceWrap(const std::string& name) : niv::consumer::Device(name) {}
   void Update() { this->get_override("Update")(); }
 
-  static boost::python::numpy::ndarray GetTimesteps(
-      niv::consumer::Device* device) {
-    auto& timesteps{device->GetTimesteps()};
-
-    return boost::python::numpy::from_data(
-        timesteps.data(), boost::python::numpy::dtype::get_builtin<double>(),
-        boost::python::make_tuple(timesteps.size()),
-        boost::python::make_tuple(sizeof(double)), boost::python::object());
+  boost::python::list GetTimesteps() {
+    boost::python::list ret_val;
+    for (auto t : Device::GetTimesteps()) {
+      ret_val.append(t);
+    }
+    return ret_val;
   }
 
   static void SetNodePointer(niv::consumer::Device* device, PyObject* node) {

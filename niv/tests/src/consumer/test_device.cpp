@@ -77,19 +77,30 @@ Vector::EqualsApproxMatcher<T> EqualsApprox(std::vector<T> const& comparator) {
 }  // namespace Matchers
 }  // namespace Catch
 
-SCENARIO("A consumer::Device can list its timesteps",
+SCENARIO("NestMultimeter lists the timesteps",
          "[niv][niv::consumer][niv::consumer::Device]") {
-  GIVEN("A device accessing a node") {
-    conduit::Node any_data{niv::testing::ANY_NEST_DATA};
-    ::Device device(niv::testing::AnyMultimeterName());
-    device.SetNode(&any_data);
-    WHEN("The device is asked for the timesteps") {
-      auto timesteps(device.GetTimesteps());
-      THEN("the list of timesteps is correct") {
-        REQUIRE_THAT(timesteps,
-                     Catch::Matchers::EqualsApprox(
-                         std::vector<double>{niv::testing::ANY_TIMES}));
-      }
+  GIVEN("a device providing access to some data") {
+    ::Device device(niv::testing::ANY_DEVICE_NAME);
+    device.SetNode(&niv::testing::ANY_NEST_DATA);
+
+    THEN("the device provides correct timesteps as strings") {
+      REQUIRE(device.GetTimestepsString() == niv::testing::ANY_TIMES_STRING);
+    }
+    THEN("the device provides correct timesteps as doubles") {
+      REQUIRE_THAT(device.GetTimesteps(),
+                   Catch::Matchers::EqualsApprox(niv::testing::ANY_TIMES));
+    }
+  }
+
+  GIVEN("a device with an incorrect name providing access to some data") {
+    ::Device multimeter(niv::testing::NOT_A_DEVICE_NAME);
+    multimeter.SetNode(&niv::testing::ANY_NEST_DATA);
+
+    THEN("the device does not provide timesteps as strings") {
+      REQUIRE(multimeter.GetTimestepsString().empty());
+    }
+    THEN("the device does not provide timesteps as doubles") {
+      REQUIRE(multimeter.GetTimesteps().empty());
     }
   }
 }

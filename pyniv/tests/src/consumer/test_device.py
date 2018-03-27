@@ -28,9 +28,8 @@ class Device(pyniv.consumer.Device):
         pyniv.consumer.Device.__init__(self, name)
 
 def test_consumer_device_lists_timesteps():
-    any_data = pyniv.testing.ANY_NEST_DATA
-    device = Device(pyniv.testing.AnyMultimeterName())
-    device.SetNode(any_data)
+    device = Device(pyniv.testing.ANY_DEVICE_NAME)
+    device.SetNode(pyniv.testing.ANY_NEST_DATA)
     timesteps = device.GetTimesteps()
     assert len(timesteps) == len(pyniv.testing.ANY_TIMES)
     assert np.isclose(timesteps, pyniv.testing.ANY_TIMES).all()

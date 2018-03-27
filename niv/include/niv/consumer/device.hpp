@@ -40,7 +40,8 @@ class Device {
   Device& operator=(const Device&) = default;
   Device& operator=(Device&&) = default;
 
-  const std::vector<double>& GetTimesteps();
+  std::vector<std::string> GetTimestepsString() const;
+  const std::vector<double> GetTimesteps() const;
 
   virtual void SetTime(double time);
 
@@ -52,6 +53,12 @@ class Device {
 
  protected:
   explicit Device(const std::string& name);
+
+  std::vector<std::string> GetChildNames(const std::string& path) const;
+
+  const conduit::Node* GetNode(const std::string& path) const;
+
+  std::string ConstructPath() const;
 
   void SetTimestepNode();
   const conduit::Node* GetTimestepNode() const;

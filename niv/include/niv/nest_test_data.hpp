@@ -47,6 +47,9 @@ namespace testing {
 #pragma GCC diagnostic ignored "-Wunused-variable"
 #endif
 
+static const char* ANY_DEVICE_NAME{"multimeter A"};
+static const char* NOT_A_DEVICE_NAME{"NOT_A_DEVICE_NAME"};
+
 static const char* ANY_MULTIMETER_NAME{"multimeter A"};
 static const char* NOT_A_MULTIMETER_NAME{"NOT_A_MULTIMETER_NAME"};
 

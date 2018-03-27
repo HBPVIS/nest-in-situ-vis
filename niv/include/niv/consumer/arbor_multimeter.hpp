@@ -40,8 +40,6 @@ class ArborMultimeter : public niv::consumer::Device {
 
   void Update() override;
 
-  std::vector<std::string> GetTimestepsString() const;
-
   std::vector<std::string> GetAttributes(const std::string& time) const;
 
   std::vector<std::string> GetNeuronIds(const std::string& time,
@@ -66,9 +64,7 @@ class ArborMultimeter : public niv::consumer::Device {
   std::string ConstructPath(const std::string& time,
                             const std::string& attribute) const;
   std::string ConstructPath(const std::string& time) const;
-  std::string ConstructPath() const;
 
-  std::vector<std::string> GetChildNames(const std::string& path) const;
   double GetValue(const std::string& path) const;
 
   const conduit::Node* GetNode(const std::string& path) const;

@@ -21,11 +21,11 @@
 
 #include "niv/consumer/device.hpp"
 
+#include <cmath>
 #include <cstdlib>
 
-#include <iostream>
-
 #include <algorithm>
+#include <iostream>
 #include <string>
 #include <vector>
 
@@ -34,29 +34,35 @@ namespace consumer {
 
 Device::Device(const std::string& name) : name_{name} {}
 
-const std::vector<double>& Device::GetTimesteps() {
-  timesteps_.clear();
-
-  const conduit::Node* device_node{nullptr};
-  try {
-    device_node = &node_->fetch_child(name_);
-  } catch (...) {
-    return timesteps_;
-  }
-
-  const std::string device_node_path{device_node->path()};
-  for (auto i = 0u; i < device_node->number_of_children(); ++i) {
-    const conduit::Node& curr_child{device_node->child(i)};
-    const std::string child_path{curr_child.path()};
-    const std::string child_local_path{
-        child_path.substr(device_node_path.size() + 1,
-                          child_path.size() - device_node_path.size() - 1)};
-    timesteps_.push_back(std::strtof(child_local_path.c_str(), nullptr));
-  }
-
-  std::sort(timesteps_.begin(), timesteps_.end());
-  return timesteps_;
+std::vector<std::string> Device::GetTimestepsString() const {
+  return GetChildNames(ConstructPath());
 }
+
+const std::vector<double> Device::GetTimesteps() const {
+  const auto timestep_strings{GetTimestepsString()};
+  std::vector<double> timesteps_double(timestep_strings.size(), std::nan(""));
+  std::transform(timestep_strings.begin(), timestep_strings.end(),
+                 timesteps_double.begin(), [](const std::string& t) {
+                   return std::strtof(t.c_str(), nullptr);
+                 });
+  return timesteps_double;
+}
+
+std::vector<std::string> Device::GetChildNames(const std::string& path) const {
+  const conduit::Node* node{GetNode(path)};
+  return (node != nullptr) ? node->child_names() : std::vector<std::string>();
+}
+
+const conduit::Node* Device::GetNode(const std::string& path) const {
+  const conduit::Node* node{nullptr};
+  try {
+    node = &GetRootNode()->fetch_child(path);
+  } catch (...) {
+  }
+  return node;
+}
+
+std::string Device::ConstructPath() const { return name_; }
 
 void Device::SetTime(double time) { time_ = time; }
 

@@ -98,6 +98,9 @@ boost::python::list IdOffsets() {
 
 template <>
 void expose<niv::Testing>() {
+  EXPOSE_CONSTANT(ANY_DEVICE_NAME);
+  EXPOSE_CONSTANT(NOT_A_DEVICE_NAME);
+
   EXPOSE_CONSTANT(ANY_MULTIMETER_NAME);
   EXPOSE_CONSTANT(NOT_A_MULTIMETER_NAME);
 

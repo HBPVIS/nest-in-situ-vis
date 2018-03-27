@@ -56,7 +56,7 @@ SCENARIO("ArborMultimeter lists the timesteps",
 
     THEN("the multimeter provides correct timesteps") {
       REQUIRE(multimeter.GetTimestepsString() ==
-              niv::testing::AnyTimesString());
+              niv::testing::ANY_TIMES_STRING);
     }
   }
 

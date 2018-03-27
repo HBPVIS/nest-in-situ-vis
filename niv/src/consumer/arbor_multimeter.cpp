@@ -36,10 +36,6 @@ ArborMultimeter::ArborMultimeter(const std::string& name) : Device(name) {}
 
 void ArborMultimeter::Update() {}
 
-std::vector<std::string> ArborMultimeter::GetTimestepsString() const {
-  return GetChildNames(ConstructPath());
-}
-
 std::vector<std::string> ArborMultimeter::GetAttributes(
     const std::string& time) const {
   return GetChildNames(ConstructPath(time));
@@ -80,7 +76,8 @@ double ArborMultimeter::GetDatum(const std::string& time,
 std::string ArborMultimeter::ConstructPath(const std::string& time,
                                            const std::string& attribute,
                                            const std::string& neuron_id) const {
-  return ConstructPath() + "/" + time + "/" + attribute + "/" + neuron_id;
+  return Device::ConstructPath() + "/" + time + "/" + attribute + "/" +
+         neuron_id;
 }
 
 std::string ArborMultimeter::ConstructPath(const std::string& time,
@@ -89,15 +86,7 @@ std::string ArborMultimeter::ConstructPath(const std::string& time,
 }
 
 std::string ArborMultimeter::ConstructPath(const std::string& time) const {
-  return ConstructPath() + '/' + time;
-}
-
-std::string ArborMultimeter::ConstructPath() const { return GetName(); }
-
-std::vector<std::string> ArborMultimeter::GetChildNames(
-    const std::string& path) const {
-  const conduit::Node* node{GetNode(path)};
-  return (node != nullptr) ? node->child_names() : std::vector<std::string>();
+  return Device::ConstructPath() + '/' + time;
 }
 
 double ArborMultimeter::GetValue(const std::string& path) const {
