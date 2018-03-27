@@ -50,8 +50,8 @@ std::string ArborMultimeter::ConstructPath(
   return path.str();
 }
 
-double ArborMultimeter::ConstructTimestep(const ArborMultimeter::Datum& datum) {
-  return std::round(10.0 * datum.time) / 10.0;
+double ArborMultimeter::Datum::ConstructTimestep(const double time) {
+  return std::round(10.0 * time) / 10.0;
 }
 
 }  // namespace producer

@@ -33,7 +33,7 @@ class ArborMultimeter final : public Device {
  public:
   struct Datum : public Device::Datum {
     Datum(double time, std::string attribute, std::string id, double value)
-        : Device::Datum{std::round(10.0 * time) / 10.0},
+        : Device::Datum{ConstructTimestep(time)},
           exact_time{time},
           attribute{attribute},
           id{id},
@@ -42,6 +42,8 @@ class ArborMultimeter final : public Device {
     std::string attribute;
     std::string id;
     double value;
+
+    static double ConstructTimestep(double time);
   };
 
   explicit ArborMultimeter(const std::string& name);
@@ -56,8 +58,7 @@ class ArborMultimeter final : public Device {
 
  private:
   std::string ConstructPath(const Datum& datum);
-  double ConstructTimestep(const Datum& datum);
-};  // namespace producer
+};
 
 }  // namespace producer
 }  // namespace niv
