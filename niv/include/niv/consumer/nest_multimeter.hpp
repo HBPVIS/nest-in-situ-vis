@@ -52,19 +52,8 @@ class NestMultimeter : public consumer::Multimeter {
   double GetDatum(const std::string& time, const std::string& attribute,
                   const std::string& neuron_id) const;
 
-  void SetAttribute(const std::string& attribute);
-
-  void Update();
-
-  const std::vector<double>& GetValues() const;
-
  private:
   double GetValue(const std::string& path) const;
-
-  void SetValues();
-
-  std::vector<double> values_;
-  std::string attribute_{""};
 };
 
 }  // namespace consumer

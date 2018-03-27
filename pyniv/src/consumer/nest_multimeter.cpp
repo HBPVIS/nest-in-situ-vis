@@ -34,19 +34,6 @@ SUPPRESS_WARNINGS_END
 
 namespace pyniv {
 namespace consumer {
-
-boost::python::numpy::ndarray GetValues(
-    const niv::consumer::NestMultimeter& multimeter);
-boost::python::numpy::ndarray GetValues(
-    const niv::consumer::NestMultimeter& multimeter) {
-  const auto& values{multimeter.GetValues()};
-
-  return boost::python::numpy::from_data(
-      values.data(), boost::python::numpy::dtype::get_builtin<double>(),
-      boost::python::make_tuple(values.size()),
-      boost::python::make_tuple(sizeof(double)), boost::python::object());
-}
-
 namespace nest_multimeter {
 
 boost::python::list GetTimeSeriesData(
@@ -76,9 +63,6 @@ template <>
 void expose<niv::consumer::NestMultimeter>() {
   class_<niv::consumer::NestMultimeter, bases<niv::consumer::Multimeter>>(
       "NestMultimeter", init<std::string>())
-      .def("GetValues", &pyniv::consumer::GetValues)
-      .def("SetAttribute", &niv::consumer::NestMultimeter::SetAttribute)
-      .def("Update", &niv::consumer::NestMultimeter::Update)
       .def("GetTimestepData",
            &pyniv::consumer::nest_multimeter::GetTimestepData)
       .def("GetTimeSeriesData",

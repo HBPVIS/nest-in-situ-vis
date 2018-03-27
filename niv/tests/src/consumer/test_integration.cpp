@@ -36,7 +36,6 @@ SCENARIO("Consumer integration", "[niv][integration]") {
     backend.Connect(&receiver);
 
     niv::consumer::NestMultimeter multimeter(niv::testing::ANY_MULTIMETER_NAME);
-    multimeter.SetAttribute(niv::testing::ANY_ATTRIBUTE);
     backend.Connect(&multimeter);
 
     WHEN("The data producer sends data") {

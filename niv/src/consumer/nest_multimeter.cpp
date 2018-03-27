@@ -64,21 +64,5 @@ double NestMultimeter::GetValue(const std::string& path) const {
   return (node != nullptr) ? node->as_double() : std::nan("");
 }
 
-// ------------------------------------------------------------
-
-void NestMultimeter::SetAttribute(const std::string& attribute) {
-  attribute_ = attribute;
-}
-
-void NestMultimeter::Update() {
-  SetValues();
-}
-
-void NestMultimeter::SetValues() {
-  values_.clear();
-}
-
-const std::vector<double>& NestMultimeter::GetValues() const { return values_; }
-
 }  // namespace consumer
 }  // namespace niv
