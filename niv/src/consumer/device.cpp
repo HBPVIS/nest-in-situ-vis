@@ -56,7 +56,7 @@ std::vector<std::string> Device::GetChildNames(const std::string& path) const {
 const conduit::Node* Device::GetNode(const std::string& path) const {
   const conduit::Node* node{nullptr};
   try {
-    node = &GetRootNode()->fetch_child(path);
+    node = &(node_->fetch_child(path));
   } catch (...) {
   }
   return node;
@@ -67,32 +67,6 @@ std::string Device::ConstructPath() const { return name_; }
 std::string Device::ConstructPath(const std::string& time) const {
   return Device::ConstructPath() + '/' + time;
 }
-
-void Device::SetTime(double time) { time_ = time; }
-
-void Device::SetTimestepNode() {
-  std::stringstream time_stream;
-  time_stream << time_;
-  try {
-    timestep_node_ = &node_->fetch_child(name_ + "/" + time_stream.str());
-  } catch (...) {
-  }
-}
-
-void Device::Print() const {
-  if (node_ != nullptr) {
-    std::cout << "Schema" << std::endl;
-    std::cout << node_->schema().to_json() << std::endl;
-    std::cout << "Data" << std::endl;
-    node_->print();
-  }
-}
-
-const conduit::Node* Device::GetTimestepNode() const { return timestep_node_; }
-
-const conduit::Node* Device::GetRootNode() const { return node_; }
-
-const std::string Device::GetName() const { return name_; }
 
 }  // namespace consumer
 }  // namespace niv

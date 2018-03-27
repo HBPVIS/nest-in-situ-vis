@@ -71,23 +71,11 @@ void NestMultimeter::SetAttribute(const std::string& attribute) {
 }
 
 void NestMultimeter::Update() {
-  SetTimestepNode();
   SetValues();
 }
 
 void NestMultimeter::SetValues() {
   values_.clear();
-  if (GetTimestepNode() == nullptr) {
-    return;
-  }
-  try {
-    const conduit::Node* attribute_node =
-        &GetTimestepNode()->fetch_child(attribute_);
-    for (auto i = 0u; i < attribute_node->number_of_children(); ++i) {
-      values_.push_back(attribute_node->child(i).as_double());
-    }
-  } catch (...) {
-  }
 }
 
 const std::vector<double>& NestMultimeter::GetValues() const { return values_; }

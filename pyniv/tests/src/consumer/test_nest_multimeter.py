@@ -119,11 +119,8 @@ def test_nest_multimeter_provides_access_to_data_stored_in_a_conduit_node():
     multimeter = pyniv.consumer.NestMultimeter(pyniv.testing.AnyMultimeterName())
     multimeter.SetNode(nest_data)
 
-    multimeter.SetTime(pyniv.testing.ANY_TIME)
-
-    multimeter.SetAttribute(pyniv.testing.ANY_ATTRIBUTE)
-    multimeter.Update()
-    result = multimeter.GetValues()
+    result = multimeter.GetTimestepData(pyniv.testing.ANY_TIME_STRING,
+                                        pyniv.testing.ANY_ATTRIBUTE)
     expected = [
         pyniv.testing.ValueAt(pyniv.testing.ANY_TIME_INDEX,
                               pyniv.testing.ANY_ATTRIBUTE_INDEX,
@@ -134,11 +131,10 @@ def test_nest_multimeter_provides_access_to_data_stored_in_a_conduit_node():
         pyniv.testing.ValueAt(pyniv.testing.ANY_TIME_INDEX,
                               pyniv.testing.ANY_ATTRIBUTE_INDEX,
                               pyniv.testing.THIRD_ID_INDEX)]
-    assert (result == expected).all()
+    assert result == expected
 
-    multimeter.SetAttribute(pyniv.testing.ANOTHER_ATTRIBUTE)
-    multimeter.Update()
-    result = multimeter.GetValues()
+    result = multimeter.GetTimestepData(pyniv.testing.ANY_TIME_STRING,
+                                        pyniv.testing.ANOTHER_ATTRIBUTE)
     expected = [
         pyniv.testing.ValueAt(pyniv.testing.ANY_TIME_INDEX,
                               pyniv.testing.ANOTHER_ATTRIBUTE_INDEX,
@@ -149,5 +145,5 @@ def test_nest_multimeter_provides_access_to_data_stored_in_a_conduit_node():
         pyniv.testing.ValueAt(pyniv.testing.ANY_TIME_INDEX,
                               pyniv.testing.ANOTHER_ATTRIBUTE_INDEX,
                               pyniv.testing.THIRD_ID_INDEX)]
-    assert (result == expected).all()
+    assert result == expected
     

@@ -46,13 +46,10 @@ SCENARIO("Consumer integration", "[niv][integration]") {
         backend.Receive();
 
         WHEN("the multimeter queries the data") {
-          multimeter.SetTime(niv::testing::ANY_TIME);
-          multimeter.Update();
-          std::vector<double> values_at_t0{multimeter.GetValues()};
-
-          multimeter.SetTime(niv::testing::ANOTHER_TIME);
-          multimeter.Update();
-          std::vector<double> values_at_t1{multimeter.GetValues()};
+          std::vector<double> values_at_t0{multimeter.GetTimestepData(
+              niv::testing::ANY_TIME_STRING, niv::testing::ANY_ATTRIBUTE)};
+          std::vector<double> values_at_t1{multimeter.GetTimestepData(
+              niv::testing::ANOTHER_TIME_STRING, niv::testing::ANY_ATTRIBUTE)};
 
           THEN("the received values are correct") {
             const std::vector<double> expected_at_t0{

@@ -50,7 +50,7 @@ boost::python::list GetTimestepsString(const niv::consumer::Device& device) {
   return retval;
 }
 
-static void SetNodePointer(niv::consumer::Device* device, PyObject* node) {
+static void SetNode(niv::consumer::Device* device, PyObject* node) {
   device->SetNode(boost::python::extract<conduit::Node*>(node));
 }
 
@@ -62,8 +62,7 @@ void expose<niv::consumer::Device>() {
   class_<niv::consumer::Device>("Device", init<const std::string&>())
       .def("GetTimestepsString", &pyniv::consumer::device::GetTimestepsString)
       .def("GetTimesteps", &pyniv::consumer::device::GetTimesteps)
-      .def("SetNode", &pyniv::consumer::device::SetNodePointer)
-      .def("SetTime", &niv::consumer::Device::SetTime);
+      .def("SetNode", &pyniv::consumer::device::SetNode);
 }
 
 }  // namespace pyniv

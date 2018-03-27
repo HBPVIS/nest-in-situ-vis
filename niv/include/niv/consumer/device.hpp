@@ -44,11 +44,7 @@ class Device {
   std::vector<std::string> GetTimestepsString() const;
   const std::vector<double> GetTimesteps() const;
 
-  virtual void SetTime(double time);
-
   void SetNode(const conduit::Node* node) { node_ = node; }
-
-  void Print() const;
 
  protected:
   std::vector<std::string> GetChildNames(const std::string& path) const;
@@ -58,19 +54,8 @@ class Device {
   std::string ConstructPath() const;
   std::string ConstructPath(const std::string& time) const;
 
-  void SetTimestepNode();
-  const conduit::Node* GetTimestepNode() const;
-
-  const conduit::Node* GetRootNode() const;
-  const std::string GetName() const;
-
  private:
   const conduit::Node* node_{nullptr};
-  const conduit::Node* timestep_node_{nullptr};
-
-  std::vector<double> timesteps_;
-
-  double time_{0.0};
   std::string name_{""};
 };
 

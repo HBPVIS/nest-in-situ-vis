@@ -29,16 +29,16 @@ class Device(pyniv.consumer.Device):
 
 def setup_device(name = pyniv.testing.ANY_DEVICE_NAME,
                  data = pyniv.testing.ANY_NEST_DATA):
-    multimeter = pyniv.consumer.Device(name)
-    multimeter.SetNode(data)
-    return multimeter, data
+    device = pyniv.consumer.Device(name)
+    device.SetNode(data)
+    return device, data
 
-def test_multimeter_lists_the_timesteps():
-    multimeter, nest_data = setup_device()
-    timesteps = multimeter.GetTimestepsString();
+def test_device_lists_the_timesteps():
+    device, nest_data = setup_device()
+    timesteps = device.GetTimestepsString();
     assert timesteps == pyniv.testing.ANY_TIMES_STRING
 
-    multimeter, nest_data = setup_device(
-        name = pyniv.testing.NOT_A_MULTIMETER_NAME)
-    timesteps = multimeter.GetTimestepsString();
+    device, nest_data = setup_device(
+        name = pyniv.testing.NOT_A_DEVICE_NAME)
+    timesteps = device.GetTimestepsString();
     assert timesteps == []

@@ -79,7 +79,6 @@ void expose<niv::consumer::NestMultimeter>() {
       .def("GetValues", &pyniv::consumer::GetValues)
       .def("SetAttribute", &niv::consumer::NestMultimeter::SetAttribute)
       .def("Update", &niv::consumer::NestMultimeter::Update)
-      .def("Print", &niv::consumer::NestMultimeter::Print)
       .def("GetTimestepData",
            &pyniv::consumer::nest_multimeter::GetTimestepData)
       .def("GetTimeSeriesData",

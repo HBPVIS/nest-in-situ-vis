@@ -27,21 +27,6 @@
 #include "niv/consumer/device.hpp"
 #include "niv/nest_test_data.hpp"
 
-namespace {
-
-class Device : public niv::consumer::Device {
- public:
-  explicit Device(const std::string& name) : niv::consumer::Device(name) {}
-  Device(const Device&) = delete;
-  Device(Device&&) = delete;
-  ~Device() = default;
-
-  Device& operator=(const Device&) = delete;
-  Device& operator=(Device&&) = delete;
-};
-
-}  // namespace
-
 namespace Catch {
 namespace Matchers {
 namespace Vector {
@@ -78,7 +63,7 @@ Vector::EqualsApproxMatcher<T> EqualsApprox(std::vector<T> const& comparator) {
 SCENARIO("consumer::Device lists the timesteps",
          "[niv][niv::consumer][niv::consumer::Device]") {
   GIVEN("a device providing access to some data") {
-    ::Device device(niv::testing::ANY_DEVICE_NAME);
+    niv::consumer::Device device(niv::testing::ANY_DEVICE_NAME);
     device.SetNode(&niv::testing::ANY_NEST_DATA);
 
     THEN("the device provides correct timesteps as strings") {
@@ -91,7 +76,7 @@ SCENARIO("consumer::Device lists the timesteps",
   }
 
   GIVEN("a device with an incorrect name providing access to some data") {
-    ::Device multimeter(niv::testing::NOT_A_DEVICE_NAME);
+    niv::consumer::Device multimeter(niv::testing::NOT_A_DEVICE_NAME);
     multimeter.SetNode(&niv::testing::ANY_NEST_DATA);
 
     THEN("the device does not provide timesteps as strings") {

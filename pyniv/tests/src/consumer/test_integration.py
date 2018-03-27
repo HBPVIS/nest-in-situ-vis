@@ -37,9 +37,7 @@ def test_integration_consumer():
 
     backend.Receive()
     
-    multimeter.SetTime(pyniv.testing.ANY_TIME)
-    multimeter.Update()
-    values_at_t0 = multimeter.GetValues()
+    values_at_t0 = multimeter.GetTimestepData(pyniv.testing.ANY_TIME_STRING, pyniv.testing.ANY_ATTRIBUTE)
     expected_at_t0 = [
         pyniv.testing.ValueAt(pyniv.testing.ANY_TIME_INDEX,
                               pyniv.testing.ANY_ATTRIBUTE_INDEX,
@@ -52,9 +50,7 @@ def test_integration_consumer():
                               pyniv.testing.THIRD_ID_INDEX)]
     assert np.isclose(values_at_t0, expected_at_t0).all()
 
-    multimeter.SetTime(pyniv.testing.ANOTHER_TIME)
-    multimeter.Update()
-    values_at_t1 = multimeter.GetValues()
+    values_at_t1 = multimeter.GetTimestepData(pyniv.testing.ANOTHER_TIME_STRING, pyniv.testing.ANY_ATTRIBUTE)
     expected_at_t1 = [
         pyniv.testing.ValueAt(pyniv.testing.ANOTHER_TIME_INDEX,
                               pyniv.testing.ANY_ATTRIBUTE_INDEX,
@@ -65,4 +61,4 @@ def test_integration_consumer():
         pyniv.testing.ValueAt(pyniv.testing.ANOTHER_TIME_INDEX,
                               pyniv.testing.ANY_ATTRIBUTE_INDEX,
                               pyniv.testing.THIRD_ID_INDEX)]
-    assert np.isclose(values_at_t0, expected_at_t1).all()
+    assert np.isclose(values_at_t1, expected_at_t1).all()
