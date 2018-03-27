@@ -62,7 +62,7 @@ class MainWindow:
 
     def VisualizeButtonClicked(self):
         self.visualize_button.setEnabled(False)
-        self.update_timer.start(0.5)
+        self.update_timer.start(250)
         self.Visualize()
         
     def Show(self):
@@ -76,19 +76,6 @@ class MainWindow:
     def Visualize(self):
         self.backend.Receive()
         self.Plot();
-
-    def GetValues(self, multimeter):
-        ts = multimeter.GetTimesteps()
-        plot_ts = []
-        plot_vs = []
-        for t in ts:
-          multimeter.SetTime(t)
-          multimeter.Update()
-          vs = multimeter.GetValues()
-          if len(vs) > 0:
-            plot_ts.append(t.tolist())
-            plot_vs.append(vs.tolist())
-        return plot_ts, plot_vs
 
     def Plot(self):
         timesteps = self.multimeter.GetTimestepsString()
