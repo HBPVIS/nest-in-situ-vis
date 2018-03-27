@@ -48,6 +48,9 @@ class Multimeter : public niv::consumer::Device {
  protected:
   std::string ConstructPath(const std::string& time,
                             const std::string& attribute) const;
+  std::string ConstructPath(const std::string& time,
+                            const std::string& attribute,
+                            const std::string& neuron_id) const;
 };
 
 }  // namespace consumer

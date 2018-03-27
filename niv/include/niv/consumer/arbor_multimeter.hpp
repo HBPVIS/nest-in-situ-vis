@@ -51,13 +51,7 @@ class ArborMultimeter : public niv::consumer::Multimeter {
                   const std::string& neuron_id) const;
 
  private:
-  std::string ConstructPath(const std::string& time,
-                            const std::string& attribute,
-                            const std::string& neuron_id) const;
-
   double GetValue(const std::string& path) const;
-
-  const conduit::Node* GetNode(const std::string& path) const;
 };
 
 }  // namespace consumer

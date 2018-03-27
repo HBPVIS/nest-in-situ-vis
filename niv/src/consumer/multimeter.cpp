@@ -44,5 +44,11 @@ std::string Multimeter::ConstructPath(const std::string& time,
   return Device::ConstructPath(time) + '/' + attribute;
 }
 
+std::string Multimeter::ConstructPath(const std::string& time,
+                                      const std::string& attribute,
+                                      const std::string& neuron_id) const {
+  return ConstructPath(time, attribute) + "/" + neuron_id;
+}
+
 }  // namespace consumer
 }  // namespace niv

@@ -61,25 +61,9 @@ double ArborMultimeter::GetDatum(const std::string& time,
   return GetValue(ConstructPath(time, attribute, neuron_id));
 }
 
-std::string ArborMultimeter::ConstructPath(const std::string& time,
-                                           const std::string& attribute,
-                                           const std::string& neuron_id) const {
-  return Device::ConstructPath() + "/" + time + "/" + attribute + "/" +
-         neuron_id;
-}
-
 double ArborMultimeter::GetValue(const std::string& path) const {
   const conduit::Node* node{GetNode(path)};
   return (node != nullptr) ? node->as_double() : std::nan("");
-}
-
-const conduit::Node* ArborMultimeter::GetNode(const std::string& path) const {
-  const conduit::Node* node{nullptr};
-  try {
-    node = &GetRootNode()->fetch_child(path);
-  } catch (...) {
-  }
-  return node;
 }
 
 }  // namespace consumer
