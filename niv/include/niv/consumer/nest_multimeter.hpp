@@ -27,12 +27,12 @@
 
 #include "conduit/conduit_node.hpp"
 
-#include "niv/consumer/device.hpp"
+#include "niv/consumer/multimeter.hpp"
 
 namespace niv {
 namespace consumer {
 
-class NestMultimeter : public consumer::Device {
+class NestMultimeter : public consumer::Multimeter {
  public:
   NestMultimeter() = delete;
   explicit NestMultimeter(const std::string& name);
@@ -43,6 +43,15 @@ class NestMultimeter : public consumer::Device {
   NestMultimeter& operator=(const NestMultimeter&) = default;
   NestMultimeter& operator=(NestMultimeter&&) = default;
 
+  std::vector<double> GetTimestepData(const std::string& time,
+                                      const std::string& attribute) const;
+
+  std::vector<double> GetTimeSeriesData(const std::string& attribute,
+                                        const std::string& neuron_id) const;
+
+  double GetDatum(const std::string& time, const std::string& attribute,
+                  const std::string& neuron_id) const;
+
   void SetAttribute(const std::string& attribute);
 
   void Update();
@@ -50,6 +59,8 @@ class NestMultimeter : public consumer::Device {
   const std::vector<double>& GetValues() const;
 
  private:
+  double GetValue(const std::string& path) const;
+
   void SetValues();
 
   std::vector<double> values_;

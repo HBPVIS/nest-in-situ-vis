@@ -27,25 +27,7 @@
 #include "niv/consumer/arbor_multimeter.hpp"
 #include "niv/nest_test_data.hpp"
 
-namespace Catch {
-namespace Matchers {
-
-class VectorAllNanOrEmpty : public Catch::MatcherBase<std::vector<double>> {
- public:
-  bool match(const std::vector<double>& values) const override {
-    bool retval = true;
-    for (double v : values) {
-      retval &= std::isnan(v);
-    }
-    return retval;
-  }
-  std::string describe() const override { return ""; }
-};
-
-}  // namespace Matchers
-}  // namespace Catch
-
-using Catch::Matchers::VectorAllNanOrEmpty;
+#include "test_utilities/vector_all_nan_or_empty.hpp"
 
 SCENARIO("ArborMultimeter retrieves datum for time, attribute, neuron",
          "[niv][niv::consumer][niv::consumer::ArborMultimeter]") {

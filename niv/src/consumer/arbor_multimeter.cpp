@@ -19,6 +19,8 @@
 // limitations under the License.
 //------------------------------------------------------------------------------
 
+#include "niv/consumer/arbor_multimeter.hpp"
+
 #include <cmath>
 
 #include <string>
@@ -26,7 +28,6 @@
 
 #include "conduit/conduit_node.hpp"
 
-#include "niv/consumer/arbor_multimeter.hpp"
 #include "niv/nest_test_data.hpp"
 
 namespace niv {
