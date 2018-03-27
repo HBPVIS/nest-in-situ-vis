@@ -47,16 +47,44 @@ boost::python::numpy::ndarray GetValues(
       boost::python::make_tuple(sizeof(double)), boost::python::object());
 }
 
+namespace nest_multimeter {
+
+boost::python::list GetTimeSeriesData(
+    const niv::consumer::NestMultimeter& multimeter,
+    const std::string& attribute, const std::string& neuron_id) {
+  boost::python::list ret_val;
+  for (auto v : multimeter.GetTimeSeriesData(attribute, neuron_id)) {
+    ret_val.append(v);
+  }
+  return ret_val;
+}
+
+boost::python::list GetTimestepData(
+    const niv::consumer::NestMultimeter& multimeter, const std::string& time,
+    const std::string& attribute) {
+  boost::python::list ret_val;
+  for (auto v : multimeter.GetTimestepData(time, attribute)) {
+    ret_val.append(v);
+  }
+  return ret_val;
+}
+
+}  // namespace nest_multimeter
 }  // namespace consumer
 
 template <>
 void expose<niv::consumer::NestMultimeter>() {
-  class_<niv::consumer::NestMultimeter, bases<niv::consumer::Device>>(
+  class_<niv::consumer::NestMultimeter, bases<niv::consumer::Multimeter>>(
       "NestMultimeter", init<std::string>())
       .def("GetValues", &pyniv::consumer::GetValues)
       .def("SetAttribute", &niv::consumer::NestMultimeter::SetAttribute)
       .def("Update", &niv::consumer::NestMultimeter::Update)
-      .def("Print", &niv::consumer::NestMultimeter::Print);
+      .def("Print", &niv::consumer::NestMultimeter::Print)
+      .def("GetTimestepData",
+           &pyniv::consumer::nest_multimeter::GetTimestepData)
+      .def("GetTimeSeriesData",
+           &pyniv::consumer::nest_multimeter::GetTimeSeriesData)
+      .def("GetDatum", &niv::consumer::NestMultimeter::GetDatum);
 }
 
 }  // namespace pyniv
