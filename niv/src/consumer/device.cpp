@@ -64,6 +64,10 @@ const conduit::Node* Device::GetNode(const std::string& path) const {
 
 std::string Device::ConstructPath() const { return name_; }
 
+std::string Device::ConstructPath(const std::string& time) const {
+  return Device::ConstructPath() + '/' + time;
+}
+
 void Device::SetTime(double time) { time_ = time; }
 
 void Device::SetTimestepNode() {

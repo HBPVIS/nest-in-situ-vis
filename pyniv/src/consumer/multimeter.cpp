@@ -22,46 +22,40 @@
 #include "pyniv.hpp"
 
 #include <string>  // NOLINT
-
-#include "niv/consumer/arbor_multimeter.hpp"
+#include "niv/consumer/multimeter.hpp"
 
 namespace pyniv {
-
 namespace consumer {
-namespace arbor_multimeter {
+namespace multimeter {
 
-boost::python::list GetTimeSeriesData(
-    const niv::consumer::ArborMultimeter& multimeter,
-    const std::string& attribute, const std::string& neuron_id) {
+boost::python::list GetAttributes(const niv::consumer::Multimeter& multimeter,
+                                  const std::string& time) {
   boost::python::list ret_val;
-  for (auto v : multimeter.GetTimeSeriesData(attribute, neuron_id)) {
+  for (auto v : multimeter.GetAttributes(time)) {
     ret_val.append(v);
   }
   return ret_val;
 }
 
-boost::python::list GetTimestepData(
-    const niv::consumer::ArborMultimeter& multimeter, const std::string& time,
-    const std::string& attribute) {
+boost::python::list GetNeuronIds(const niv::consumer::Multimeter& multimeter,
+                                 const std::string& time,
+                                 const std::string& attribute) {
   boost::python::list ret_val;
-  for (auto v : multimeter.GetTimestepData(time, attribute)) {
+  for (auto v : multimeter.GetNeuronIds(time, attribute)) {
     ret_val.append(v);
   }
   return ret_val;
 }
 
-}  // namespace arbor_multimeter
+}  // namespace multimeter
 }  // namespace consumer
 
 template <>
-void expose<niv::consumer::ArborMultimeter>() {
-  class_<niv::consumer::ArborMultimeter, bases<niv::consumer::Multimeter>>(
-      "ArborMultimeter", init<std::string>())
-      .def("GetTimestepData",
-           &pyniv::consumer::arbor_multimeter::GetTimestepData)
-      .def("GetTimeSeriesData",
-           &pyniv::consumer::arbor_multimeter::GetTimeSeriesData)
-      .def("GetDatum", &niv::consumer::ArborMultimeter::GetDatum);
+void expose<niv::consumer::Multimeter>() {
+  class_<niv::consumer::Multimeter, bases<niv::consumer::Device>>(
+      "Multimeter", init<std::string>())
+      .def("GetAttributes", &pyniv::consumer::multimeter::GetAttributes)
+      .def("GetNeuronIds", &pyniv::consumer::multimeter::GetNeuronIds);
 }
 
 }  // namespace pyniv

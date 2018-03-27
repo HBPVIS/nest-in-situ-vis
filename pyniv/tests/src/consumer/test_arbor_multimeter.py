@@ -29,50 +29,6 @@ def setup_multimeter(name = pyniv.testing.ANY_MULTIMETER_NAME,
     multimeter.SetNode(data)
     return multimeter, data
 
-def test_arbor_multimeter_lists_the_timesteps():
-    multimeter, nest_data = setup_multimeter()
-    timesteps = multimeter.GetTimestepsString();
-    assert timesteps == pyniv.testing.ANY_TIMES_STRING
-
-    multimeter, nest_data = setup_multimeter(
-        name = pyniv.testing.NOT_A_MULTIMETER_NAME)
-    timesteps = multimeter.GetTimestepsString();
-    assert timesteps == []
-
-def test_arbor_multimeter_lists_attributes_for_a_timestep():
-    multimeter, nest_data = setup_multimeter()
-    attributes = multimeter.GetAttributes(pyniv.testing.ANY_TIME_STRING)
-    assert attributes == pyniv.testing.ANY_ATTRIBUTES
-
-    attributes = multimeter.GetAttributes(pyniv.testing.NOT_A_TIME_STRING)
-    assert attributes == []
-
-    multimeter, nest_data = setup_multimeter(
-        name = pyniv.testing.NOT_A_MULTIMETER_NAME)
-    attributes = multimeter.GetAttributes(pyniv.testing.ANY_TIME_STRING)
-    assert attributes == []
-
-def test_arbor_multimeter_lists_neuron_ids_for_an_attribute_in_a_timestep():
-    multimeter, nest_data = setup_multimeter()
-    ids = multimeter.GetNeuronIds(pyniv.testing.ANY_TIME_STRING,
-                                  pyniv.testing.ANY_ATTRIBUTE)
-    assert ids == pyniv.testing.ANY_IDS_STRING
-
-    
-    ids = multimeter.GetNeuronIds(pyniv.testing.NOT_A_TIME_STRING,
-                                  pyniv.testing.ANY_ATTRIBUTE)
-    assert ids == []
-    
-    ids = multimeter.GetNeuronIds(pyniv.testing.ANY_TIME_STRING,
-                                  pyniv.testing.NOT_AN_ATTRIBUTE)
-    assert ids == []
-    
-    multimeter, nest_data = setup_multimeter(
-        name = pyniv.testing.NOT_A_MULTIMETER_NAME)
-    ids = multimeter.GetNeuronIds(pyniv.testing.ANY_TIME_STRING,
-                                  pyniv.testing.ANY_ATTRIBUTE)
-    assert ids == []
-
 def test_arbor_multimeter_retrieves_datum_for_time_attribute_neuron():
     multimeter, nest_data = setup_multimeter()
     datum = multimeter.GetDatum(pyniv.testing.ANY_TIME_STRING,

@@ -25,25 +25,21 @@
 #include <string>
 #include <vector>
 
-#include "niv/consumer/device.hpp"
+#include "niv/consumer/multimeter.hpp"
 
 namespace niv {
 namespace consumer {
 
-class ArborMultimeter : public niv::consumer::Device {
+class ArborMultimeter : public niv::consumer::Multimeter {
  public:
-  ArborMultimeter() = default;
+  ArborMultimeter() = delete;
   explicit ArborMultimeter(const std::string& name);
   ArborMultimeter(const ArborMultimeter&) = default;
   ArborMultimeter(ArborMultimeter&&) = default;
   ~ArborMultimeter() = default;
 
-  void Update() override;
-
-  std::vector<std::string> GetAttributes(const std::string& time) const;
-
-  std::vector<std::string> GetNeuronIds(const std::string& time,
-                                        const std::string& attribute) const;
+  ArborMultimeter& operator=(const ArborMultimeter&) = default;
+  ArborMultimeter& operator=(ArborMultimeter&&) = default;
 
   std::vector<double> GetTimestepData(const std::string& time,
                                       const std::string& attribute) const;
@@ -54,16 +50,10 @@ class ArborMultimeter : public niv::consumer::Device {
   double GetDatum(const std::string& time, const std::string& attribute,
                   const std::string& neuron_id) const;
 
-  ArborMultimeter& operator=(const ArborMultimeter&) = default;
-  ArborMultimeter& operator=(ArborMultimeter&&) = default;
-
  private:
   std::string ConstructPath(const std::string& time,
                             const std::string& attribute,
                             const std::string& neuron_id) const;
-  std::string ConstructPath(const std::string& time,
-                            const std::string& attribute) const;
-  std::string ConstructPath(const std::string& time) const;
 
   double GetValue(const std::string& path) const;
 

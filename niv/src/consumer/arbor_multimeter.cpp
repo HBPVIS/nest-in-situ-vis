@@ -32,19 +32,7 @@
 namespace niv {
 namespace consumer {
 
-ArborMultimeter::ArborMultimeter(const std::string& name) : Device(name) {}
-
-void ArborMultimeter::Update() {}
-
-std::vector<std::string> ArborMultimeter::GetAttributes(
-    const std::string& time) const {
-  return GetChildNames(ConstructPath(time));
-}
-
-std::vector<std::string> ArborMultimeter::GetNeuronIds(
-    const std::string& time, const std::string& attribute) const {
-  return GetChildNames(ConstructPath(time, attribute));
-}
+ArborMultimeter::ArborMultimeter(const std::string& name) : Multimeter(name) {}
 
 std::vector<double> ArborMultimeter::GetTimestepData(
     const std::string& time, const std::string& attribute) const {
@@ -78,15 +66,6 @@ std::string ArborMultimeter::ConstructPath(const std::string& time,
                                            const std::string& neuron_id) const {
   return Device::ConstructPath() + "/" + time + "/" + attribute + "/" +
          neuron_id;
-}
-
-std::string ArborMultimeter::ConstructPath(const std::string& time,
-                                           const std::string& attribute) const {
-  return ConstructPath(time) + '/' + attribute;
-}
-
-std::string ArborMultimeter::ConstructPath(const std::string& time) const {
-  return Device::ConstructPath() + '/' + time;
 }
 
 double ArborMultimeter::GetValue(const std::string& path) const {

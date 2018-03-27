@@ -38,8 +38,6 @@ class Device : public niv::consumer::Device {
 
   Device& operator=(const Device&) = delete;
   Device& operator=(Device&&) = delete;
-
-  void Update() override {}
 };
 
 }  // namespace
@@ -77,7 +75,7 @@ Vector::EqualsApproxMatcher<T> EqualsApprox(std::vector<T> const& comparator) {
 }  // namespace Matchers
 }  // namespace Catch
 
-SCENARIO("NestMultimeter lists the timesteps",
+SCENARIO("consumer::Device lists the timesteps",
          "[niv][niv::consumer][niv::consumer::Device]") {
   GIVEN("a device providing access to some data") {
     ::Device device(niv::testing::ANY_DEVICE_NAME);

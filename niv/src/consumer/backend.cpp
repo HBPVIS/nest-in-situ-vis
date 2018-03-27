@@ -45,9 +45,9 @@ void consumer::Backend::Receive() {
     receiver_->Receive();
   }
 
-  for (auto device : devices_) {
-    device->Update();
-  }
+  // for (auto device : devices_) {
+  // device->Update();
+  //}
 }
 
 }  // namespace niv

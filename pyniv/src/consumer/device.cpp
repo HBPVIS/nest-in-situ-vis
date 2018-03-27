@@ -31,34 +31,39 @@ SUPPRESS_WARNINGS_END
 
 namespace pyniv {
 namespace consumer {
+namespace device {
 
-struct DeviceWrap : niv::consumer::Device, wrapper<niv::consumer::Device> {
-  explicit DeviceWrap(const std::string& name) : niv::consumer::Device(name) {}
-  void Update() { this->get_override("Update")(); }
-
-  boost::python::list GetTimesteps() {
-    boost::python::list ret_val;
-    for (auto t : Device::GetTimesteps()) {
-      ret_val.append(t);
-    }
-    return ret_val;
+boost::python::list GetTimesteps(const niv::consumer::Device& device) {
+  boost::python::list ret_val;
+  for (auto t : device.GetTimesteps()) {
+    ret_val.append(t);
   }
+  return ret_val;
+}
 
-  static void SetNodePointer(niv::consumer::Device* device, PyObject* node) {
-    device->SetNode(boost::python::extract<conduit::Node*>(node));
+boost::python::list GetTimestepsString(const niv::consumer::Device& device) {
+  boost::python::list retval;
+  const auto timesteps = device.GetTimestepsString();
+  for (auto t : timesteps) {
+    retval.append(t);
   }
-};
+  return retval;
+}
 
+static void SetNodePointer(niv::consumer::Device* device, PyObject* node) {
+  device->SetNode(boost::python::extract<conduit::Node*>(node));
+}
+
+}  // namespace device
 }  // namespace consumer
 
 template <>
 void expose<niv::consumer::Device>() {
-  class_<consumer::DeviceWrap, noncopyable>("Device",
-                                            init<const std::string&>())
-      .def("GetTimesteps", &pyniv::consumer::DeviceWrap::GetTimesteps)
-      .def("SetNode", &pyniv::consumer::DeviceWrap::SetNodePointer)
-      .def("SetTime", &niv::consumer::Device::SetTime)
-      .def("Update", pure_virtual(&niv::consumer::Device::Update));
+  class_<niv::consumer::Device>("Device", init<const std::string&>())
+      .def("GetTimestepsString", &pyniv::consumer::device::GetTimestepsString)
+      .def("GetTimesteps", &pyniv::consumer::device::GetTimesteps)
+      .def("SetNode", &pyniv::consumer::device::SetNodePointer)
+      .def("SetTime", &niv::consumer::Device::SetTime);
 }
 
 }  // namespace pyniv

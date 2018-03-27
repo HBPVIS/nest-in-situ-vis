@@ -19,44 +19,30 @@
 // limitations under the License.
 //------------------------------------------------------------------------------
 
-#ifndef NIV_INCLUDE_NIV_CONSUMER_NEST_MULTIMETER_HPP_
-#define NIV_INCLUDE_NIV_CONSUMER_NEST_MULTIMETER_HPP_
+#include "niv/consumer/multimeter.hpp"
 
 #include <string>
 #include <vector>
 
-#include "conduit/conduit_node.hpp"
-
-#include "niv/consumer/device.hpp"
-
 namespace niv {
 namespace consumer {
 
-class NestMultimeter : public consumer::Device {
- public:
-  NestMultimeter() = delete;
-  explicit NestMultimeter(const std::string& name);
-  NestMultimeter(const NestMultimeter&) = default;
-  NestMultimeter(NestMultimeter&&) = default;
-  ~NestMultimeter() = default;
+Multimeter::Multimeter(const std::string& name) : Device(name) {}
 
-  NestMultimeter& operator=(const NestMultimeter&) = default;
-  NestMultimeter& operator=(NestMultimeter&&) = default;
+std::vector<std::string> Multimeter::GetAttributes(
+    const std::string& time) const {
+  return GetChildNames(Device::ConstructPath(time));
+}
 
-  void SetAttribute(const std::string& attribute);
+std::vector<std::string> Multimeter::GetNeuronIds(
+    const std::string& time, const std::string& attribute) const {
+  return GetChildNames(ConstructPath(time, attribute));
+}
 
-  void Update();
-
-  const std::vector<double>& GetValues() const;
-
- private:
-  void SetValues();
-
-  std::vector<double> values_;
-  std::string attribute_{""};
-};
+std::string Multimeter::ConstructPath(const std::string& time,
+                                      const std::string& attribute) const {
+  return Device::ConstructPath(time) + '/' + attribute;
+}
 
 }  // namespace consumer
 }  // namespace niv
-
-#endif  // NIV_INCLUDE_NIV_CONSUMER_NEST_MULTIMETER_HPP_

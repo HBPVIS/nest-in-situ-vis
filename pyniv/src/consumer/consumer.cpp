@@ -24,6 +24,7 @@
 #include "niv/consumer/arbor_multimeter.hpp"
 #include "niv/consumer/backend.hpp"
 #include "niv/consumer/device.hpp"
+#include "niv/consumer/multimeter.hpp"
 #include "niv/consumer/nest_multimeter.hpp"
 #include "niv/consumer/receiver.hpp"
 
@@ -34,6 +35,7 @@ BOOST_PYTHON_MODULE(_consumer) {
   pyniv::expose<niv::consumer::Receiver>();
 
   pyniv::expose<niv::consumer::Device>();
+  pyniv::expose<niv::consumer::Multimeter>();
   pyniv::expose<niv::consumer::ArborMultimeter>();
   pyniv::expose<niv::consumer::NestMultimeter>();
 }
