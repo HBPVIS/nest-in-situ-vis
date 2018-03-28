@@ -118,6 +118,13 @@ static const char* ANOTHER_ID_STRING{ANY_IDS_STRING[ANOTHER_ID_INDEX].c_str()};
 static const char* THIRD_ID_STRING{ANY_IDS_STRING[THIRD_ID_INDEX].c_str()};
 static const char* NOT_AN_ID_STRING{"NOT_AN_ID"};
 
+inline std::string PathFor(const std::string& device_name,
+                           const std::string& timestep,
+                           const std::string& attribute,
+                           const std::string& neuron_id) {
+  return device_name + '/' + timestep + '/' + attribute + '/' + neuron_id;
+}
+
 // clang-format off
 static const std::vector<double> ANY_VALUES{
   0.111, 0.112, 0.113,  0.121, 0.122, 0.123,  0.131, 0.132, 0.133,

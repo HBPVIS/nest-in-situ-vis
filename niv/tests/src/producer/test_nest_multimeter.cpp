@@ -42,37 +42,32 @@ SCENARIO("A multimeter records to a conduit node",
           niv::testing::ANY_VALUES_FOR_ATTRIBUTES};
       multimeter.Record(datum);
       THEN("data is properly recorded") {
-        std::stringstream path0;
-        path0 << niv::testing::ANY_MULTIMETER_NAME << '/';
-        path0 << niv::testing::ANY_TIME << '/';
-        path0 << niv::testing::ANY_ATTRIBUTE << '/';
-        path0 << niv::testing::ANY_ID;
-        REQUIRE(node[path0.str()].as_double() ==
+        REQUIRE(node[niv::testing::PathFor(niv::testing::ANY_MULTIMETER_NAME,
+                                           niv::testing::ANY_TIME_STRING,
+                                           niv::testing::ANY_ATTRIBUTE,
+                                           niv::testing::ANY_ID_STRING)]
+                    .as_double() ==
                 Approx(niv::testing::ValueAt(niv::testing::ANY_TIME_INDEX,
                                              niv::testing::ANY_ATTRIBUTE_INDEX,
                                              niv::testing::ANY_ID_INDEX)));
 
-        std::stringstream path1;
-        path1 << niv::testing::ANY_MULTIMETER_NAME << '/';
-        path1 << niv::testing::ANY_TIME << '/';
-        path1 << niv::testing::ANOTHER_ATTRIBUTE << '/';
-        path1 << niv::testing::ANY_ID;
-        REQUIRE(
-            node[path1.str()].as_double() ==
-            Approx(niv::testing::ValueAt(niv::testing::ANY_TIME_INDEX,
-                                         niv::testing::ANOTHER_ATTRIBUTE_INDEX,
-                                         niv::testing::ANY_ID_INDEX)));
+        REQUIRE(node[niv::testing::PathFor(niv::testing::ANY_MULTIMETER_NAME,
+                                           niv::testing::ANY_TIME_STRING,
+                                           niv::testing::ANOTHER_ATTRIBUTE,
+                                           niv::testing::ANY_ID_STRING)]
+                    .as_double() == Approx(niv::testing::ValueAt(
+                                        niv::testing::ANY_TIME_INDEX,
+                                        niv::testing::ANOTHER_ATTRIBUTE_INDEX,
+                                        niv::testing::ANY_ID_INDEX)));
 
-        std::stringstream path2;
-        path2 << niv::testing::ANY_MULTIMETER_NAME << '/';
-        path2 << niv::testing::ANY_TIME << '/';
-        path2 << niv::testing::THIRD_ATTRIBUTE << '/';
-        path2 << niv::testing::ANY_ID;
-        REQUIRE(
-            node[path2.str()].as_double() ==
-            Approx(niv::testing::ValueAt(niv::testing::ANY_TIME_INDEX,
-                                         niv::testing::THIRD_ATTRIBUTE_INDEX,
-                                         niv::testing::ANY_ID_INDEX)));
+        REQUIRE(node[niv::testing::PathFor(niv::testing::ANY_MULTIMETER_NAME,
+                                           niv::testing::ANY_TIME_STRING,
+                                           niv::testing::THIRD_ATTRIBUTE,
+                                           niv::testing::ANY_ID_STRING)]
+                    .as_double() == Approx(niv::testing::ValueAt(
+                                        niv::testing::ANY_TIME_INDEX,
+                                        niv::testing::THIRD_ATTRIBUTE_INDEX,
+                                        niv::testing::ANY_ID_INDEX)));
       }
     }
   }

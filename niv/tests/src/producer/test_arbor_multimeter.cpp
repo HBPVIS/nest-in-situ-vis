@@ -40,20 +40,16 @@ SCENARIO("A multimeter records to a conduit node",
     WHEN("recording data") {
       niv::producer::ArborMultimeter::Datum datum{
           niv::testing::ANY_TIME + niv::testing::ANY_TIME_OFFSET,
-          niv::testing::ANY_ATTRIBUTE, niv::testing::ANY_ID_STRING,
+          niv::testing::ANOTHER_ATTRIBUTE, niv::testing::THIRD_ID_STRING,
           niv::testing::ANY_VALUE};
       multimeter.Record(datum, &node);
       THEN("the data is properly recorded") {
-        std::stringstream path;
-        path << niv::testing::ANY_MULTIMETER_NAME << '/';
-        path << niv::testing::ANY_TIME << '/';
-        path << niv::testing::ANY_ATTRIBUTE << '/';
-        path << niv::testing::ANY_ID;
-
-        REQUIRE(node[path.str()].as_double() ==
-                Approx(niv::testing::ANY_VALUE));
+        REQUIRE(node[niv::testing::PathFor(niv::testing::ANY_MULTIMETER_NAME,
+                                           niv::testing::ANY_TIME_STRING,
+                                           niv::testing::ANOTHER_ATTRIBUTE,
+                                           niv::testing::THIRD_ID_STRING)]
+                    .as_double() == Approx(niv::testing::ANY_VALUE));
       }
-      // id tag time value
     }
   }
 }
