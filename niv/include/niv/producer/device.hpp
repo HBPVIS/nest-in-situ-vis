@@ -66,7 +66,7 @@ class Device {
   const std::string& GetName() { return name_; }
 
  private:
-  std::string name_{"recorder"};
+  std::string name_{""};
 };
 
 template <>
