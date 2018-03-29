@@ -25,7 +25,7 @@
 #include "catch/Catch.hpp"
 
 #include "niv/consumer/arbor_multimeter.hpp"
-#include "niv/testing/nest_test_data.hpp"
+#include "niv/testing/data.hpp"
 
 #include "test_utilities/vector_all_nan_or_empty.hpp"
 
@@ -44,7 +44,7 @@ SCENARIO("ArborMultimeter retrieves datum for time, attribute, neuron",
         const std::size_t DATUM_OFFSET{niv::testing::ANY_TIME_OFFSET +
                                        niv::testing::ANOTHER_ATTRIBUTE_OFFSET +
                                        niv::testing::THIRD_ID_OFFSET};
-        REQUIRE(datum == Approx(niv::testing::ANY_VALUES[DATUM_OFFSET]));
+        REQUIRE(datum == Approx(niv::testing::ANY_DATA_VALUES[DATUM_OFFSET]));
       }
     }
 
@@ -92,7 +92,7 @@ SCENARIO("ArborMultimeter provides time series data",
     const auto DATUM_INDEX{time_offset +
                            niv::testing::ANOTHER_ATTRIBUTE_OFFSET +
                            niv::testing::THIRD_ID_OFFSET};
-    expected.push_back(niv::testing::ANY_VALUES[DATUM_INDEX]);
+    expected.push_back(niv::testing::ANY_DATA_VALUES[DATUM_INDEX]);
   }
   const std::vector<double> nans(niv::testing::ANY_TIMES_STRING.size(),
                                  std::nan(""));
@@ -155,7 +155,7 @@ SCENARIO("ArborMultimeter provides timestep data for all neurons",
     const auto ID_OFFSET{i * niv::testing::ID_STRIDE};
     const auto DATUM_INDEX{niv::testing::THIRD_TIME_OFFSET +
                            niv::testing::ANOTHER_ATTRIBUTE_OFFSET + ID_OFFSET};
-    expected.push_back(niv::testing::ANY_VALUES[DATUM_INDEX]);
+    expected.push_back(niv::testing::ANY_DATA_VALUES[DATUM_INDEX]);
   }
 
   GIVEN("a multimeter providing access to some data") {

@@ -28,7 +28,7 @@
 #include "conduit/conduit_node.hpp"
 
 #include "niv/producer/nest_multimeter.hpp"
-#include "niv/testing/nest_test_data.hpp"
+#include "niv/testing/data.hpp"
 
 SCENARIO("A multimeter records to a conduit node",
          "[niv][niv::NestMultimeter]") {
@@ -39,7 +39,7 @@ SCENARIO("A multimeter records to a conduit node",
     WHEN("recording data") {
       niv::producer::NestMultimeter::Datum datum{
           niv::testing::ANY_TIME, niv::testing::ANY_ID,
-          niv::testing::ANY_VALUES_FOR_ATTRIBUTES};
+          niv::testing::ANY_DATA_VALUES_FOR_ATTRIBUTES};
       multimeter.Record(datum);
       THEN("data is properly recorded") {
         REQUIRE(node[niv::testing::PathFor(niv::testing::ANY_MULTIMETER_NAME,

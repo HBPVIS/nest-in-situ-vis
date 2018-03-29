@@ -27,7 +27,7 @@
 #include "conduit/conduit_node.hpp"
 
 #include "niv/producer/spike_detector.hpp"
-#include "niv/testing/nest_test_data.hpp"
+#include "niv/testing/data.hpp"
 
 SCENARIO("A spike detector records to a conduit node",
          "[niv][niv::SpikeDetector]") {

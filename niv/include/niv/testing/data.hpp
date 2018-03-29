@@ -19,28 +19,20 @@
 // limitations under the License.
 //------------------------------------------------------------------------------
 
-#ifndef NIV_INCLUDE_NIV_NEST_TEST_DATA_HPP_
-#define NIV_INCLUDE_NIV_NEST_TEST_DATA_HPP_
+#ifndef NIV_INCLUDE_NIV_TESTING_DATA_HPP_
+#define NIV_INCLUDE_NIV_TESTING_DATA_HPP_
 
 #include <string>
 #include <vector>
 
 #include "niv/producer/nest_multimeter.hpp"
 
+#include "niv/testing/conduit_schema.hpp"
+
 namespace niv {
-
-class Testing {
- public:
-  Testing() = delete;
-  Testing(const Testing&) = delete;
-  Testing(Testing&&) = delete;
-  ~Testing() = delete;
-
-  Testing& operator=(const Testing&) = delete;
-  Testing& operator=(Testing&&) = delete;
-};
-
 namespace testing {
+
+class Data;
 
 #if defined __GNUC__
 #pragma GCC diagnostic push
@@ -126,14 +118,14 @@ inline std::string PathFor(const std::string& device_name,
 }
 
 // clang-format off
-static const std::vector<double> ANY_VALUES{
+static const std::vector<double> ANY_DATA_VALUES{
   0.111, 0.112, 0.113,  0.121, 0.122, 0.123,  0.131, 0.132, 0.133,
   0.211, 0.212, 0.213,  0.221, 0.222, 0.223,  0.231, 0.232, 0.233,
   0.311, 0.312, 0.313,  0.321, 0.322, 0.323,  0.331, 0.332, 0.333};
 // clang-format on
-static const double ANY_VALUE{ANY_VALUES[0]};
-static const std::vector<double> ANY_VALUES_FOR_ATTRIBUTES{
-    ANY_VALUES[0], ANY_VALUES[3], ANY_VALUES[6]};
+static const double ANY_DATA_VALUE{ANY_DATA_VALUES[0]};
+static const std::vector<double> ANY_DATA_VALUES_FOR_ATTRIBUTES{
+    ANY_DATA_VALUES[0], ANY_DATA_VALUES[3], ANY_DATA_VALUES[6]};
 
 static const std::size_t TIME_STRIDE{9};
 static const std::size_t ATTRIBUTE_STRIDE{3};
@@ -144,7 +136,7 @@ inline double ValueAt(std::size_t time_id, std::size_t attribute_id,
   const std::size_t index = time_id * TIME_STRIDE +
                             attribute_id * ATTRIBUTE_STRIDE +
                             neuron_id * ID_STRIDE;
-  return ANY_VALUES[index];
+  return ANY_DATA_VALUES[index];
 }
 
 static const std::size_t ANY_TIME_OFFSET{ANY_INDEX * niv::testing::TIME_STRIDE};
@@ -165,81 +157,42 @@ static const std::size_t THIRD_ID_OFFSET{THIRD_INDEX * niv::testing::ID_STRIDE};
 static const std::vector<std::size_t> ID_OFFSETS{
     ANY_ID_OFFSET, ANOTHER_ID_OFFSET, THIRD_ID_OFFSET};
 
-template <typename T>
-inline std::string OpenTag(T tag) {
-  std::stringstream s;
-  s << '\"' << tag << '\"' << ":{ \n";
-  return s.str();
-}
-
-inline std::string CloseTag() { return std::string("} \n"); }
-inline std::string CloseTagNext() { return std::string("}, \n"); }
-
-inline std::string DoubleData(std::size_t offset) {
-  std::stringstream s;
-  s << "dtype:float64, ";
-  s << "number_of_elements:1, ";
-  s << "offset:" << offset << ", ";
-  s << "stride:8, ";
-  s << "element_bytes:8";
-  s << "\n";
-  return s.str();
-}
-
-inline void RemoveNextIndicator(std::stringstream* s) {
-  s->clear();
-  s->seekp(s->str().size() - 3);
-  *s << " \n";
-}
-
 inline static const std::string AnyNestDataSchema() {
   std::stringstream s;
   std::size_t offset = 0;
   const std::size_t datum_size = 8;
   s << "{\n";
-  s << "  " << OpenTag(ANY_MULTIMETER_NAME);
+  s << "  " << conduit_schema::OpenTag(ANY_MULTIMETER_NAME);
   for (auto time : ANY_TIMES) {
-    s << "    " << OpenTag(time);
+    s << "    " << conduit_schema::OpenTag(time);
     for (auto attribute : ANY_ATTRIBUTES) {
-      s << "      " << OpenTag(attribute);
+      s << "      " << conduit_schema::OpenTag(attribute);
       for (auto id : ANY_IDS) {
-        s << "        " << OpenTag(id);
-        s << "          " << DoubleData((offset++) * datum_size);
-        s << "        " << CloseTagNext();
+        s << "        " << conduit_schema::OpenTag(id);
+        s << "          "
+          << conduit_schema::DoubleData((offset++) * datum_size);
+        s << "        " << conduit_schema::CloseTagNext();
       }
-      RemoveNextIndicator(&s);
-      s << "      " << CloseTagNext();
+      conduit_schema::RemoveNextIndicator(&s);
+      s << "      " << conduit_schema::CloseTagNext();
     }
-    RemoveNextIndicator(&s);
-    s << "    " << CloseTagNext();
+    conduit_schema::RemoveNextIndicator(&s);
+    s << "    " << conduit_schema::CloseTagNext();
   }
-  RemoveNextIndicator(&s);
-  s << "  " << CloseTag();
+  conduit_schema::RemoveNextIndicator(&s);
+  s << "  " << conduit_schema::CloseTag();
   s << "}";
   return s.str();
 }
 
 static conduit::Node ANY_NEST_DATA{
-    AnyNestDataSchema(), const_cast<double*>(ANY_VALUES.data()), false};
+    AnyNestDataSchema(), const_cast<double*>(ANY_DATA_VALUES.data()), false};
 
 #if defined __GNUC__
 #pragma GCC diagnostic pop
 #endif
 
-void Send(const conduit::Node& node);
-
-conduit::Node AnyNode();
-
-conduit::Node AnotherNode();
-
-conduit::Node Update();
-
-conduit::Node UpdatedNode();
-conduit::Node UpdatedNodeAllZeros();
-
-conduit::Node ADifferentNode();
-
 }  // namespace testing
 }  // namespace niv
 
-#endif  // NIV_INCLUDE_NIV_NEST_TEST_DATA_HPP_
+#endif  // NIV_INCLUDE_NIV_TESTING_DATA_HPP_

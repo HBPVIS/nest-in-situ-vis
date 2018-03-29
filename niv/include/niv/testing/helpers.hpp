@@ -19,31 +19,39 @@
 // limitations under the License.
 //------------------------------------------------------------------------------
 
-#include "catch/catch.hpp"
+#ifndef NIV_INCLUDE_NIV_TESTING_HELPERS_HPP_
+#define NIV_INCLUDE_NIV_TESTING_HELPERS_HPP_
 
 #include "conduit/conduit_node.hpp"
 
-#include "niv/exchange/relay_shared_memory.hpp"
-#include "niv/producer/sender.hpp"
-#include "niv/testing/helpers.hpp"
+namespace niv {
+namespace testing {
 
-#include "conduit_node_helper.hpp"
+class Helpers;
 
-SCENARIO("data is sent via the producer::Sender",
-         "[niv][niv::producer::Sender]") {
-  GIVEN("sender and receiving relay") {
-    niv::producer::Sender sender;
-    conduit::Node sending_node{niv::testing::ANY_NODE};
-    sender.SetNode(&sending_node);
-    niv::exchange::RelaySharedMemory receiver;
+void Send(const conduit::Node& node);
 
-    WHEN("data is sent and Receive is called on the relay") {
-      sender.Send();
-      conduit::Node received_node = receiver.Receive();
+conduit::Node AnyNode();
+conduit::Node AnotherNode();
 
-      THEN("data is received correctly") {
-        REQUIRE_THAT(received_node, Equals(niv::testing::ANY_NODE));
-      }
-    }
-  }
-}
+conduit::Node AnyUpdate();
+conduit::Node UpdatedNode();
+conduit::Node UpdatedNodeAllZeros();
+
+conduit::Node ADifferentNode();
+
+static const conduit::Node ANY_NODE{AnyNode()};
+static const conduit::Node ANOTHER_NODE{AnotherNode()};
+
+static const conduit::Node ANY_UPDATE{AnyUpdate()};
+static const conduit::Node UPDATED_NODE{UpdatedNode()};
+static const conduit::Node UPDATED_NODE_ALL_ZEROS{UpdatedNodeAllZeros()};
+
+static const conduit::Node A_DIFFERENT_NODE{ADifferentNode()};
+
+static const double ANY_VALUE{4.123};
+
+}  // namespace testing
+}  // namespace niv
+
+#endif  // NIV_INCLUDE_NIV_TESTING_HELPERS_HPP_

@@ -19,31 +19,42 @@
 // limitations under the License.
 //------------------------------------------------------------------------------
 
-#include "catch/catch.hpp"
+#ifndef NIV_INCLUDE_NIV_TESTING_CONDUIT_SCHEMA_HPP_
+#define NIV_INCLUDE_NIV_TESTING_CONDUIT_SCHEMA_HPP_
 
-#include "conduit/conduit_node.hpp"
+namespace niv {
+namespace testing {
+namespace conduit_schema {
 
-#include "niv/exchange/relay_shared_memory.hpp"
-#include "niv/producer/sender.hpp"
-#include "niv/testing/helpers.hpp"
-
-#include "conduit_node_helper.hpp"
-
-SCENARIO("data is sent via the producer::Sender",
-         "[niv][niv::producer::Sender]") {
-  GIVEN("sender and receiving relay") {
-    niv::producer::Sender sender;
-    conduit::Node sending_node{niv::testing::ANY_NODE};
-    sender.SetNode(&sending_node);
-    niv::exchange::RelaySharedMemory receiver;
-
-    WHEN("data is sent and Receive is called on the relay") {
-      sender.Send();
-      conduit::Node received_node = receiver.Receive();
-
-      THEN("data is received correctly") {
-        REQUIRE_THAT(received_node, Equals(niv::testing::ANY_NODE));
-      }
-    }
-  }
+template <typename T>
+inline std::string OpenTag(T tag) {
+  std::stringstream s;
+  s << '\"' << tag << '\"' << ":{ \n";
+  return s.str();
 }
+
+inline std::string CloseTag() { return std::string("} \n"); }
+inline std::string CloseTagNext() { return std::string("}, \n"); }
+
+inline std::string DoubleData(std::size_t offset) {
+  std::stringstream s;
+  s << "dtype:float64, ";
+  s << "number_of_elements:1, ";
+  s << "offset:" << offset << ", ";
+  s << "stride:8, ";
+  s << "element_bytes:8";
+  s << "\n";
+  return s.str();
+}
+
+inline void RemoveNextIndicator(std::stringstream* s) {
+  s->clear();
+  s->seekp(s->str().size() - 3);
+  *s << " \n";
+}
+
+}  // namespace conduit_schema
+}  // namespace testing
+}  // namespace niv
+
+#endif  // NIV_INCLUDE_NIV_TESTING_CONDUIT_SCHEMA_HPP_

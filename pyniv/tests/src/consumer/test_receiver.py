@@ -26,12 +26,12 @@ def test_receiver_aggregates_data():
     receiving_node = pyniv.conduit.Node()
     receiver.SetNode(receiving_node)
 
-    pyniv.testing.Send(pyniv.testing.AnyNode())
+    pyniv.testing.Send(pyniv.testing.ANY_NODE)
     receiver.Receive()
-    assert pyniv.testing.Equal(receiving_node, pyniv.testing.AnyNode())
+    assert pyniv.testing.Equal(receiving_node, pyniv.testing.ANY_NODE)
 
     
-    pyniv.testing.Send(pyniv.testing.Update())
+    pyniv.testing.Send(pyniv.testing.ANY_UPDATE)
     receiver.Receive()
-    assert pyniv.testing.Equal(receiving_node, pyniv.testing.UpdatedNode())
+    assert pyniv.testing.Equal(receiving_node, pyniv.testing.UPDATED_NODE)
     

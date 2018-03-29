@@ -19,7 +19,7 @@
 // limitations under the License.
 //------------------------------------------------------------------------------
 
-#include "niv/testing/nest_test_data.hpp"
+#include "niv/testing/data.hpp"
 
 #include <string>
 #include <vector>
@@ -58,59 +58,6 @@ std::vector<double> ThirdAttributesValues(double time) {
 }
 
 std::string AnyMultimeterName() { return "multimeter A"; }
-
-void Send(const conduit::Node& node) {
-  exchange::RelaySharedMemory relay;
-  relay.Send(node);
-}
-
-conduit::Node AnyNode() {
-  conduit::Node node;
-  node["A/B/C"] = 3.1415;
-  node["A/B/D"] = 4.124;
-  node["A/E"] = 42.0;
-  return node;
-}
-
-conduit::Node AnotherNode() {
-  conduit::Node node;
-  node["A/B/C"] = 2.0 * 3.1415;
-  node["A/B/D"] = 3.0 * 4.124;
-  node["A/E"] = 4.0 * 42.0;
-  return node;
-}
-
-conduit::Node Update() {
-  conduit::Node node;
-  node["A/B/F"] = 2.0 * 3.1415;
-  node["A/B/G"] = 3.0 * 4.124;
-  node["A/H"] = 4.0 * 42.0;
-  return node;
-}
-
-conduit::Node UpdatedNode() {
-  conduit::Node node;
-  node["A/B/C"] = 3.1415;
-  node["A/B/D"] = 4.124;
-  node["A/E"] = 42.0;
-  node["A/B/F"] = 2.0 * 3.1415;
-  node["A/B/G"] = 3.0 * 4.124;
-  node["A/H"] = 4.0 * 42.0;
-  return node;
-}
-
-conduit::Node UpdatedNodeAllZeros() {
-  conduit::Node node;
-  node["A/B/C"] = 0.0;
-  node["A/B/D"] = 0.0;
-  node["A/E"] = 0.0;
-  node["A/B/F"] = 0.0;
-  node["A/B/G"] = 0.0;
-  node["A/H"] = 0.0;
-  return node;
-}
-
-conduit::Node ADifferentNode() { return Update(); }
 
 }  // namespace testing
 }  // namespace niv

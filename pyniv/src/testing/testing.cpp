@@ -21,10 +21,14 @@
 
 #include "pyniv.hpp"
 
-#include "niv/testing/nest_test_data.hpp"
+#include "niv/testing/data.hpp"
+#include "niv/testing/helpers.hpp"
 
 namespace pyniv {
 
-BOOST_PYTHON_MODULE(_testing) { pyniv::expose<niv::Testing>(); }
+BOOST_PYTHON_MODULE(_testing) {
+  pyniv::expose<niv::testing::Data>();
+  pyniv::expose<niv::testing::Helpers>();
+}
 
 }  // namespace pyniv

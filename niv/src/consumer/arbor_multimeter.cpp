@@ -28,7 +28,7 @@
 
 #include "conduit/conduit_node.hpp"
 
-#include "niv/testing/nest_test_data.hpp"
+#include "niv/testing/data.hpp"
 
 namespace niv {
 namespace consumer {

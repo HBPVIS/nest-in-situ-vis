@@ -28,7 +28,8 @@
 #include "conduit/conduit_node.hpp"
 
 #include "niv/exchange/node_storage.hpp"
-#include "niv/testing/nest_test_data.hpp"
+#include "niv/testing/conduit_schema.hpp"
+#include "niv/testing/helpers.hpp"
 
 #include "conduit_node_helper.hpp"
 
@@ -98,7 +99,7 @@ SCENARIO(
     std::string schema;
     std::vector<conduit::uint8> bytes;
 
-    SerializeConstRef(niv::testing::AnyNode(), &schema, &bytes);
+    SerializeConstRef(niv::testing::ANY_NODE, &schema, &bytes);
 
     conduit::Node second_node;
     second_node.set_data_using_schema(conduit::Schema(schema), bytes.data());
@@ -109,7 +110,7 @@ SCENARIO(
       conduit::Node third_node;
       third_node.set_data_using_schema(conduit::Schema(schema), bytes.data());
 
-      REQUIRE(third_node.to_json() == niv::testing::AnyNode().to_json());
+      REQUIRE(third_node.to_json() == niv::testing::ANY_NODE.to_json());
     }
   }
 }
@@ -129,7 +130,7 @@ SCENARIO(
     std::vector<conduit::uint8> data;
     niv::exchange::NodeStorage<std::string, std::vector<conduit::uint8>>
         storage(&schema, &data);
-    storage.Store(niv::testing::AnyNode());
+    storage.Store(niv::testing::ANY_NODE);
 
     constexpr bool external{true};
     conduit::Node external_node(schema, data.data(), external);
@@ -245,14 +246,14 @@ SCENARIO(
 
 SCENARIO("update inserts new nodes", "[conduit]") {
   GIVEN("A conduit tree") {
-    conduit::Node a = niv::testing::AnyNode();
+    conduit::Node a = niv::testing::ANY_NODE;
 
     WHEN("A second node updates the tree") {
-      conduit::Node b = niv::testing::Update();
+      conduit::Node b = niv::testing::ANY_UPDATE;
       a.update(b);
 
       THEN("the first node contains also the content of the second") {
-        REQUIRE_THAT(a, Equals(niv::testing::UpdatedNode()));
+        REQUIRE_THAT(a, Equals(niv::testing::UPDATED_NODE));
       }
     }
   }
@@ -262,10 +263,10 @@ SCENARIO("node updates into empty node with unexpected order", "[conduit]") {
   GIVEN("an empty conduit node") {
     conduit::Node target;
     WHEN("the target node is updated with some data in unexpected order") {
-      target.update(niv::testing::Update());
-      target.update(niv::testing::AnyNode());
+      target.update(niv::testing::ANY_UPDATE);
+      target.update(niv::testing::ANY_NODE);
       THEN("the node's layout is unexpected") {
-        REQUIRE_THAT(target, !Equals(niv::testing::UpdatedNode()));
+        REQUIRE_THAT(target, !Equals(niv::testing::UPDATED_NODE));
       }
     }
   }
@@ -274,12 +275,12 @@ SCENARIO("node updates into empty node with unexpected order", "[conduit]") {
 SCENARIO("node updates into pre-allocated node with unexpected order",
          "[conduit]") {
   GIVEN("an allocated conduit node") {
-    conduit::Node preallocated{niv::testing::UpdatedNodeAllZeros()};
+    conduit::Node preallocated{niv::testing::UPDATED_NODE_ALL_ZEROS};
     WHEN("the node is updated with some data in unexpected order") {
-      preallocated.update(niv::testing::Update());
-      preallocated.update(niv::testing::AnyNode());
+      preallocated.update(niv::testing::ANY_UPDATE);
+      preallocated.update(niv::testing::ANY_NODE);
       THEN("the node's layout is as expected") {
-        REQUIRE_THAT(preallocated, Equals(niv::testing::UpdatedNode()));
+        REQUIRE_THAT(preallocated, Equals(niv::testing::UPDATED_NODE));
       }
     }
   }
@@ -288,7 +289,7 @@ SCENARIO("node updates into pre-allocated node with unexpected order",
 SCENARIO("conduit data layout", "[conduit]") {
   GIVEN("a compacted conduit node") {
     conduit::Node node;
-    niv::testing::UpdatedNode().compact_to(node);
+    niv::testing::UPDATED_NODE.compact_to(node);
 
     THEN("the node's data is contiguous") { REQUIRE(node.is_contiguous()); }
     WHEN("the node's data is accessed via ptr") {
@@ -296,16 +297,12 @@ SCENARIO("conduit data layout", "[conduit]") {
           reinterpret_cast<const double*>(node.contiguous_data_ptr());
 
       THEN("the leafs' data is accessible as an array") {
-        REQUIRE(data_ptr[0] ==
-                niv::testing::UpdatedNode()["A/B/C"].as_double());
-        REQUIRE(data_ptr[1] ==
-                niv::testing::UpdatedNode()["A/B/D"].as_double());
-        REQUIRE(data_ptr[2] ==
-                niv::testing::UpdatedNode()["A/B/F"].as_double());
-        REQUIRE(data_ptr[3] ==
-                niv::testing::UpdatedNode()["A/B/G"].as_double());
-        REQUIRE(data_ptr[4] == niv::testing::UpdatedNode()["A/E"].as_double());
-        REQUIRE(data_ptr[5] == niv::testing::UpdatedNode()["A/H"].as_double());
+        REQUIRE(data_ptr[0] == niv::testing::UPDATED_NODE["A/B/C"].as_double());
+        REQUIRE(data_ptr[1] == niv::testing::UPDATED_NODE["A/B/D"].as_double());
+        REQUIRE(data_ptr[2] == niv::testing::UPDATED_NODE["A/B/F"].as_double());
+        REQUIRE(data_ptr[3] == niv::testing::UPDATED_NODE["A/B/G"].as_double());
+        REQUIRE(data_ptr[4] == niv::testing::UPDATED_NODE["A/E"].as_double());
+        REQUIRE(data_ptr[5] == niv::testing::UPDATED_NODE["A/H"].as_double());
       }
     }
   }
@@ -349,17 +346,17 @@ SCENARIO("create conduit::Node from data and schema (stringstream)",
   GIVEN("a schema and data") {
     std::stringstream schema;
     schema << "{\n";
-    schema << "  " << niv::testing::OpenTag(::ANY_TAG);
-    schema << "    " << niv::testing::OpenTag("B");
-    schema << "      " << niv::testing::DoubleData(0);
-    schema << "    " << niv::testing::CloseTagNext();
-    schema << "    " << niv::testing::OpenTag("C");
-    schema << "      " << niv::testing::DoubleData(8);
-    schema << "    " << niv::testing::CloseTag();
-    schema << "  " << niv::testing::CloseTagNext();
-    schema << "  " << niv::testing::OpenTag("D");
-    schema << "    " << niv::testing::DoubleData(16);
-    schema << "  " << niv::testing::CloseTag();
+    schema << "  " << niv::testing::conduit_schema::OpenTag(::ANY_TAG);
+    schema << "    " << niv::testing::conduit_schema::OpenTag("B");
+    schema << "      " << niv::testing::conduit_schema::DoubleData(0);
+    schema << "    " << niv::testing::conduit_schema::CloseTagNext();
+    schema << "    " << niv::testing::conduit_schema::OpenTag("C");
+    schema << "      " << niv::testing::conduit_schema::DoubleData(8);
+    schema << "    " << niv::testing::conduit_schema::CloseTag();
+    schema << "  " << niv::testing::conduit_schema::CloseTagNext();
+    schema << "  " << niv::testing::conduit_schema::OpenTag("D");
+    schema << "    " << niv::testing::conduit_schema::DoubleData(16);
+    schema << "  " << niv::testing::conduit_schema::CloseTag();
     schema << "}";
 
     std::vector<double> data{1.23, 2.34, 3.45};

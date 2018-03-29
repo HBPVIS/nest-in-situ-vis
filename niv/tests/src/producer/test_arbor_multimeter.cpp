@@ -29,7 +29,7 @@
 #include "conduit/conduit.hpp"
 
 #include "niv/producer/arbor_multimeter.hpp"
-#include "niv/testing/nest_test_data.hpp"
+#include "niv/testing/data.hpp"
 
 SCENARIO("A multimeter records to a conduit node",
          "[niv][niv::ArborMultimeter]") {
@@ -41,14 +41,14 @@ SCENARIO("A multimeter records to a conduit node",
       niv::producer::ArborMultimeter::Datum datum{
           niv::testing::ANY_TIME + niv::testing::ANY_TIME_OFFSET,
           niv::testing::ANOTHER_ATTRIBUTE, niv::testing::THIRD_ID_STRING,
-          niv::testing::ANY_VALUE};
+          niv::testing::ANY_DATA_VALUE};
       multimeter.Record(datum, &node);
       THEN("the data is properly recorded") {
         REQUIRE(node[niv::testing::PathFor(niv::testing::ANY_MULTIMETER_NAME,
                                            niv::testing::ANY_TIME_STRING,
                                            niv::testing::ANOTHER_ATTRIBUTE,
                                            niv::testing::THIRD_ID_STRING)]
-                    .as_double() == Approx(niv::testing::ANY_VALUE));
+                    .as_double() == Approx(niv::testing::ANY_DATA_VALUE));
       }
     }
   }
