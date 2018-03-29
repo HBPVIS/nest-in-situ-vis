@@ -22,6 +22,8 @@
 #ifndef NIV_INCLUDE_NIV_TESTING_CONDUIT_SCHEMA_HPP_
 #define NIV_INCLUDE_NIV_TESTING_CONDUIT_SCHEMA_HPP_
 
+#include <string>
+
 namespace niv {
 namespace testing {
 namespace conduit_schema {
