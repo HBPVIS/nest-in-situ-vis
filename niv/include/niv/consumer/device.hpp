@@ -33,6 +33,7 @@ namespace consumer {
 class Device {
  public:
   Device() = delete;
+  explicit Device(const std::string& name);
   Device(const Device&) = default;
   Device(Device&&) = default;
   virtual ~Device() = default;
@@ -40,27 +41,21 @@ class Device {
   Device& operator=(const Device&) = default;
   Device& operator=(Device&&) = default;
 
-  const std::vector<double>& GetTimesteps();
-
-  virtual void SetTime(double time);
-
-  virtual void Update() = 0;
+  std::vector<std::string> GetTimestepsString() const;
+  const std::vector<double> GetTimesteps() const;
 
   void SetNode(const conduit::Node* node) { node_ = node; }
 
  protected:
-  explicit Device(const std::string& name);
+  std::vector<std::string> GetChildNames(const std::string& path) const;
 
-  void SetTimestepNode();
-  const conduit::Node* GetTimestepNode() const;
+  const conduit::Node* GetNode(const std::string& path) const;
+
+  std::string ConstructPath() const;
+  std::string ConstructPath(const std::string& time) const;
 
  private:
   const conduit::Node* node_{nullptr};
-  const conduit::Node* timestep_node_{nullptr};
-
-  std::vector<double> timesteps_;
-
-  double time_{0.0};
   std::string name_{""};
 };
 

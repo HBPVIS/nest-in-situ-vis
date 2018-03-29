@@ -19,45 +19,44 @@
 // limitations under the License.
 //------------------------------------------------------------------------------
 
+#include <cassert>
+
 #include <memory>
 #include <string>
 #include <vector>
 
-#include "niv/producer/multimeter.hpp"
+#include "niv/producer/nest_multimeter.hpp"
 
 namespace niv {
 namespace producer {
 
-Multimeter::Multimeter(const std::string& name,
-                       const std::vector<std::string>& value_names,
-                       conduit::Node* node)
-    : Device{name, node}, value_names_{value_names} {}
+NestMultimeter::NestMultimeter(const std::string& name,
+                               const std::vector<std::string>& value_names,
+                               conduit::Node* node)
+    : Device{name}, node_{node}, value_names_{value_names} {}
 
-void Multimeter::Record(std::size_t id, const std::vector<double>& values) {
-  const std::string id_string{IdString(id)};
-  for (std::size_t i = 0; i < value_names_.size(); ++i) {
-    RecordValue(id_string, values, i);
+void NestMultimeter::Record(const Datum& datum) {
+  assert(datum.values.size() == value_names_.size());
+
+  for (std::size_t i = 0u; i < datum.values.size(); ++i) {
+    const std::string path{ConstructPath(datum, i)};
+    node_->fetch(path) = datum.values[i];
   }
 }
 
-void Multimeter::RecordValue(std::string id_string,
-                             const std::vector<double> values,
-                             std::size_t value_index) {
-  const std::string& value_name = value_names_[value_index];
-  const double value = values[value_index];
-  GetTimestepNode()[value_name][id_string] = value;
-}
-
-std::string Multimeter::IdString(std::size_t id) const {
+std::string NestMultimeter::IdString(std::size_t id) {
   std::stringstream id_stream;
   id_stream << id;
   return id_stream.str();
 }
 
-std::unique_ptr<Multimeter> Multimeter::New(
-    const std::string& name, const std::vector<std::string>& value_names,
-    conduit::Node* node) {
-  return std::make_unique<Multimeter>(name, value_names, node);
+std::string NestMultimeter::ConstructPath(const NestMultimeter::Datum& datum,
+                                          std::size_t attribute_index) {
+  std::stringstream path;
+  path << Device::ConstructPath(datum) << '/';
+  path << value_names_[attribute_index] << '/';
+  path << datum.neuron_id;
+  return path.str();
 }
 
 }  // namespace producer

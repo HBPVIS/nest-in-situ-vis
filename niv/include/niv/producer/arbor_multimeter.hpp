@@ -19,45 +19,48 @@
 // limitations under the License.
 //------------------------------------------------------------------------------
 
-#ifndef NIV_INCLUDE_NIV_PRODUCER_MULTIMETER_HPP_
-#define NIV_INCLUDE_NIV_PRODUCER_MULTIMETER_HPP_
+#ifndef NIV_INCLUDE_NIV_PRODUCER_ARBOR_MULTIMETER_HPP_
+#define NIV_INCLUDE_NIV_PRODUCER_ARBOR_MULTIMETER_HPP_
 
-#include <memory>
-#include <sstream>
 #include <string>
-#include <vector>
 
 #include "niv/producer/device.hpp"
 
 namespace niv {
 namespace producer {
 
-class Multimeter final : public Device {
+class ArborMultimeter final : public Device {
  public:
-  Multimeter(const std::string& name,
-             const std::vector<std::string>& value_names, conduit::Node* node);
-  Multimeter(const Multimeter&) = default;
-  Multimeter(Multimeter&&) = default;
-  virtual ~Multimeter() = default;
+  struct Datum : public Device::Datum {
+    Datum(double time, std::string attribute, std::string id, double value)
+        : Device::Datum{ConstructTimestep(time)},
+          exact_time{time},
+          attribute{attribute},
+          id{id},
+          value{value} {}
+    double exact_time;
+    std::string attribute;
+    std::string id;
+    double value;
 
-  void Record(std::size_t id, const std::vector<double>& values) override;
+    static double ConstructTimestep(double time);
+  };
 
-  Multimeter& operator=(const Multimeter&) = default;
-  Multimeter& operator=(Multimeter&&) = default;
+  explicit ArborMultimeter(const std::string& name);
+  ArborMultimeter(const ArborMultimeter&) = default;
+  ArborMultimeter(ArborMultimeter&&) = default;
+  ~ArborMultimeter() = default;
 
-  static std::unique_ptr<Multimeter> New(
-      const std::string& name, const std::vector<std::string>& value_names,
-      conduit::Node* node);
+  ArborMultimeter& operator=(const ArborMultimeter&) = default;
+  ArborMultimeter& operator=(ArborMultimeter&&) = default;
+
+  void Record(const Datum& datum, conduit::Node* node);
 
  private:
-  void RecordValue(std::string id_string, const std::vector<double> values,
-                   std::size_t value_index);
-  std::string IdString(std::size_t id) const;
-
-  std::vector<std::string> value_names_;
+  std::string ConstructPath(const Datum& datum);
 };
 
 }  // namespace producer
 }  // namespace niv
 
-#endif  // NIV_INCLUDE_NIV_PRODUCER_MULTIMETER_HPP_
+#endif  // NIV_INCLUDE_NIV_PRODUCER_ARBOR_MULTIMETER_HPP_

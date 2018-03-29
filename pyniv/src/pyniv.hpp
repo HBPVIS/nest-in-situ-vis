@@ -38,6 +38,7 @@ using boost::python::def;
 using boost::python::init;
 using boost::python::no_init;
 using boost::python::pure_virtual;
+using boost::python::scope;
 using boost::python::wrapper;
 
 namespace pyniv {

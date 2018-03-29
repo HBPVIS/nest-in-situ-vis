@@ -19,5 +19,6 @@
 # limitations under the License.
 #-------------------------------------------------------------------------------
 
-add_subdirectory(nest_python_vis)
+add_subdirectory(arbor_miniapp-niv)
 add_subdirectory(brunel_example)
+add_subdirectory(nest_python_vis)

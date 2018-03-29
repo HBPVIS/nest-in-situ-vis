@@ -21,41 +21,41 @@
 
 #include "pyniv.hpp"
 
-#include <iostream>  // NOLINT
-#include <string>    // NOLINT
-#include <vector>    // NOLINT
-
-SUPPRESS_WARNINGS_BEGIN
-#include "boost/python/numpy.hpp"
-SUPPRESS_WARNINGS_END
-
-#include "niv/consumer/device.hpp"
+#include <string>  // NOLINT
 #include "niv/consumer/multimeter.hpp"
 
 namespace pyniv {
 namespace consumer {
+namespace multimeter {
 
-boost::python::numpy::ndarray GetValues(
-    const niv::consumer::Multimeter& multimeter);
-boost::python::numpy::ndarray GetValues(
-    const niv::consumer::Multimeter& multimeter) {
-  const auto& values{multimeter.GetValues()};
-
-  return boost::python::numpy::from_data(
-      values.data(), boost::python::numpy::dtype::get_builtin<double>(),
-      boost::python::make_tuple(values.size()),
-      boost::python::make_tuple(sizeof(double)), boost::python::object());
+boost::python::list GetAttributes(const niv::consumer::Multimeter& multimeter,
+                                  const std::string& time) {
+  boost::python::list ret_val;
+  for (auto v : multimeter.GetAttributes(time)) {
+    ret_val.append(v);
+  }
+  return ret_val;
 }
 
+boost::python::list GetNeuronIds(const niv::consumer::Multimeter& multimeter,
+                                 const std::string& time,
+                                 const std::string& attribute) {
+  boost::python::list ret_val;
+  for (auto v : multimeter.GetNeuronIds(time, attribute)) {
+    ret_val.append(v);
+  }
+  return ret_val;
+}
+
+}  // namespace multimeter
 }  // namespace consumer
 
 template <>
 void expose<niv::consumer::Multimeter>() {
   class_<niv::consumer::Multimeter, bases<niv::consumer::Device>>(
-      "ConsumerMultimeter", init<std::string>())
-      .def("GetValues", &pyniv::consumer::GetValues)
-      .def("SetAttribute", &niv::consumer::Multimeter::SetAttribute)
-      .def("Update", &niv::consumer::Multimeter::Update);
+      "Multimeter", init<std::string>())
+      .def("GetAttributes", &pyniv::consumer::multimeter::GetAttributes)
+      .def("GetNeuronIds", &pyniv::consumer::multimeter::GetNeuronIds);
 }
 
 }  // namespace pyniv

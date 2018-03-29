@@ -19,58 +19,47 @@
 // limitations under the License.
 //------------------------------------------------------------------------------
 
-#ifndef NIV_INCLUDE_NIV_NEST_TEST_DATA_HPP_
-#define NIV_INCLUDE_NIV_NEST_TEST_DATA_HPP_
+#include "pyniv.hpp"
 
-#include <string>
-#include <vector>
+#include <string>  // NOLINT
+#include <vector>  // NOLINT
 
-#include "niv/producer/multimeter.hpp"
+#include "conduit/conduit_node.hpp"
 
-namespace niv {
+#include "niv/testing/helpers.hpp"
 
-class Testing {
- public:
-  Testing() = delete;
-  Testing(const Testing&) = delete;
-  Testing(Testing&&) = delete;
-  ~Testing() = delete;
-
-  Testing& operator=(const Testing&) = delete;
-  Testing& operator=(Testing&&) = delete;
-};
-
+namespace pyniv {
 namespace testing {
 
-std::string AnyAttribute();
-std::string AnotherAttribute();
-std::string ThirdAttribute();
-
-double AnyTime();
-
-std::vector<double> AnyAttributesValues();
-std::vector<double> AnotherAttributesValues();
-std::vector<double> ThirdAttributesValues();
-
-std::vector<std::string> AnyValueNames();
-
-std::string AnyMultimeterName();
-
-conduit::Node AnyNestData();
-
-void Send(const conduit::Node& node);
-
-conduit::Node AnyNode();
-
-conduit::Node AnotherNode();
-
-conduit::Node Update();
-
-conduit::Node UpdatedNode();
-
-conduit::Node ADifferentNode();
+bool Equal(const conduit::Node& node1, const conduit::Node& node2) {
+  bool is_equal = (node1.to_json() == node2.to_json());
+  if (!is_equal) {
+    std::cout << "Nodes are not equal:" << std::endl;
+    std::cout << "Node 1:" << std::endl;
+    std::cout << node1.to_json() << std::endl;
+    std::cout << "----------" << std::endl;
+    std::cout << "Node 2:" << std::endl;
+    std::cout << node2.to_json() << std::endl;
+  }
+  return is_equal;
+}
 
 }  // namespace testing
-}  // namespace niv
 
-#endif  // NIV_INCLUDE_NIV_NEST_TEST_DATA_HPP_
+#ifndef EXPOSE_CONSTANT
+#define EXPOSE_CONSTANT(a) scope().attr(#a) = niv::testing::a
+#endif
+
+template <>
+void expose<niv::testing::Helpers>() {
+  EXPOSE_CONSTANT(ANY_NODE);
+  EXPOSE_CONSTANT(ANOTHER_NODE);
+  EXPOSE_CONSTANT(ANY_UPDATE);
+  EXPOSE_CONSTANT(UPDATED_NODE);
+  EXPOSE_CONSTANT(A_DIFFERENT_NODE);
+
+  def("Send", &niv::testing::Send);
+  def("Equal", &pyniv::testing::Equal);
+}
+
+}  // namespace pyniv

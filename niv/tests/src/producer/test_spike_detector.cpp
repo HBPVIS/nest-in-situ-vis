@@ -27,44 +27,32 @@
 #include "conduit/conduit_node.hpp"
 
 #include "niv/producer/spike_detector.hpp"
-
-SCENARIO("A unique spike detector ptr can be constructed via its factory",
-         "[niv][niv::SpikeDetector]") {
-  WHEN("a new spike detector is constructed") {
-    std::unique_ptr<niv::producer::SpikeDetector> spike_detector{
-        niv::producer::SpikeDetector::New("name", nullptr)};
-    THEN("a pointer was obtained") { REQUIRE(spike_detector.get() != nullptr); }
-  }
-}
+#include "niv/testing/data.hpp"
 
 SCENARIO("A spike detector records to a conduit node",
          "[niv][niv::SpikeDetector]") {
-  const std::string any_name{"spikes1"};
-  constexpr double any_time{1.5};
-  const std::string any_time_string{"1.5"};
-  constexpr std::size_t any_id{3};
-  constexpr std::size_t another_id{5};
-
   GIVEN("a conduit node and a spike detector") {
     conduit::Node node;
-    niv::producer::SpikeDetector spike_detector(any_name, &node);
+    niv::producer::SpikeDetector spike_detector(
+        niv::testing::ANY_SPIKE_DETECTOR_NAME, &node);
 
-    WHEN("setting the recording time") {
-      spike_detector.SetRecordingTime(any_time);
-      WHEN("recording") {
-        spike_detector.Record(any_id);
+    WHEN("recording") {
+      spike_detector.Record(niv::producer::SpikeDetector::Datum{
+          niv::testing::ANY_TIME, niv::testing::ANY_ID});
+      THEN("data is recorded in the node") {
+        const auto recorded_node = node[niv::testing::ANY_SPIKE_DETECTOR_NAME]
+                                       [niv::testing::ANY_TIME_STRING];
+        REQUIRE(recorded_node.as_uint64_array()[0] == niv::testing::ANY_ID);
+      }
+      WHEN("recording another spike") {
+        spike_detector.Record(
+            {niv::testing::ANY_TIME, niv::testing::ANOTHER_ID});
         THEN("data is recorded in the node") {
-          REQUIRE(node[any_name][any_time_string].as_uint64_array()[0] ==
-                  any_id);
-        }
-        WHEN("recording another spike") {
-          spike_detector.Record(another_id);
-          THEN("data is recorded in the node") {
-            REQUIRE(node[any_name][any_time_string].as_uint64_array()[0] ==
-                    any_id);
-            REQUIRE(node[any_name][any_time_string].as_uint64_array()[1] ==
-                    another_id);
-          }
+          const auto recorded_node = node[niv::testing::ANY_SPIKE_DETECTOR_NAME]
+                                         [niv::testing::ANY_TIME_STRING];
+          REQUIRE(recorded_node.as_uint64_array()[0] == niv::testing::ANY_ID);
+          REQUIRE(recorded_node.as_uint64_array()[1] ==
+                  niv::testing::ANOTHER_ID);
         }
       }
     }

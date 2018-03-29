@@ -19,28 +19,36 @@
 // limitations under the License.
 //------------------------------------------------------------------------------
 
-#include <string>
-
-#include "pyniv.hpp"
+#ifndef NIV_INCLUDE_NIV_PRODUCER_SENDER_HPP_
+#define NIV_INCLUDE_NIV_PRODUCER_SENDER_HPP_
 
 #include "conduit/conduit_node.hpp"
 
-namespace pyniv {
+#include "niv/exchange/relay_shared_memory.hpp"
 
-double GetDoubleAtPath(const conduit::Node& node, const std::string& path) {
-  return node[path].as_double();
-}
+namespace niv {
+namespace producer {
 
-void SetDoubleAtPath(const conduit::Node& node, const std::string& path,
-                     double value) {
-  const_cast<conduit::Node&>(node)[path] = value;
-}
+class Sender {
+ public:
+  Sender() = default;
+  Sender(const Sender&) = delete;
+  Sender(Sender&&) = default;
+  ~Sender() = default;
 
-template <>
-void expose<conduit::Node>() {
-  class_<conduit::Node>("ConduitNode")
-      .def("GetDoubleAtPath", &pyniv::GetDoubleAtPath)
-      .def("SetDoubleAtPath", &pyniv::SetDoubleAtPath);
-}
+  Sender& operator=(const Sender&) = delete;
+  Sender& operator=(Sender&&) = default;
 
-}  // namespace pyniv
+  void SetNode(conduit::Node* node) { node_ = node; }
+
+  virtual void Send();
+
+ private:
+  conduit::Node* node_{nullptr};
+  niv::exchange::RelaySharedMemory relay_;
+};
+
+}  // namespace producer
+}  // namespace niv
+
+#endif  // NIV_INCLUDE_NIV_PRODUCER_SENDER_HPP_

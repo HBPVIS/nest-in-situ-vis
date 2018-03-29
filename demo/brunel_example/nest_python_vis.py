@@ -36,14 +36,13 @@ class MainWindow:
         self.SetupWindow()
         self.SetupPlot()
         self.SetupUpdateTimer()
-        
-    def SetupStreaming(self):
-        self.receiver = pyniv.ConsumerReceiver()
-        
-        self.multimeter = pyniv.ConsumerMultimeter("recordingNode51")
-        self.multimeter.SetAttribute("V_m")
 
-        self.backend = pyniv.ConsumerBackend();
+    def SetupStreaming(self):
+        self.receiver = pyniv.consumer.Receiver()
+
+        self.multimeter = pyniv.consumer.NestMultimeter("recordingNode51")
+
+        self.backend = pyniv.consumer.Backend();
         self.backend.Connect(self.receiver);
         self.backend.Connect(self.multimeter);
 
@@ -63,9 +62,9 @@ class MainWindow:
 
     def VisualizeButtonClicked(self):
         self.visualize_button.setEnabled(False)
-        self.update_timer.start(0.5)
+        self.update_timer.start(250)
         self.Visualize()
-        
+
     def Show(self):
         self.visualize_button.show()
         button_geometry = self.visualize_button.geometry()
@@ -76,40 +75,28 @@ class MainWindow:
 
     def Visualize(self):
         self.backend.Receive()
-        plot_ts, plot_vs = self.GetValues(self.multimeter)
-        self.Plot(plot_ts, plot_vs);
+        self.Plot()
 
-    def GetValues(self, multimeter):
-        ts = multimeter.GetTimesteps()
-        plot_ts = []
-        plot_vs = []
-        for t in ts:
-          multimeter.SetTime(t)
-          multimeter.Update()
-          vs = multimeter.GetValues()
-          if len(vs) > 0:
-            plot_ts.append(t.tolist())
-            plot_vs.append(vs.tolist())
-        return plot_ts, plot_vs
+    def Plot(self):
+        timesteps = self.multimeter.GetTimestepsString()
+        attribute = 'V_m'
+        neuron_ids = []
+        if len(timesteps) > 0:
+            neuron_ids = self.multimeter.GetNeuronIds(timesteps[0], attribute)
 
-    def Plot(self, ts, vs):
-        values = []
-        for i in range(0, 35):
-            tmp = []
-            for t in range(0, len(vs)):
-                tmp.append(vs[t][i])
-            values.append(tmp)
-        
         self.ax1.clear()
-        for i in range(0, len(values)):
-            self.ax1.plot(ts, values[i])
+
+        for neuron_id in neuron_ids:
+            values = self.multimeter.GetTimeSeriesData(attribute, neuron_id)
+            times = [float(t) for t in timesteps]
+            self.ax1.plot(times, values)
+
         self.ax1.set_title("Brunel Example")
         self.ax1.set_xlabel("Time")
         self.ax1.set_ylabel("V_m")
 
         plt.show(block=False)
         self.fig.canvas.draw()
-        
 
 def main(argv):
     app = QApplication(argv)

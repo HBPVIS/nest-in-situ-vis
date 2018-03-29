@@ -19,16 +19,26 @@
 # limitations under the License.
 #-------------------------------------------------------------------------------
 
+import numpy as np
+
 import pyniv
 
-class Device(pyniv.ConsumerDevice):
+class Device(pyniv.consumer.Device):
     def __init__(self, name):
-        pyniv.ConsumerDevice.__init__(self, name)
+        pyniv.consumer.Device.__init__(self, name)
 
-def test_consumer_device_lists_timesteps():
-    any_data = pyniv.TestingAnyNestData()
-    device = Device(pyniv.TestingAnyMultimeterName())
-    device.SetNode(any_data)
-    timesteps = device.GetTimesteps()
-    assert (timesteps == [0.0]).all()
-    assert len(timesteps) == 1
+def setup_device(name = pyniv.testing.ANY_DEVICE_NAME,
+                 data = pyniv.testing.ANY_NEST_DATA):
+    device = pyniv.consumer.Device(name)
+    device.SetNode(data)
+    return device, data
+
+def test_device_lists_the_timesteps():
+    device, nest_data = setup_device()
+    timesteps = device.GetTimestepsString();
+    assert timesteps == pyniv.testing.ANY_TIMES_STRING
+
+    device, nest_data = setup_device(
+        name = pyniv.testing.NOT_A_DEVICE_NAME)
+    timesteps = device.GetTimestepsString();
+    assert timesteps == []

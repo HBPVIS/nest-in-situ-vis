@@ -21,19 +21,43 @@
 
 import pyniv
 
-def test_multimeter_provides_access_to_data_stored_in_a_conduit_node():
-    nest_data = pyniv.TestingAnyNestData()
-    multimeter = pyniv.ConsumerMultimeter(pyniv.TestingAnyMultimeterName())
-    multimeter.SetNode(nest_data)
+def setup_multimeter(name = pyniv.testing.ANY_MULTIMETER_NAME,
+                     data = pyniv.testing.ANY_NEST_DATA):
+    multimeter = pyniv.consumer.Multimeter(name)
+    multimeter.SetNode(data)
+    return multimeter, data
 
-    multimeter.SetTime(pyniv.TestingAnyTime())
+def test_multimeter_lists_attributes_for_a_timestep():
+    multimeter, nest_data = setup_multimeter()
+    attributes = multimeter.GetAttributes(pyniv.testing.ANY_TIME_STRING)
+    assert attributes == pyniv.testing.ANY_ATTRIBUTES
 
-    multimeter.SetAttribute(pyniv.TestingAnyValueNames(0))
-    multimeter.Update()
-    result = multimeter.GetValues()
-    assert (result == pyniv.TestingAnyAttributesValues()).all()
+    attributes = multimeter.GetAttributes(pyniv.testing.NOT_A_TIME_STRING)
+    assert attributes == []
 
-    multimeter.SetAttribute(pyniv.TestingAnyValueNames(1))
-    multimeter.Update()
-    result = multimeter.GetValues()
-    assert (result == pyniv.TestingAnotherAttributesValues()).all()
+    multimeter, nest_data = setup_multimeter(
+        name = pyniv.testing.NOT_A_MULTIMETER_NAME)
+    attributes = multimeter.GetAttributes(pyniv.testing.ANY_TIME_STRING)
+    assert attributes == []
+
+def test_multimeter_lists_neuron_ids_for_an_attribute_in_a_timestep():
+    multimeter, nest_data = setup_multimeter()
+    ids = multimeter.GetNeuronIds(pyniv.testing.ANY_TIME_STRING,
+                                  pyniv.testing.ANY_ATTRIBUTE)
+    assert ids == pyniv.testing.ANY_IDS_STRING
+
+    
+    ids = multimeter.GetNeuronIds(pyniv.testing.NOT_A_TIME_STRING,
+                                  pyniv.testing.ANY_ATTRIBUTE)
+    assert ids == []
+    
+    ids = multimeter.GetNeuronIds(pyniv.testing.ANY_TIME_STRING,
+                                  pyniv.testing.NOT_AN_ATTRIBUTE)
+    assert ids == []
+    
+    multimeter, nest_data = setup_multimeter(
+        name = pyniv.testing.NOT_A_MULTIMETER_NAME)
+    ids = multimeter.GetNeuronIds(pyniv.testing.ANY_TIME_STRING,
+                                  pyniv.testing.ANY_ATTRIBUTE)
+    assert ids == []
+

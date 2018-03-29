@@ -27,33 +27,28 @@
 namespace niv {
 namespace consumer {
 
-Multimeter::Multimeter(const std::string& name) : consumer::Device{name} {}
+Multimeter::Multimeter(const std::string& name) : Device(name) {}
 
-void Multimeter::SetAttribute(const std::string& attribute) {
-  attribute_ = attribute;
+std::vector<std::string> Multimeter::GetAttributes(
+    const std::string& time) const {
+  return GetChildNames(Device::ConstructPath(time));
 }
 
-void Multimeter::Update() {
-  SetTimestepNode();
-  SetValues();
+std::vector<std::string> Multimeter::GetNeuronIds(
+    const std::string& time, const std::string& attribute) const {
+  return GetChildNames(ConstructPath(time, attribute));
 }
 
-void Multimeter::SetValues() {
-  values_.clear();
-  if (GetTimestepNode() == nullptr) {
-    return;
-  }
-  try {
-    const conduit::Node* attribute_node =
-        &GetTimestepNode()->fetch_child(attribute_);
-    for (auto i = 0u; i < attribute_node->number_of_children(); ++i) {
-      values_.push_back(attribute_node->child(i).as_double());
-    }
-  } catch (...) {
-  }
+std::string Multimeter::ConstructPath(const std::string& time,
+                                      const std::string& attribute) const {
+  return Device::ConstructPath(time) + '/' + attribute;
 }
 
-const std::vector<double>& Multimeter::GetValues() const { return values_; }
+std::string Multimeter::ConstructPath(const std::string& time,
+                                      const std::string& attribute,
+                                      const std::string& neuron_id) const {
+  return ConstructPath(time, attribute) + "/" + neuron_id;
+}
 
 }  // namespace consumer
 }  // namespace niv

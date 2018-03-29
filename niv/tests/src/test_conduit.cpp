@@ -28,7 +28,8 @@
 #include "conduit/conduit_node.hpp"
 
 #include "niv/exchange/node_storage.hpp"
-#include "niv/nest_test_data.hpp"
+#include "niv/testing/conduit_schema.hpp"
+#include "niv/testing/helpers.hpp"
 
 #include "conduit_node_helper.hpp"
 
@@ -38,21 +39,6 @@ template <>
 DataArray<uint64>::~DataArray();
 
 }  // namespace conduit
-
-SCENARIO("update inserts new nodes", "[conduit]") {
-  GIVEN("A conduit tree") {
-    conduit::Node a = niv::testing::AnyNode();
-
-    WHEN("A second node updates the tree") {
-      conduit::Node b = niv::testing::Update();
-      a.update(b);
-
-      THEN("the first node contains also the content of the second") {
-        REQUIRE_THAT(a, Equals(niv::testing::UpdatedNode()));
-      }
-    }
-  }
-}
 
 SCENARIO("conduit array leafs are compatible to std::vector", "[conduit]") {
   const std::string some_path{"root/inner/leaf"};
@@ -113,7 +99,7 @@ SCENARIO(
     std::string schema;
     std::vector<conduit::uint8> bytes;
 
-    SerializeConstRef(niv::testing::AnyNode(), &schema, &bytes);
+    SerializeConstRef(niv::testing::ANY_NODE, &schema, &bytes);
 
     conduit::Node second_node;
     second_node.set_data_using_schema(conduit::Schema(schema), bytes.data());
@@ -124,7 +110,7 @@ SCENARIO(
       conduit::Node third_node;
       third_node.set_data_using_schema(conduit::Schema(schema), bytes.data());
 
-      REQUIRE(third_node.to_json() == niv::testing::AnyNode().to_json());
+      REQUIRE(third_node.to_json() == niv::testing::ANY_NODE.to_json());
     }
   }
 }
@@ -144,7 +130,7 @@ SCENARIO(
     std::vector<conduit::uint8> data;
     niv::exchange::NodeStorage<std::string, std::vector<conduit::uint8>>
         storage(&schema, &data);
-    storage.Store(niv::testing::AnyNode());
+    storage.Store(niv::testing::ANY_NODE);
 
     constexpr bool external{true};
     conduit::Node external_node(schema, data.data(), external);
@@ -258,4 +244,180 @@ SCENARIO(
   }
 }
 
-SCENARIO("node updates ", "[]") {}
+SCENARIO("update inserts new nodes", "[conduit]") {
+  GIVEN("A conduit tree") {
+    conduit::Node a = niv::testing::ANY_NODE;
+
+    WHEN("A second node updates the tree") {
+      conduit::Node b = niv::testing::ANY_UPDATE;
+      a.update(b);
+
+      THEN("the first node contains also the content of the second") {
+        REQUIRE_THAT(a, Equals(niv::testing::UPDATED_NODE));
+      }
+    }
+  }
+}
+
+SCENARIO("node updates into empty node with unexpected order", "[conduit]") {
+  GIVEN("an empty conduit node") {
+    conduit::Node target;
+    WHEN("the target node is updated with some data in unexpected order") {
+      target.update(niv::testing::ANY_UPDATE);
+      target.update(niv::testing::ANY_NODE);
+      THEN("the node's layout is unexpected") {
+        REQUIRE_THAT(target, !Equals(niv::testing::UPDATED_NODE));
+      }
+    }
+  }
+}
+
+SCENARIO("node updates into pre-allocated node with unexpected order",
+         "[conduit]") {
+  GIVEN("an allocated conduit node") {
+    conduit::Node preallocated{niv::testing::UPDATED_NODE_ALL_ZEROS};
+    WHEN("the node is updated with some data in unexpected order") {
+      preallocated.update(niv::testing::ANY_UPDATE);
+      preallocated.update(niv::testing::ANY_NODE);
+      THEN("the node's layout is as expected") {
+        REQUIRE_THAT(preallocated, Equals(niv::testing::UPDATED_NODE));
+      }
+    }
+  }
+}
+
+SCENARIO("conduit data layout", "[conduit]") {
+  GIVEN("a compacted conduit node") {
+    conduit::Node node;
+    niv::testing::UPDATED_NODE.compact_to(node);
+
+    THEN("the node's data is contiguous") { REQUIRE(node.is_contiguous()); }
+    WHEN("the node's data is accessed via ptr") {
+      const double* data_ptr =
+          reinterpret_cast<const double*>(node.contiguous_data_ptr());
+
+      THEN("the leafs' data is accessible as an array") {
+        REQUIRE(data_ptr[0] == niv::testing::UPDATED_NODE["A/B/C"].as_double());
+        REQUIRE(data_ptr[1] == niv::testing::UPDATED_NODE["A/B/D"].as_double());
+        REQUIRE(data_ptr[2] == niv::testing::UPDATED_NODE["A/B/F"].as_double());
+        REQUIRE(data_ptr[3] == niv::testing::UPDATED_NODE["A/B/G"].as_double());
+        REQUIRE(data_ptr[4] == niv::testing::UPDATED_NODE["A/E"].as_double());
+        REQUIRE(data_ptr[5] == niv::testing::UPDATED_NODE["A/H"].as_double());
+      }
+    }
+  }
+}
+
+SCENARIO("create conduit::Node from data and schema (string)", "[conduit]") {
+  GIVEN("a schema and data") {
+    const std::string schema{
+        "{ \n"
+        "  \"A\":{ \n"
+        "    \"B\":{\"dtype\":\"float64\", \"number_of_elements\": 1, \n"
+        "           \"offset\": 0, \"stride\": 8, \"element_bytes\": 8}, \n"
+        "    \"C\":{\"dtype\":\"float64\", \"number_of_elements\": 1, \n"
+        "           \"offset\": 8, \"stride\": 8, \"element_bytes\": 8} \n"
+        "  }, \n"
+        "  \"D\":{\"dtype\":\"float64\", \"number_of_elements\": 1, \n"
+        "         \"offset\": 16, \"stride\": 8, \"element_bytes\": 8} \n"
+        "}"};
+    std::vector<double> data{1.23, 2.34, 3.45};
+
+    WHEN("a node is created from that") {
+      conduit::Node node(schema, reinterpret_cast<void*>(data.data()), true);
+
+      THEN("it contains the expected data") {
+        REQUIRE(node["A/B"].as_double() == data[0]);
+        REQUIRE(node["A/C"].as_double() == data[1]);
+        REQUIRE(node["D"].as_double() == data[2]);
+      }
+    }
+  }
+}
+
+namespace {
+
+const char* ANY_TAG{"A"};
+
+}  // namespace
+
+SCENARIO("create conduit::Node from data and schema (stringstream)",
+         "[conduit]") {
+  GIVEN("a schema and data") {
+    std::stringstream schema;
+    schema << "{\n";
+    schema << "  " << niv::testing::conduit_schema::OpenTag(::ANY_TAG);
+    schema << "    " << niv::testing::conduit_schema::OpenTag("B");
+    schema << "      " << niv::testing::conduit_schema::DoubleData(0);
+    schema << "    " << niv::testing::conduit_schema::CloseTagNext();
+    schema << "    " << niv::testing::conduit_schema::OpenTag("C");
+    schema << "      " << niv::testing::conduit_schema::DoubleData(8);
+    schema << "    " << niv::testing::conduit_schema::CloseTag();
+    schema << "  " << niv::testing::conduit_schema::CloseTagNext();
+    schema << "  " << niv::testing::conduit_schema::OpenTag("D");
+    schema << "    " << niv::testing::conduit_schema::DoubleData(16);
+    schema << "  " << niv::testing::conduit_schema::CloseTag();
+    schema << "}";
+
+    std::vector<double> data{1.23, 2.34, 3.45};
+
+    WHEN("a node is created from that") {
+      conduit::Node node(schema.str(), reinterpret_cast<void*>(data.data()),
+                         true);
+
+      THEN("it contains the expected data") {
+        REQUIRE(node["A/B"].as_double() == data[0]);
+        REQUIRE(node["A/C"].as_double() == data[1]);
+        REQUIRE(node["D"].as_double() == data[2]);
+      }
+    }
+  }
+}
+
+SCENARIO("conduit::Node::getch_child(path) behaves as intended", "[conduit]") {
+  GIVEN("a const ptr to a node with some data") {
+    conduit::Node node;
+    node["A/B/C"] = niv::testing::ANY_VALUE;
+    const conduit::Node* const node_ptr{&node};
+
+    WHEN("fetch_child is called with a correct path") {
+      THEN("it does not throw and yield the correct datum") {
+        const conduit::Node* retrieved_node_ptr{nullptr};
+        REQUIRE_NOTHROW(retrieved_node_ptr = &node_ptr->fetch_child("A/B/C"));
+        REQUIRE(retrieved_node_ptr->as_double() == niv::testing::ANY_VALUE);
+      }
+    }
+
+    WHEN("fetch_child is called with an incorrect path; completely off") {
+      THEN("it throws") {
+        const conduit::Node* retrieved_node_ptr{nullptr};
+        REQUIRE_THROWS(retrieved_node_ptr =
+                           &node_ptr->fetch_child("FOO/BAR/FOOBAR"));
+      }
+    }
+
+    WHEN("fetch_child is called with an incorrect path; error at front") {
+      THEN("it throws") {
+        const conduit::Node* retrieved_node_ptr{nullptr};
+        REQUIRE_THROWS(retrieved_node_ptr =
+                           &node_ptr->fetch_child("ERROR/B/C"));
+      }
+    }
+
+    WHEN("fetch_child is called with an incorrect path; error at middle") {
+      THEN("it throws") {
+        const conduit::Node* retrieved_node_ptr{nullptr};
+        REQUIRE_THROWS(retrieved_node_ptr =
+                           &node_ptr->fetch_child("A/ERROR/C"));
+      }
+    }
+
+    WHEN("fetch_child is called with an incorrect path; error at end") {
+      THEN("it throws") {
+        const conduit::Node* retrieved_node_ptr{nullptr};
+        REQUIRE_THROWS(retrieved_node_ptr =
+                           &node_ptr->fetch_child("A/B/ERROR"));
+      }
+    }
+  }
+}

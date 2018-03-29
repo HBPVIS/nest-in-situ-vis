@@ -25,6 +25,6 @@ def test_conduit_node():
     any_path = "any/path"
     any_double = 42.0
     
-    node = pyniv.ConduitNode()
+    node = pyniv.conduit.Node()
     node.SetDoubleAtPath(any_path, any_double)
     assert node.GetDoubleAtPath(any_path) == any_double

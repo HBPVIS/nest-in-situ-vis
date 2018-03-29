@@ -38,18 +38,15 @@ class MainWindow:
         self.SetupUpdateTimer()
         
     def SetupStreaming(self):
-        self.receiver = pyniv.ConsumerReceiver()
-        
-        self.multimeter_a = pyniv.ConsumerMultimeter("multimeter A")
-        self.multimeter_a.SetAttribute("V_m")
+        self.receiver = pyniv.consumer.Receiver()
 
-        self.multimeter_b = pyniv.ConsumerMultimeter("multimeter B")
-        self.multimeter_b.SetAttribute("V_m")
+        self.multimeters = [pyniv.consumer.NestMultimeter("multimeter A"),
+                            pyniv.consumer.NestMultimeter("multimeter B")]
 
-        self.backend = pyniv.ConsumerBackend();
+        self.backend = pyniv.consumer.Backend();
         self.backend.Connect(self.receiver);
-        self.backend.Connect(self.multimeter_a);
-        self.backend.Connect(self.multimeter_b);
+        for multimeter in self.multimeters:
+            self.backend.Connect(multimeter);
 
     def SetupWindow(self):
         self.visualize_button = QPushButton("Visualize")
@@ -73,7 +70,7 @@ class MainWindow:
 
     def VisualizeButtonClicked(self):
         self.visualize_button.setEnabled(False)
-        self.update_timer.start(0.5)
+        self.update_timer.start(250)
         self.Visualize()
         
     def Show(self):
@@ -81,30 +78,28 @@ class MainWindow:
 
     def Visualize(self):
         self.backend.Receive()
-        plot_ts_a, plot_vs_a = self.GetValues(self.multimeter_a)
-        plot_ts_b, plot_vs_b = self.GetValues(self.multimeter_b)
-        self.Plot([[plot_ts_a, plot_vs_a], [plot_ts_b, plot_vs_b]]);
+        self.Plot();
 
-    def GetValues(self, multimeter):
-        ts = multimeter.GetTimesteps()
-        plot_ts = []
-        plot_vs = []
-        for t in ts:
-          multimeter.SetTime(t)
-          multimeter.Update()
-          vs = multimeter.GetValues()
-          if len(vs) > 0:
-            plot_ts.append(t)
-            plot_vs.append(vs[0])
-        return plot_ts, plot_vs
-
-    def Plot(self, values):
+    def Plot(self):
         self.ax1.clear()
-        for [ts, vs] in values:
-            self.ax1.plot(ts, vs)
+
+        for multimeter in self.multimeters:
+            self.MultimeterPlot(multimeter)
+
         plt.show(block=False)
         self.fig.canvas.draw()
-        
+
+    def MultimeterPlot(self, multimeter):
+        timesteps = multimeter.GetTimestepsString()
+        attribute = 'V_m'
+        neuron_ids = []
+        if len(timesteps) > 0:
+            neuron_ids = multimeter.GetNeuronIds(timesteps[0], attribute)
+
+        for neuron_id in neuron_ids:
+            values = multimeter.GetTimeSeriesData(attribute, neuron_id)
+            times = [float(t) for t in timesteps]
+            self.ax1.plot(times, values)
 
 def main(argv):
     app = QApplication(argv)

@@ -25,14 +25,12 @@
 #include <string>
 #include <vector>
 
-#include "conduit/conduit_node.hpp"
-
 #include "niv/consumer/device.hpp"
 
 namespace niv {
 namespace consumer {
 
-class Multimeter : public consumer::Device {
+class Multimeter : public niv::consumer::Device {
  public:
   Multimeter() = delete;
   explicit Multimeter(const std::string& name);
@@ -43,17 +41,16 @@ class Multimeter : public consumer::Device {
   Multimeter& operator=(const Multimeter&) = default;
   Multimeter& operator=(Multimeter&&) = default;
 
-  void SetAttribute(const std::string& attribute);
+  std::vector<std::string> GetAttributes(const std::string& time) const;
+  std::vector<std::string> GetNeuronIds(const std::string& time,
+                                        const std::string& attribute) const;
 
-  void Update() override;
-
-  const std::vector<double>& GetValues() const;
-
- private:
-  void SetValues();
-
-  std::vector<double> values_;
-  std::string attribute_{""};
+ protected:
+  std::string ConstructPath(const std::string& time,
+                            const std::string& attribute) const;
+  std::string ConstructPath(const std::string& time,
+                            const std::string& attribute,
+                            const std::string& neuron_id) const;
 };
 
 }  // namespace consumer

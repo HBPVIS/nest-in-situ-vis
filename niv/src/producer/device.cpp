@@ -28,23 +28,13 @@
 namespace niv {
 namespace producer {
 
-Device::Device(const std::string& name, conduit::Node* node)
-    : node_(node), name_(name) {}
+Device::Device(const std::string& name) : name_(name) {}
 
-void Device::SetRecordingTime(double time) {
-  std::stringstream time_stream;
-  time_stream << time;
-  timestep_node_ = &(*node_)[name_][time_stream.str()];
-}
-
-void Device::Record(std::size_t) {}
-void Device::Record(std::size_t, const std::vector<double>&) {}
-
-conduit::Node& Device::GetTimestepNode() {
-  if (timestep_node_ == nullptr) {
-    SetRecordingTime(0.0);
-  }
-  return *timestep_node_;
+std::string Device::ConstructPath(const Datum& datum) {
+  std::stringstream path;
+  path << name_ << '/';
+  path << datum.time;
+  return path.str();
 }
 
 }  // namespace producer

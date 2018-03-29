@@ -19,43 +19,83 @@
 // limitations under the License.
 //------------------------------------------------------------------------------
 
-#include <vector>
-
 #include "catch/catch.hpp"
 
-#include "conduit/conduit_node.hpp"
-
 #include "niv/consumer/multimeter.hpp"
-#include "niv/nest_test_data.hpp"
+#include "niv/testing/data.hpp"
 
-SCENARIO("a Multimeter provides access to data stored in a conduit node",
+SCENARIO("consumer::Multimeter lists attributes for a timestep",
          "[niv][niv::consumer][niv::consumer::Multimeter]") {
-  GIVEN("A Multimeter with some data") {
-    const conduit::Node nest_data{niv::testing::AnyNestData()};
-    niv::consumer::Multimeter multimeter(niv::testing::AnyMultimeterName());
-    multimeter.SetNode(&nest_data);
+  GIVEN("a multimeter providing access to some data") {
+    niv::consumer::Multimeter multimeter(niv::testing::ANY_MULTIMETER_NAME);
+    multimeter.SetNode(&niv::testing::ANY_NEST_DATA);
 
-    WHEN("The time step is set") {
-      multimeter.SetTime(niv::testing::AnyTime());
-      WHEN("one attribute is queried") {
-        multimeter.SetAttribute(niv::testing::AnyValueNames()[0]);
-        multimeter.Update();
-        auto result = multimeter.GetValues();
-        THEN("the result is correct") {
-          REQUIRE_THAT(result, Catch::Matchers::Equals(
-                                   niv::testing::AnyAttributesValues()));
-        }
+    WHEN("attributes are requested") {
+      auto attributes{multimeter.GetAttributes(niv::testing::ANY_TIME_STRING)};
+      THEN("the multimeter provides the attributes") {
+        REQUIRE(attributes == niv::testing::ANY_ATTRIBUTES);
       }
-      WHEN("another attribute is queried") {
-        multimeter.SetAttribute(niv::testing::AnyValueNames()[1]);
-        multimeter.Update();
+    }
 
-        auto result = multimeter.GetValues();
-        THEN("the result is correct") {
-          REQUIRE_THAT(result, Catch::Matchers::Equals(
-                                   niv::testing::AnotherAttributesValues()));
-        }
+    WHEN("attributes are requested for an invalid timestep") {
+      auto attributes{
+          multimeter.GetAttributes(niv::testing::NOT_A_TIME_STRING)};
+      THEN("the multimeter does not provide attributes") {
+        REQUIRE(attributes.empty());
       }
+    }
+  }
+
+  GIVEN("a multimeter with an incorrect name providing access to some data") {
+    niv::consumer::Multimeter multimeter(niv::testing::NOT_A_MULTIMETER_NAME);
+    multimeter.SetNode(&niv::testing::ANY_NEST_DATA);
+
+    WHEN("attributes are requested") {
+      auto attributes{multimeter.GetAttributes(niv::testing::ANY_TIME_STRING)};
+      THEN("the multimeter does not provide attributes") {
+        REQUIRE(attributes.empty());
+      }
+    }
+  }
+}
+
+SCENARIO(
+    "Multimeter lists the neuron ids stored for an attribute in a "
+    "timestep",
+    "[niv][niv::consumer][niv::consumer::Multimeter]") {
+  GIVEN("a multimeter providing access to some data") {
+    niv::consumer::Multimeter multimeter(niv::testing::ANY_MULTIMETER_NAME);
+    multimeter.SetNode(&niv::testing::ANY_NEST_DATA);
+
+    WHEN("neuron ids are requested") {
+      auto ids{multimeter.GetNeuronIds(niv::testing::ANY_TIME_STRING,
+                                       niv::testing::ANY_ATTRIBUTE)};
+      THEN("the multimeter provides the ids") {
+        REQUIRE(ids == niv::testing::ANY_IDS_STRING);
+      }
+    }
+
+    WHEN("neuron ids are requested for an invalid timestep") {
+      auto ids{multimeter.GetNeuronIds(niv::testing::NOT_A_TIME_STRING,
+                                       niv::testing::ANY_ATTRIBUTE)};
+      THEN("the multimeter does not provide ids") { REQUIRE(ids.empty()); }
+    }
+
+    WHEN("neuron ids are requested for an invalid attribute") {
+      auto ids{multimeter.GetNeuronIds(niv::testing::ANY_TIME_STRING,
+                                       niv::testing::NOT_AN_ATTRIBUTE)};
+      THEN("the multimeter does not provide ids") { REQUIRE(ids.empty()); }
+    }
+  }
+
+  GIVEN("a multimeter with an incorrect name providing access to some data") {
+    niv::consumer::Multimeter multimeter(niv::testing::NOT_A_MULTIMETER_NAME);
+    multimeter.SetNode(&niv::testing::ANY_NEST_DATA);
+
+    WHEN("neuron ids are requested") {
+      auto ids{multimeter.GetNeuronIds(niv::testing::ANY_TIME_STRING,
+                                       niv::testing::ANY_ATTRIBUTE)};
+      THEN("the multimeter does not provide ids") { REQUIRE(ids.empty()); }
     }
   }
 }

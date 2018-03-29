@@ -28,7 +28,7 @@ namespace pyniv {
 
 template <>
 void expose<niv::consumer::Backend>() {
-  class_<niv::consumer::Backend, noncopyable>("ConsumerBackend")
+  class_<niv::consumer::Backend, noncopyable>("Backend")
       .def("Connect",
            static_cast<void (niv::consumer::Backend::*)(  // NOLINT
                niv::consumer::Receiver*)>(&niv::consumer::Backend::Connect))

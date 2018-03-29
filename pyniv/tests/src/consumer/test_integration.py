@@ -19,24 +19,45 @@
 # limitations under the License.
 #-------------------------------------------------------------------------------
 
+import numpy as np
+
 import pyniv
 
 def test_integration_consumer():
-    backend = pyniv.ConsumerBackend()
+    backend = pyniv.consumer.Backend()
 
-    receiver = pyniv.ConsumerReceiver()
+    receiver = pyniv.consumer.Receiver()
     backend.Connect(receiver)
 
-    multimeter = pyniv.ConsumerMultimeter(pyniv.TestingAnyMultimeterName())
-    multimeter.SetAttribute(pyniv.TestingAnyValueNames(0))
+    multimeter = pyniv.consumer.NestMultimeter(pyniv.testing.ANY_MULTIMETER_NAME)
     backend.Connect(multimeter)
 
-    pyniv.TestingSend(pyniv.TestingAnyNestData())
+    pyniv.testing.Send(pyniv.testing.ANY_NEST_DATA)
 
     backend.Receive()
     
-    multimeter.SetTime(pyniv.TestingAnyTime())
-    multimeter.Update()
+    values_at_t0 = multimeter.GetTimestepData(pyniv.testing.ANY_TIME_STRING, pyniv.testing.ANY_ATTRIBUTE)
+    expected_at_t0 = [
+        pyniv.testing.ValueAt(pyniv.testing.ANY_TIME_INDEX,
+                              pyniv.testing.ANY_ATTRIBUTE_INDEX,
+                              pyniv.testing.ANY_ID_INDEX),
+        pyniv.testing.ValueAt(pyniv.testing.ANY_TIME_INDEX,
+                              pyniv.testing.ANY_ATTRIBUTE_INDEX,
+                              pyniv.testing.ANOTHER_ID_INDEX),
+        pyniv.testing.ValueAt(pyniv.testing.ANY_TIME_INDEX,
+                              pyniv.testing.ANY_ATTRIBUTE_INDEX,
+                              pyniv.testing.THIRD_ID_INDEX)]
+    assert np.isclose(values_at_t0, expected_at_t0).all()
 
-    values = multimeter.GetValues()
-    assert (values == pyniv.TestingAnyAttributesValues()).all()
+    values_at_t1 = multimeter.GetTimestepData(pyniv.testing.ANOTHER_TIME_STRING, pyniv.testing.ANY_ATTRIBUTE)
+    expected_at_t1 = [
+        pyniv.testing.ValueAt(pyniv.testing.ANOTHER_TIME_INDEX,
+                              pyniv.testing.ANY_ATTRIBUTE_INDEX,
+                              pyniv.testing.ANY_ID_INDEX),
+        pyniv.testing.ValueAt(pyniv.testing.ANOTHER_TIME_INDEX,
+                              pyniv.testing.ANY_ATTRIBUTE_INDEX,
+                              pyniv.testing.ANOTHER_ID_INDEX),
+        pyniv.testing.ValueAt(pyniv.testing.ANOTHER_TIME_INDEX,
+                              pyniv.testing.ANY_ATTRIBUTE_INDEX,
+                              pyniv.testing.THIRD_ID_INDEX)]
+    assert np.isclose(values_at_t1, expected_at_t1).all()

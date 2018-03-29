@@ -24,9 +24,10 @@
 #include "catch/catch.hpp"
 
 #include "niv/consumer/backend.hpp"
-#include "niv/consumer/multimeter.hpp"
+#include "niv/consumer/nest_multimeter.hpp"
 #include "niv/consumer/receiver.hpp"
-#include "niv/nest_test_data.hpp"
+#include "niv/testing/data.hpp"
+#include "niv/testing/helpers.hpp"
 
 SCENARIO("Consumer integration", "[niv][integration]") {
   GIVEN("The required objects") {
@@ -35,23 +36,44 @@ SCENARIO("Consumer integration", "[niv][integration]") {
     niv::consumer::Receiver receiver;
     backend.Connect(&receiver);
 
-    niv::consumer::Multimeter multimeter(niv::testing::AnyMultimeterName());
-    multimeter.SetAttribute(niv::testing::AnyValueNames()[0]);
+    niv::consumer::NestMultimeter multimeter(niv::testing::ANY_MULTIMETER_NAME);
     backend.Connect(&multimeter);
 
     WHEN("The data producer sends data") {
-      niv::testing::Send(niv::testing::AnyNestData());
+      niv::testing::Send(niv::testing::ANY_NEST_DATA);
 
       WHEN("the consuming side receives") {
         backend.Receive();
 
         WHEN("the multimeter queries the data") {
-          multimeter.SetTime(niv::testing::AnyTime());
-          multimeter.Update();
-          std::vector<double> values{multimeter.GetValues()};
+          std::vector<double> values_at_t0{multimeter.GetTimestepData(
+              niv::testing::ANY_TIME_STRING, niv::testing::ANY_ATTRIBUTE)};
+          std::vector<double> values_at_t1{multimeter.GetTimestepData(
+              niv::testing::ANOTHER_TIME_STRING, niv::testing::ANY_ATTRIBUTE)};
 
           THEN("the received values are correct") {
-            REQUIRE(values == niv::testing::AnyAttributesValues());
+            const std::vector<double> expected_at_t0{
+                niv::testing::ValueAt(niv::testing::ANY_TIME_INDEX,
+                                      niv::testing::ANY_ATTRIBUTE_INDEX,
+                                      niv::testing::ANY_ID_INDEX),
+                niv::testing::ValueAt(niv::testing::ANY_TIME_INDEX,
+                                      niv::testing::ANY_ATTRIBUTE_INDEX,
+                                      niv::testing::ANOTHER_ID_INDEX),
+                niv::testing::ValueAt(niv::testing::ANY_TIME_INDEX,
+                                      niv::testing::ANY_ATTRIBUTE_INDEX,
+                                      niv::testing::THIRD_ID_INDEX)};
+            REQUIRE(values_at_t0 == expected_at_t0);
+            const std::vector<double> expected_at_t1{
+                niv::testing::ValueAt(niv::testing::ANOTHER_TIME_INDEX,
+                                      niv::testing::ANY_ATTRIBUTE_INDEX,
+                                      niv::testing::ANY_ID_INDEX),
+                niv::testing::ValueAt(niv::testing::ANOTHER_TIME_INDEX,
+                                      niv::testing::ANY_ATTRIBUTE_INDEX,
+                                      niv::testing::ANOTHER_ID_INDEX),
+                niv::testing::ValueAt(niv::testing::ANOTHER_TIME_INDEX,
+                                      niv::testing::ANY_ATTRIBUTE_INDEX,
+                                      niv::testing::THIRD_ID_INDEX)};
+            REQUIRE(values_at_t1 == expected_at_t1);
           }
         }
       }

@@ -25,24 +25,13 @@ SUPPRESS_WARNINGS_BEGIN
 #include "boost/python/numpy.hpp"
 SUPPRESS_WARNINGS_END
 
-#include "conduit/conduit_node.hpp"
-
-#include "niv/consumer/backend.hpp"
-#include "niv/consumer/multimeter.hpp"
-#include "niv/consumer/receiver.hpp"
-#include "niv/nest_test_data.hpp"
 #include "niv/niv.hpp"
 
-BOOST_PYTHON_MODULE(pyniv) {
+namespace pyniv {
+
+BOOST_PYTHON_MODULE(_pyniv) {
   boost::python::numpy::initialize();
   def("Greet", niv::Greet);
-
-  pyniv::expose<conduit::Node>();
-
-  pyniv::expose<niv::consumer::Backend>();
-  pyniv::expose<niv::consumer::Device>();
-  pyniv::expose<niv::consumer::Receiver>();
-  pyniv::expose<niv::consumer::Multimeter>();
-
-  pyniv::expose<niv::Testing>();
 }
+
+}  // namespace pyniv
