@@ -48,32 +48,6 @@ bool Equal(const conduit::Node& node1, const conduit::Node& node2) {
   return is_equal;
 }
 
-std::string AnyValueNames(std::size_t index) {
-  return niv::testing::AnyValueNames()[index];
-}
-
-boost::python::numpy::ndarray AnyAttributesValues(double time = 0) {
-  static std::vector<double> values;
-  values = std::vector<double>{niv::testing::AnyAttributesValues(time)};
-
-  return boost::python::numpy::from_data(
-      values.data(), boost::python::numpy::dtype::get_builtin<double>(),
-      boost::python::make_tuple(values.size()),
-      boost::python::make_tuple(sizeof(double)), boost::python::object());
-}
-
-boost::python::numpy::ndarray AnotherAttributesValues() {
-  static std::vector<double> values{niv::testing::AnotherAttributesValues()};
-
-  return boost::python::numpy::from_data(
-      values.data(), boost::python::numpy::dtype::get_builtin<double>(),
-      boost::python::make_tuple(values.size()),
-      boost::python::make_tuple(sizeof(double)), boost::python::object());
-}
-
-BOOST_PYTHON_FUNCTION_OVERLOADS(AnyAttributesValuesOverloads,
-                                AnyAttributesValues, 0, 1)
-
 boost::python::list TimeOffsets() {
   boost::python::list ret_val;
   for (auto t : niv::testing::TIME_OFFSETS) {
@@ -163,12 +137,6 @@ void expose<niv::Testing>() {
 
   def("TIME_OFFSETS", &pyniv::testing::TimeOffsets);
   def("ID_OFFSETS", &pyniv::testing::IdOffsets);
-  def("AnyAttributesValues", &pyniv::testing::AnyAttributesValues,
-      pyniv::testing::AnyAttributesValuesOverloads());
-  def("AnotherAttributesValues", &pyniv::testing::AnotherAttributesValues);
-  def("ThirdAttributesValues", &niv::testing::ThirdAttributesValues);
-  def("AnyValueNames", &pyniv::testing::AnyValueNames);
-  def("AnyMultimeterName", &niv::testing::AnyMultimeterName);
   def("Send", &niv::testing::Send);
   def("AnyNode", &niv::testing::AnyNode);
   def("AnotherNode", &niv::testing::AnotherNode);

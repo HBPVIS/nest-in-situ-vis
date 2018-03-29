@@ -116,7 +116,7 @@ def test_arbor_multimeter_provides_timestep_data_for_all_neurons():
 # ------------------------------------------------------------
 def test_nest_multimeter_provides_access_to_data_stored_in_a_conduit_node():
     nest_data = pyniv.testing.ANY_NEST_DATA
-    multimeter = pyniv.consumer.NestMultimeter(pyniv.testing.AnyMultimeterName())
+    multimeter = pyniv.consumer.NestMultimeter(pyniv.testing.ANY_MULTIMETER_NAME)
     multimeter.SetNode(nest_data)
 
     result = multimeter.GetTimestepData(pyniv.testing.ANY_TIME_STRING,

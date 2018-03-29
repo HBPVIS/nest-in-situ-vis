@@ -226,14 +226,6 @@ static conduit::Node ANY_NEST_DATA{
 #pragma GCC diagnostic pop
 #endif
 
-std::vector<double> AnyAttributesValues(double time = 0.0);
-std::vector<double> AnotherAttributesValues(double time = 0.0);
-std::vector<double> ThirdAttributesValues(double time = 0.0);
-
-std::vector<std::string> AnyValueNames();
-
-std::string AnyMultimeterName();
-
 void Send(const conduit::Node& node);
 
 conduit::Node AnyNode();

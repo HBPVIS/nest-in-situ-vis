@@ -29,7 +29,7 @@ def test_integration_consumer():
     receiver = pyniv.consumer.Receiver()
     backend.Connect(receiver)
 
-    multimeter = pyniv.consumer.NestMultimeter(pyniv.testing.AnyMultimeterName())
+    multimeter = pyniv.consumer.NestMultimeter(pyniv.testing.ANY_MULTIMETER_NAME)
     backend.Connect(multimeter)
 
     pyniv.testing.Send(pyniv.testing.ANY_NEST_DATA)
