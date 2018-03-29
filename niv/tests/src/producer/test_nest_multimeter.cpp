@@ -27,8 +27,8 @@
 
 #include "conduit/conduit_node.hpp"
 
-#include "niv/nest_test_data.hpp"
 #include "niv/producer/nest_multimeter.hpp"
+#include "niv/testing/nest_test_data.hpp"
 
 SCENARIO("A multimeter records to a conduit node",
          "[niv][niv::NestMultimeter]") {

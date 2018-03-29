@@ -26,7 +26,7 @@
 #include "niv/consumer/backend.hpp"
 #include "niv/consumer/nest_multimeter.hpp"
 #include "niv/consumer/receiver.hpp"
-#include "niv/nest_test_data.hpp"
+#include "niv/testing/nest_test_data.hpp"
 
 SCENARIO("Consumer integration", "[niv][integration]") {
   GIVEN("The required objects") {

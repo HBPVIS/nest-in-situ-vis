@@ -26,7 +26,7 @@
 #include "conduit/conduit_node.hpp"
 
 #include "niv/consumer/nest_multimeter.hpp"
-#include "niv/nest_test_data.hpp"
+#include "niv/testing/nest_test_data.hpp"
 
 #include "test_utilities/vector_all_nan_or_empty.hpp"
 

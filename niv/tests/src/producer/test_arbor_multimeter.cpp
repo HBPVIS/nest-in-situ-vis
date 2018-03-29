@@ -28,8 +28,8 @@
 
 #include "conduit/conduit.hpp"
 
-#include "niv/nest_test_data.hpp"
 #include "niv/producer/arbor_multimeter.hpp"
+#include "niv/testing/nest_test_data.hpp"
 
 SCENARIO("A multimeter records to a conduit node",
          "[niv][niv::ArborMultimeter]") {

@@ -25,7 +25,7 @@
 #include "catch/catch.hpp"
 
 #include "niv/consumer/device.hpp"
-#include "niv/nest_test_data.hpp"
+#include "niv/testing/nest_test_data.hpp"
 
 namespace Catch {
 namespace Matchers {

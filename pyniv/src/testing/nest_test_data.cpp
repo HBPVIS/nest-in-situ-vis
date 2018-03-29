@@ -30,7 +30,7 @@ SUPPRESS_WARNINGS_END
 
 #include "conduit/conduit_node.hpp"
 
-#include "niv/nest_test_data.hpp"
+#include "niv/testing/nest_test_data.hpp"
 
 namespace pyniv {
 

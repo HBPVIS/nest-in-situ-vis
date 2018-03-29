@@ -22,7 +22,7 @@
 #include "catch/catch.hpp"
 
 #include "niv/consumer/multimeter.hpp"
-#include "niv/nest_test_data.hpp"
+#include "niv/testing/nest_test_data.hpp"
 
 SCENARIO("consumer::Multimeter lists attributes for a timestep",
          "[niv][niv::consumer][niv::consumer::Multimeter]") {

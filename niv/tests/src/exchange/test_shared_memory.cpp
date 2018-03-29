@@ -24,7 +24,7 @@
 #include "conduit/conduit_node.hpp"
 
 #include "niv/exchange/shared_memory.hpp"
-#include "niv/nest_test_data.hpp"
+#include "niv/testing/nest_test_data.hpp"
 
 #include "conduit_node_helper.hpp"
 
